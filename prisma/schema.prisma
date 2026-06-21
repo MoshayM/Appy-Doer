@@ -1,0 +1,735 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum PlatformRole {
+  SUPER_ADMIN
+  ADMIN
+  CUSTOMER
+}
+
+enum AdminPreset {
+  SUPPORT
+  CONTENT
+  FINANCE
+}
+
+enum Plan {
+  FREE // post-trial locked, read-only
+  TRIAL
+  PRO
+  PREMIUM
+}
+
+enum SubStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  GRACE
+  CANCELED
+  EXPIRED
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+}
+
+enum Phase {
+  MVP
+  PHASE_2
+  PHASE_3
+  PHASE_4
+}
+
+enum AgentType {
+  // MVP income chain
+  SKILL_ASSESSMENT
+  OPPORTUNITY_DISCOVERY
+  OFFER_BUILDER
+  PORTFOLIO_BUILDER
+  PROFILE_INTELLIGENCE
+  CLIENT_INTELLIGENCE
+  CLIENT_DISCOVERY
+  CLIENT_ACQUISITION
+  RELATIONSHIP_SUCCESS
+  WORK_SUPPORT
+  REPLY_INTELLIGENCE
+  // Phase 2
+  DIGITAL_PRODUCT_BUILDER
+  // Phase 3
+  VIRTUAL_EMPLOYEE_TEAM
+  SAAS_OPPORTUNITY
+  // Phase 4
+  REVENUE_GROWTH
+  BUSINESS_SCALING
+}
+
+enum LeadStage {
+  LEAD_IDENTIFIED
+  CONTACTED
+  INTERESTED
+  PROPOSAL_SENT
+  WON
+  LOST
+}
+
+enum EmailThreadStatus {
+  SENT
+  OPENED
+  REPLIED
+  INTERESTED
+  NEGOTIATING
+  WON
+  LOST
+}
+
+enum PaymentGateway {
+  RAZORPAY
+  CASHFREE
+  STRIPE
+  PAYPAL
+}
+
+enum EmailProvider {
+  RESEND
+  SENDGRID
+  SES
+}
+
+enum OpportunityCategory {
+  SERVICE
+  DIGITAL_PRODUCT
+  SAAS
+  CONTENT
+}
+
+enum ClientTemperature {
+  COLD
+  WARM
+  HOT
+}
+
+enum ProfileType {
+  DYNAMIC_RESUME
+  PORTFOLIO_SITE
+  PUBLIC_PROFILE
+  SERVICE_CATALOG
+  INDUSTRY_SPECIFIC
+  PROPOSAL_PROFILE
+  PRESENTATION_PROFILE
+}
+
+enum OfferType {
+  LIMITED_TIME
+  DYNAMIC_DISCOUNT
+  PERSONALIZED_UPGRADE
+  FOMO
+  TRIAL_CONVERSION
+}
+
+enum WorkStatus {
+  NOT_STARTED
+  REQUIREMENTS
+  PLANNING
+  IN_PROGRESS
+  REVIEW
+  DELIVERED
+  BLOCKED
+}
+
+enum EmployeeRole {
+  PROJECT_MANAGER
+  BUSINESS_ANALYST
+  TECHNICAL_SPECIALIST
+  QUALITY_ASSURANCE
+  CREATIVE_SPECIALIST
+  COMMUNICATION_SPECIALIST
+  RESEARCH_SPECIALIST
+  DELIVERY_COORDINATOR
+}
+
+enum RelationshipStage {
+  NEW
+  ACTIVE
+  NURTURING
+  AT_RISK
+  DORMANT
+  CHAMPION
+}
+
+enum CommunicationPreference {
+  EMAIL
+  CALL
+  MESSAGING
+  VIDEO
+  IN_PERSON
+}
+
+enum ConnectedPlatform {
+  LINKEDIN
+  GITHUB
+  GMAIL
+  YOUTUBE
+  FIVERR
+  UPWORK
+  NAUKRI_TEXT
+  RESUME
+  MANUAL
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// ─── Core models ─────────────────────────────────────────────────────────────
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  role         PlatformRole  @default(CUSTOMER)
+  plan         Plan          @default(TRIAL)
+  adminPresets AdminPreset[]
+  passwordHash String?
+  createdAt    DateTime      @default(now())
+  lastActiveAt DateTime?
+
+  subscription       Subscription?
+  context            UserContext?
+  usage              DailyUsage[]
+  opportunities      OpportunityRoadmap[]
+  offers             Offer[]
+  portfolios         PortfolioAsset[]
+  leads              Lead[]
+  milestones         RevenueMilestone[]
+  agentRuns          AgentRun[]
+  activityLogs       ActivityLog[]
+  profiles           ProfessionalProfile[]
+  clientProfiles     ClientProfile[]
+  relationships      ClientRelationship[]
+  workspaces         ProjectWorkspace[]
+  virtualEmployees   VirtualEmployee[]
+  subscriptionOffers SubscriptionOffer[]
+  notifications      NotificationCampaign[]
+  connectedAccounts  ConnectedAccount[]
+  emailTracks        EmailTrack[]
+  emailThreads       EmailThread[]
+  tickets            SupportTicket[]
+}
+
+model UserContext {
+  id                    String     @id @default(cuid())
+  userId                String     @unique
+  user                  User       @relation(fields: [userId], references: [id])
+  profession            String?
+  experienceYears       Int?
+  industry              String?
+  availableHoursPerWeek Int?
+  incomeTargetINR       Int?
+  skills                String[]
+  interests             String[]
+  selectedOpportunityId String?
+  engagementScore       Int        @default(0)
+  profileCompletion     Int        @default(0)
+  version               Int        @default(0)
+  currentState          AgentType?
+  onboardingComplete    Boolean    @default(false)
+  updatedAt             DateTime   @updatedAt
+}
+
+// ─── Billing models ───────────────────────────────────────────────────────────
+
+model Subscription {
+  id               String          @id @default(cuid())
+  userId           String          @unique
+  user             User            @relation(fields: [userId], references: [id])
+  plan             Plan
+  status           SubStatus       @default(TRIALING)
+  interval         BillingInterval @default(MONTH)
+  priceINR         Int
+  listPriceINR     Int?
+  appliedOfferId   String?
+  gateway          PaymentGateway
+  gatewaySubId     String?
+  trialStartedAt   DateTime?
+  trialEndsAt      DateTime?
+  currentPeriodEnd DateTime?
+  graceEndsAt      DateTime?
+  gstin            String?
+  createdAt        DateTime        @default(now())
+  payments         Payment[]
+}
+
+model Payment {
+  id               String         @id @default(cuid())
+  subscriptionId   String
+  subscription     Subscription   @relation(fields: [subscriptionId], references: [id])
+  gateway          PaymentGateway
+  gatewayPaymentId String?
+  amountINR        Int
+  gstAmountINR     Int            @default(0)
+  status           String
+  invoiceUrl       String?
+  createdAt        DateTime       @default(now())
+}
+
+// ─── Agent / usage models ─────────────────────────────────────────────────────
+
+model AgentRun {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  agentType    AgentType
+  workspaceId  String?
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  outputJson   Json
+  success      Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+}
+
+model DailyUsage {
+  id        String @id @default(cuid())
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
+  dateIST   String
+  aiOutputs Int    @default(0)
+
+  @@unique([userId, dateIST])
+}
+
+// ─── Domain models (income chain) ─────────────────────────────────────────────
+
+model OpportunityRoadmap {
+  id            String              @id @default(cuid())
+  userId        String
+  user          User                @relation(fields: [userId], references: [id])
+  title         String
+  category      OpportunityCategory
+  difficulty    Int
+  monthlyMinINR Int
+  monthlyMaxINR Int
+  detail        Json
+  selected      Boolean             @default(false)
+  createdAt     DateTime            @default(now())
+}
+
+model Offer {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  detail    Json
+  createdAt DateTime @default(now())
+}
+
+model PortfolioAsset {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  content   Json
+  fileUrl   String?
+  createdAt DateTime @default(now())
+}
+
+model Lead {
+  id             String         @id @default(cuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id])
+  name           String
+  company        String?
+  contact        String?
+  service        String?
+  notes          String?
+  stage          LeadStage      @default(LEAD_IDENTIFIED)
+  lastActivityAt DateTime       @default(now())
+  createdAt      DateTime       @default(now())
+  artifacts      Json?
+  clientProfile  ClientProfile?
+}
+
+model RevenueMilestone {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  label         String
+  amountINR     Int
+  isFirstIncome Boolean  @default(false)
+  achievedAt    DateTime @default(now())
+}
+
+// ─── Profile Intelligence models ──────────────────────────────────────────────
+
+model ProfessionalProfile {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  primaryType ProfileType      @default(PUBLIC_PROFILE)
+  headline    String
+  summary     String
+  positioning String?
+  detail      Json
+  websiteSlug String?          @unique
+  published   Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  versions    ProfileVersion[]
+}
+
+model ProfileVersion {
+  id        String              @id @default(cuid())
+  profileId String
+  profile   ProfessionalProfile @relation(fields: [profileId], references: [id])
+  type      ProfileType
+  region    String?
+  industry  String?
+  client    String?
+  content   Json
+  fileUrl   String?
+  createdAt DateTime            @default(now())
+}
+
+// ─── Client Intelligence + Relationship models ────────────────────────────────
+
+model ClientProfile {
+  id                 String                   @id @default(cuid())
+  userId             String
+  user               User                     @relation(fields: [userId], references: [id])
+  leadId             String?                  @unique
+  lead               Lead?                    @relation(fields: [leadId], references: [id])
+  companyName        String
+  industry           String?
+  region             String?
+  website            String?
+  temperature        ClientTemperature        @default(COLD)
+  commPreference     CommunicationPreference?
+  pricingSensitivity String?
+  decisionStyle      String?
+  detail             Json
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  insights           ClientInsight[]
+  relationship       ClientRelationship?
+}
+
+model ClientInsight {
+  id              String        @id @default(cuid())
+  clientProfileId String
+  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
+  source          String
+  insight         Json
+  createdAt       DateTime      @default(now())
+}
+
+model ClientRelationship {
+  id               String            @id @default(cuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id])
+  clientProfileId  String            @unique
+  clientProfile    ClientProfile     @relation(fields: [clientProfileId], references: [id])
+  stage            RelationshipStage @default(NEW)
+  lastContactAt    DateTime?
+  nextActionAt     DateTime?
+  birthday         DateTime?
+  renewalAt        DateTime?
+  lifetimeValueINR Int               @default(0)
+  notes            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+// ─── Work Support + Virtual Employee Team models ──────────────────────────────
+
+model ProjectWorkspace {
+  id              String                @id @default(cuid())
+  userId          String
+  user            User                  @relation(fields: [userId], references: [id])
+  leadId          String?
+  clientProfileId String?
+  title           String
+  objective       String?
+  status          WorkStatus            @default(NOT_STARTED)
+  sharedContext   Json?
+  contextVersion  Int                   @default(0)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  tasks           ProjectTask[]
+  sessions        WorkSession[]
+  veTasks         VirtualEmployeeTask[]
+}
+
+model ProjectTask {
+  id            String           @id @default(cuid())
+  workspaceId   String
+  workspace     ProjectWorkspace @relation(fields: [workspaceId], references: [id])
+  title         String
+  description   String?
+  status        WorkStatus       @default(NOT_STARTED)
+  estimateHours Int?
+  orderIndex    Int              @default(0)
+  output        Json?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model WorkSession {
+  id           String           @id @default(cuid())
+  workspaceId  String
+  workspace    ProjectWorkspace @relation(fields: [workspaceId], references: [id])
+  userId       String
+  agentType    AgentType
+  input        Json
+  output       Json
+  inputTokens  Int              @default(0)
+  outputTokens Int              @default(0)
+  createdAt    DateTime         @default(now())
+}
+
+model VirtualEmployee {
+  id           String                @id @default(cuid())
+  userId       String
+  user         User                  @relation(fields: [userId], references: [id])
+  role         EmployeeRole
+  name         String
+  personality  String?
+  systemPrompt String?
+  enabled      Boolean               @default(true)
+  createdAt    DateTime              @default(now())
+  tasks        VirtualEmployeeTask[]
+}
+
+model VirtualEmployeeTask {
+  id          String           @id @default(cuid())
+  workspaceId String
+  workspace   ProjectWorkspace @relation(fields: [workspaceId], references: [id])
+  employeeId  String
+  employee    VirtualEmployee  @relation(fields: [employeeId], references: [id])
+  role        EmployeeRole
+  task        String
+  status      WorkStatus       @default(NOT_STARTED)
+  dependsOn   String[]
+  output      Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+// ─── Offer engine + notification models ──────────────────────────────────────
+
+model OfferCampaign {
+  id             String              @id @default(cuid())
+  name           String
+  type           OfferType
+  description    String?
+  active         Boolean             @default(true)
+  rules          Json
+  minDiscountPct Int                 @default(0)
+  maxDiscountPct Int                 @default(0)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  createdAt      DateTime            @default(now())
+  offers         SubscriptionOffer[]
+}
+
+model SubscriptionOffer {
+  id                   String          @id @default(cuid())
+  userId               String
+  user                 User            @relation(fields: [userId], references: [id])
+  campaignId           String?
+  campaign             OfferCampaign?  @relation(fields: [campaignId], references: [id])
+  type                 OfferType
+  plan                 Plan
+  interval             BillingInterval
+  originalINR          Int
+  discountedINR        Int
+  discountPercent      Int
+  conversionLikelihood Int?
+  expiresAt            DateTime?
+  shown                Boolean         @default(false)
+  accepted             Boolean         @default(false)
+  createdAt            DateTime        @default(now())
+}
+
+model NotificationCampaign {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id])
+  type        String
+  channel     String
+  title       String
+  body        String
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  read        Boolean   @default(false)
+  meta        Json?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, scheduledAt])
+}
+
+// ─── Platform / ops models ────────────────────────────────────────────────────
+
+model AgentConfig {
+  id              String    @id @default(cuid())
+  agentType       AgentType @unique
+  model           String    @default("claude-sonnet-4-6")
+  fallbackModel   String    @default("gpt-4o")
+  maxInputTokens  Int
+  maxOutputTokens Int
+  systemPrompt    String
+  enabled         Boolean   @default(true)
+  updatedAt       DateTime  @updatedAt
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  description String?
+  type        String
+  value       Json
+  phase       Phase?
+  updatedAt   DateTime @updatedAt
+}
+
+model SuccessStory {
+  id        String   @id @default(cuid())
+  userId    String?
+  title     String
+  body      String
+  incomeINR Int?
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String        @id @default(cuid())
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id])
+  actorRole PlatformRole?
+  action    String
+  meta      Json?
+  createdAt DateTime      @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// ─── Connected Accounts + Email Tracking ─────────────────────────────────────
+
+model ConnectedAccount {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id])
+  platform          ConnectedPlatform
+  providerAccountId String?
+  accessToken       String?
+  refreshToken      String?
+  tokenExpiry       DateTime?
+  status            String            @default("active")
+  profileData       Json?
+  profileUrl        String?
+  accountEmail      String?
+  enabled           Boolean           @default(true)
+  connectedAt       DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  lastSyncAt        DateTime?
+
+  @@unique([userId, platform])
+}
+
+model EmailTrack {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  leadId         String?
+  trackingId     String    @unique @default(cuid())
+  recipientEmail String
+  subject        String
+  sentVia        String
+  gmailThreadId  String?
+  gmailMessageId String?
+  sentAt         DateTime  @default(now())
+  openedAt       DateTime?
+  openCount      Int       @default(0)
+  repliedAt      DateTime?
+  replyCheckedAt DateTime?
+}
+
+// ─── Email Thread + Message models ───────────────────────────────────────────
+
+model EmailThread {
+  id            String            @id @default(cuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id])
+  leadId        String?
+  gmailThreadId String
+  contactEmail  String
+  contactName   String?
+  subject       String
+  status        EmailThreadStatus @default(SENT)
+  lastMessageAt DateTime          @default(now())
+  unreadCount   Int               @default(0)
+  aiInsight     String?
+  aiIntent      String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  messages      EmailMessage[]
+
+  @@unique([userId, gmailThreadId])
+  @@index([userId, lastMessageAt])
+}
+
+model EmailMessage {
+  id             String      @id @default(cuid())
+  threadId       String
+  thread         EmailThread @relation(fields: [threadId], references: [id])
+  gmailMessageId String      @unique
+  fromEmail      String
+  fromName       String?
+  toEmail        String
+  subject        String
+  bodyHtml       String?
+  bodyText       String?
+  isInbound      Boolean     @default(false)
+  sentAt         DateTime
+  createdAt      DateTime    @default(now())
+}
+
+// ─── Support Ticket model ─────────────────────────────────────────────────────
+
+model SupportTicket {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  title           String
+  description     String
+  status          TicketStatus   @default(OPEN)
+  priority        TicketPriority @default(MEDIUM)
+  workflowContext String?
+  resolution      String?
+  resolvedAt      DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}

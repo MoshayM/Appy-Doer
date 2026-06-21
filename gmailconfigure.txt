@@ -1,0 +1,403 @@
+You are the lead architect and senior full-stack engineer for AI WorkBuddy.
+
+CURRENT PROBLEM
+---------------
+The application can send cold emails through Gmail, but the following critical business features are missing:
+
+1. "Check Reply" does not work.
+2. Replies from prospects are not detected.
+3. No notification system for incoming replies.
+4. No conversation/thread view.
+5. No inbox management.
+6. No ability to read full email conversations.
+7. No ability to reply from inside AI WorkBuddy.
+8. No CRM workflow after a prospect responds.
+9. No Work Support Agent handoff when a prospect becomes a customer.
+
+GOAL
+----
+Transform AI WorkBuddy into a complete outreach + CRM + conversation management platform.
+
+====================================================
+PHASE 1 - GMAIL OAUTH UPGRADE
+====================================================
+
+Implement Gmail OAuth 2.0 correctly.
+
+Required scopes:
+
+openid
+email
+profile
+https://www.googleapis.com/auth/gmail.send
+https://www.googleapis.com/auth/gmail.readonly
+https://www.googleapis.com/auth/gmail.modify
+https://www.googleapis.com/auth/gmail.labels
+
+Store:
+
+user_id
+gmail_email
+access_token
+refresh_token
+expiry_date
+gmail_connected
+last_sync_time
+
+Implement automatic token refresh.
+
+Never require users to reconnect manually.
+
+====================================================
+PHASE 2 - EMAIL THREAD TRACKING
+====================================================
+
+When sending email:
+
+Store:
+
+messageId
+threadId
+gmailMessageId
+recipientEmail
+subject
+body
+sendTimestamp
+
+Create database tables:
+
+EmailAccounts
+EmailThreads
+EmailMessages
+EmailAttachments
+EmailNotifications
+
+EmailThreads:
+
+id
+userId
+threadId
+contactEmail
+contactName
+status
+lastMessageDate
+unreadCount
+
+Statuses:
+
+SENT
+OPENED
+REPLIED
+INTERESTED
+NEGOTIATING
+WON
+LOST
+
+====================================================
+PHASE 3 - REPLY DETECTION
+====================================================
+
+Create Gmail Sync Service.
+
+Every 2 minutes:
+
+1. Fetch Gmail threads.
+2. Match threadId.
+3. Detect new messages.
+4. Detect sender.
+5. Detect incoming replies.
+
+When reply arrives:
+
+update thread status
+
+SENT -> REPLIED
+
+store reply content
+
+increment unread counter
+
+generate notification
+
+====================================================
+PHASE 4 - REAL TIME NOTIFICATIONS
+====================================================
+
+Add notification center.
+
+Notification examples:
+
+"John replied to your costing proposal"
+
+"New response received"
+
+"Client requested quotation"
+
+"Meeting requested"
+
+Display:
+
+Bell icon
+Unread counter
+Notification drawer
+
+Realtime updates using:
+
+WebSocket
+Socket.io
+or SSE
+
+====================================================
+PHASE 5 - CONVERSATION VIEW
+====================================================
+
+Replace current "Check Reply" button.
+
+New action:
+
+Open Conversation
+
+Features:
+
+Modern Gmail-style conversation view.
+
+Display:
+
+Contact Name
+Contact Email
+Thread Status
+Last Activity
+
+Conversation timeline:
+
+You -> Sent email
+
+Client -> Reply
+
+You -> Follow-up
+
+Client -> Response
+
+All messages displayed chronologically.
+
+Support:
+
+HTML emails
+Attachments
+Quoted messages
+
+====================================================
+PHASE 6 - REPLY FROM AI WORKBUDDY
+====================================================
+
+Add:
+
+Reply
+Reply All
+Forward
+
+Compose editor.
+
+Send via Gmail API.
+
+Maintain same threadId.
+
+Conversation continuity must remain intact.
+
+====================================================
+PHASE 7 - AI REPLY ANALYSIS
+====================================================
+
+Create Reply Intelligence Agent.
+
+Automatically classify replies:
+
+Interested
+Need Quote
+Need Meeting
+Need Sample
+Not Interested
+Wrong Contact
+Out Of Office
+Spam
+
+Extract:
+
+company
+person name
+phone
+requirements
+budget
+timeline
+
+Generate summary.
+
+Example:
+
+"Client is interested in cost optimization support and requests pricing."
+
+====================================================
+PHASE 8 - CRM PIPELINE
+====================================================
+
+When reply received:
+
+Create CRM opportunity.
+
+Stages:
+
+Lead
+Contacted
+Responded
+Qualified
+Proposal
+Negotiation
+Won
+Lost
+
+Auto-link:
+
+email thread
+contact
+opportunity
+
+====================================================
+PHASE 9 - WORK SUPPORT AGENT
+====================================================
+
+If AI detects client interest:
+
+Show button:
+
+"Start Work Support Agent"
+
+Agent responsibilities:
+
+Analyze client requirements.
+
+Generate:
+
+Project Scope
+Cost Estimate
+Quotation
+Proposal
+Work Breakdown Structure
+Delivery Timeline
+
+Create project workspace automatically.
+
+====================================================
+PHASE 10 - DASHBOARD
+====================================================
+
+Create Outreach Dashboard.
+
+Metrics:
+
+Emails Sent
+Replies Received
+Reply Rate
+Interested Leads
+Active Conversations
+Projects Won
+Revenue Pipeline
+
+Charts:
+
+Daily emails
+Daily replies
+Conversion funnel
+
+====================================================
+UI CHANGES
+====================================================
+
+Current table:
+
+To
+Subject
+Sent Via
+Opens
+Reply
+Actions
+
+Replace with:
+
+Contact
+Subject
+Status
+Last Activity
+Unread
+AI Insight
+Actions
+
+Actions:
+
+Open Conversation
+Reply
+View CRM
+Start Work Support Agent
+Archive
+
+====================================================
+SECURITY
+====================================================
+
+Each user accesses only their own Gmail.
+
+No shared inbox.
+
+No admin access to user email content.
+
+Encrypt:
+
+access tokens
+refresh tokens
+
+Implement RBAC.
+
+====================================================
+EXPECTED RESULT
+====================================================
+
+User sends email
+↓
+System stores thread
+↓
+Client replies
+↓
+Reply detected automatically
+↓
+Notification generated
+↓
+Conversation view updated
+↓
+AI analyzes response
+↓
+CRM opportunity created
+↓
+Work Support Agent activated
+↓
+User manages entire client relationship inside AI WorkBuddy
+
+Update:
+claude.md
+architecture.md
+api.md
+database.md
+agent.md
+frontend.md
+backend.md
+security.md
+
+Generate:
+Database migrations
+API endpoints
+Backend services
+React UI components
+Gmail sync worker
+Notification service
+CRM integration
+Work Support Agent integration
+
+Provide production-ready implementation.

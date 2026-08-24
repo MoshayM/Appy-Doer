@@ -89,11 +89,12 @@ function detailRows(action: string, meta: Record<string, unknown>): { label: str
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ActivityPanel() {
-  const [logs,     setLogs]     = useState<ActivityLog[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [tab,      setTab]      = useState<TabKey>('all')
-  const [expanded, setExpanded] = useState<string | null>(null)
-  const [page,     setPage]     = useState(1)
+  const [logs,      setLogs]      = useState<ActivityLog[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [tab,       setTab]       = useState<TabKey>('all')
+  const [expanded,  setExpanded]  = useState<string | null>(null)
+  const [page,      setPage]      = useState(1)
+  const [panelOpen, setPanelOpen] = useState(true)
 
   useEffect(() => {
     fetch('/api/activity')
@@ -119,38 +120,52 @@ export default function ActivityPanel() {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden h-fit">
 
-      {/* Header + tabs */}
-      <div className="px-5 pt-5">
-        <h2 className="font-bold text-gray-900 mb-3">Activity History</h2>
+      {/* Header — click to collapse/expand */}
+      <button
+        onClick={() => setPanelOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 pt-5 pb-3 text-left group"
+      >
+        <h2 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">Activity History</h2>
+        <span
+          className="text-gray-400 text-sm transition-transform duration-200"
+          style={{ display: 'inline-block', transform: panelOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        >
+          ▾
+        </span>
+      </button>
 
-        <div className="flex gap-1 overflow-x-auto pb-3 border-b border-gray-100" style={{ scrollbarWidth: 'none' }}>
-          {TABS.map(t => {
-            const count   = tabCount(t.key)
-            const active  = tab === t.key
-            return (
-              <button
-                key={t.key}
-                onClick={() => switchTab(t.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors shrink-0 ${
-                  active
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-                }`}
-              >
-                {t.label}
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
-                  active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
+      {panelOpen && (
+        <>
+          {/* Tabs */}
+          <div className="px-5 pb-0">
+            <div className="flex gap-1 overflow-x-auto pb-3 border-b border-gray-100" style={{ scrollbarWidth: 'none' }}>
+              {TABS.map(t => {
+                const count   = tabCount(t.key)
+                const active  = tab === t.key
+                return (
+                  <button
+                    key={t.key}
+                    onClick={() => switchTab(t.key)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors shrink-0 ${
+                      active
+                        ? 'bg-indigo-600 text-white'
+                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                    }`}
+                  >
+                    {t.label}
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
+                      active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
-      {/* List */}
-      <div className="px-3 py-3 space-y-0.5">
+          {/* List */}
+          <div className="px-3 py-3 space-y-0.5">
 
         {/* Loading skeleton */}
         {loading && (
@@ -259,7 +274,9 @@ export default function ActivityPanel() {
           </button>
         )}
 
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

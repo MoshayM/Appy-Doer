@@ -14,28 +14,50 @@ function encodeSubject(subject: string): string {
   return subject
 }
 
+type Attachment = { filename: string; mimeType: string; dataBase64: string }
+
 function buildReplyMessage(
   from: string, to: string, subject: string,
   html: string, threadId: string, messageId: string,
+  attachments: Attachment[] = [],
 ): string {
   const replySubject = subject.startsWith('Re:') ? subject : `Re: ${subject}`
-  const msg = [
-    `From: ${from}`,
-    `To: ${to}`,
+
+  if (attachments.length === 0) {
+    const msg = [
+      `From: ${from}`, `To: ${to}`,
+      `Subject: ${encodeSubject(replySubject)}`,
+      `In-Reply-To: ${messageId}`, `References: ${messageId}`,
+      'MIME-Version: 1.0', 'Content-Type: text/html; charset=utf-8', '', html,
+    ].join('\r\n')
+    return Buffer.from(msg).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  }
+
+  const boundary = `----=_Part_${Date.now()}`
+  const lines: string[] = [
+    `From: ${from}`, `To: ${to}`,
     `Subject: ${encodeSubject(replySubject)}`,
-    `In-Reply-To: ${messageId}`,
-    `References: ${messageId}`,
-    'MIME-Version: 1.0',
-    'Content-Type: text/html; charset=utf-8',
-    '',
-    html,
-  ].join('\r\n')
-  return Buffer.from(msg).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    `In-Reply-To: ${messageId}`, `References: ${messageId}`,
+    'MIME-Version: 1.0', `Content-Type: multipart/mixed; boundary="${boundary}"`, '',
+    `--${boundary}`, 'Content-Type: text/html; charset=utf-8', '', html,
+  ]
+  for (const att of attachments) {
+    const safeFilename = att.filename.replace(/[^\w.\-]/g, '_')
+    lines.push(
+      `--${boundary}`,
+      `Content-Type: ${att.mimeType}; name="${safeFilename}"`,
+      `Content-Disposition: attachment; filename="${safeFilename}"`,
+      'Content-Transfer-Encoding: base64', '',
+      (att.dataBase64.match(/.{1,76}/g) ?? [att.dataBase64]).join('\r\n'),
+    )
+  }
+  lines.push(`--${boundary}--`)
+  return Buffer.from(lines.join('\r\n')).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
 export const POST = withAuth(async (req: NextRequest, user, ctx) => {
   const threadId = ctx?.params?.id as string
-  const { body, subject } = await req.json()
+  const { body, subject, attachments = [] } = await req.json() as { body: string; subject?: string; attachments?: Attachment[] }
 
   if (!body?.trim()) {
     return NextResponse.json({ error: { code: 'INVALID_INPUT', message: 'Reply body required' } }, { status: 400 })
@@ -65,7 +87,7 @@ export const POST = withAuth(async (req: NextRequest, user, ctx) => {
   const replySubject = subject || (thread.subject.startsWith('Re:') ? thread.subject : `Re: ${thread.subject}`)
 
   const htmlBody = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;max-width:600px">${body.replace(/\n/g, '<br>')}</div>`
-  const raw = buildReplyMessage(senderEmail, thread.contactEmail, replySubject, htmlBody, thread.gmailThreadId, lastMsgId)
+  const raw = buildReplyMessage(senderEmail, thread.contactEmail, replySubject, htmlBody, thread.gmailThreadId, lastMsgId, attachments)
 
   const gmailRes = await fetch(
     `https://gmail.googleapis.com/gmail/v1/users/me/messages/send`,

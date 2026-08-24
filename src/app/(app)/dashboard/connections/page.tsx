@@ -18,20 +18,6 @@ interface ConnectedAccount {
   updatedAt:         string
 }
 
-interface EmailTrack {
-  id:             string
-  trackingId:     string
-  recipientEmail: string
-  subject:        string
-  sentVia:        string
-  sentAt:         string
-  openedAt:       string | null
-  openCount:      number
-  repliedAt:      string | null
-  leadId:         string | null
-  emailThreadId:  string | null
-}
-
 // ─── Health status ────────────────────────────────────────────────────────────
 
 type HealthStatus = 'connected' | 'expired' | 'expiring_soon' | 'url_only' | 'imported'
@@ -262,7 +248,6 @@ export default function ConnectionsPage() {
   const params = useSearchParams()
 
   const [accounts,    setAccounts]    = useState<ConnectedAccount[]>([])
-  const [tracks,      setTracks]      = useState<EmailTrack[]>([])
   const [loading,     setLoading]     = useState(true)
   const [configured,  setConfigured]  = useState<Record<string, boolean>>({})
 
@@ -297,14 +282,10 @@ export default function ConnectionsPage() {
   const [manualSaving, setManualSaving] = useState(false)
   const [manualMsg,    setManualMsg]    = useState('')
 
-  // Email tracking
-  const [checking, setChecking] = useState<string | null>(null)
-  const [deleting, setDeleting] = useState<string | null>(null)
-
   const flash = flashMessage(params)
 
   useEffect(() => {
-    Promise.all([fetchAccounts(), fetchTracks(), fetchStatus()])
+    Promise.all([fetchAccounts(), fetchStatus()])
 
     function onMessage(e: MessageEvent) {
       if (e.origin !== window.location.origin) return
@@ -334,11 +315,6 @@ export default function ConnectionsPage() {
     const res = await fetch('/api/connections')
     if (res.ok) setAccounts(await res.json())
     setLoading(false)
-  }
-
-  async function fetchTracks() {
-    const res = await fetch('/api/email/tracks')
-    if (res.ok) setTracks(await res.json())
   }
 
   async function fetchStatus() {
@@ -503,26 +479,6 @@ export default function ConnectionsPage() {
     } finally {
       setManualSaving(false)
     }
-  }
-
-  // ── Email tracking ────────────────────────────────────────────────────────────
-
-  async function checkReply(trackId: string) {
-    setChecking(trackId)
-    await fetch(`/api/email/tracks/${trackId}/check-reply`, { method: 'POST' })
-    setChecking(null)
-    fetchTracks()
-  }
-
-  async function navigateToThread(emailThreadId: string) {
-    window.location.href = `/dashboard/outreach?thread=${emailThreadId}`
-  }
-
-  async function deleteTrack(trackId: string) {
-    setDeleting(trackId)
-    await fetch(`/api/email/tracks/${trackId}`, { method: 'DELETE' })
-    setDeleting(null)
-    fetchTracks()
   }
 
   // ─── Render ────────────────────────────────────────────────────────────────
@@ -847,97 +803,6 @@ export default function ConnectionsPage() {
             {isConnected('manual') ? 'Update' : 'Fill in'}
           </button>
         </div>
-      </section>
-
-      {/* ── Email Tracking ────────────────────────────────────────────────── */}
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Email Tracking</h2>
-          {tracks.length > 0 && <span className="text-xs text-gray-400">{tracks.length} emails sent</span>}
-        </div>
-
-        {tracks.length > 0 ? (
-          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500">To</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Subject</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Sent via</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Opens</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Reply</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Conversation</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {tracks.map(t => (
-                  <tr key={t.id} className="hover:bg-gray-50">
-                    <td className="px-5 py-3 text-gray-700 max-w-[140px] truncate">{t.recipientEmail}</td>
-                    <td className="px-4 py-3 text-gray-600 max-w-[200px] truncate">{t.subject}</td>
-                    <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
-                      <span className={`px-2 py-0.5 rounded font-medium ${t.sentVia === 'GMAIL' ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'}`}>
-                        {t.sentVia}
-                      </span>
-                      <span className="ml-1.5 text-gray-300">{timeAgo(t.sentAt)}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {t.openCount > 0
-                        ? <span className="text-green-600 font-semibold">{t.openCount}×{t.openedAt && <span className="text-xs font-normal text-gray-400 ml-1">({timeAgo(t.openedAt)})</span>}</span>
-                        : <span className="text-gray-300">—</span>}
-                    </td>
-                    <td className="px-4 py-3">
-                      {t.repliedAt
-                        ? <span className="text-green-600 font-medium text-xs">✓ Replied</span>
-                        : <span className="text-gray-300 text-xs">—</span>}
-                    </td>
-                    <td className="px-4 py-3">
-                      {t.emailThreadId ? (
-                        <button
-                          onClick={() => navigateToThread(t.emailThreadId!)}
-                          className="text-xs text-indigo-600 hover:underline font-medium"
-                        >
-                          View →
-                        </button>
-                      ) : (
-                        <span className="text-gray-300 text-xs">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => checkReply(t.id)} disabled={checking === t.id || deleting === t.id}
-                          className="text-xs text-indigo-600 hover:underline disabled:opacity-50">
-                          {checking === t.id ? 'Checking…' : 'Check reply'}
-                        </button>
-                        <button onClick={() => deleteTrack(t.id)} disabled={deleting === t.id || checking === t.id}
-                          className="text-red-400 hover:text-red-600 disabled:opacity-50 transition-colors"
-                          title="Delete">
-                          {deleting === t.id ? (
-                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                            </svg>
-                          ) : (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 11v6M14 11v6"/>
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : !loading ? (
-          <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center">
-            <div className="text-3xl mb-2">📬</div>
-            <p className="text-sm text-gray-400">No emails tracked yet.</p>
-            <p className="text-xs text-gray-300 mt-1">Send cold emails from the <a href="/dashboard/clients" className="text-indigo-500 hover:underline">Client Intelligence</a> page to start tracking opens and replies.</p>
-          </div>
-        ) : null}
       </section>
 
       {/* ═══════════ PDF Upload Modal ═══════════ */}

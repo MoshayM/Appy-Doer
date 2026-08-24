@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' } }, { status: 401 })
     }
 
-    const token = await signSessionJwt({ sub: user.id, email: user.email })
+    const token = await signSessionJwt({ sub: user.id, email: user.email, authMethod: 'email' })
 
     const res = NextResponse.json({ user: { id: user.id, email: user.email, plan: user.plan } })
     res.cookies.set(SESSION_COOKIE, token, {

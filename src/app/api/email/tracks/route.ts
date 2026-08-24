@@ -23,7 +23,9 @@ export const GET = withAuth(async (_req, user) => {
         select: { id: true, gmailThreadId: true },
       })
     }
-  } catch { /* EmailThread table may not be available yet */ }
+  } catch (err) {
+    console.error('[tracks] failed to load EmailThread ids for link column', err)
+  }
   const threadMap = new Map(threads.map(t => [t.gmailThreadId, t.id]))
 
   return NextResponse.json(

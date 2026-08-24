@@ -9,8 +9,9 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const userId  = user.id
-  const encoder = new TextEncoder()
+  const userId      = user.id
+  const encoder     = new TextEncoder()
+  const CLIENT_TYPES = ['REPLY_RECEIVED', 'RELATIONSHIP_REMINDER']
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -28,7 +29,7 @@ export async function GET(_req: NextRequest) {
 
       // Send initial unread count
       const initial = await prisma.notificationCampaign.count({
-        where: { userId, channel: 'IN_APP', read: false },
+        where: { userId, channel: 'IN_APP', read: false, type: { in: CLIENT_TYPES } },
       })
       send({ type: 'count', unread: initial })
 
@@ -37,14 +38,14 @@ export async function GET(_req: NextRequest) {
         if (closed) { clearInterval(interval); return }
         try {
           const newNotifs = await prisma.notificationCampaign.findMany({
-            where:   { userId, channel: 'IN_APP', createdAt: { gt: lastCheck } },
+            where:   { userId, channel: 'IN_APP', createdAt: { gt: lastCheck }, type: { in: CLIENT_TYPES } },
             orderBy: { createdAt: 'desc' },
             take:    5,
             select:  { id: true, type: true, title: true, body: true, meta: true, createdAt: true },
           })
           if (newNotifs.length > 0) {
             const unread = await prisma.notificationCampaign.count({
-              where: { userId, channel: 'IN_APP', read: false },
+              where: { userId, channel: 'IN_APP', read: false, type: { in: CLIENT_TYPES } },
             })
             send({ type: 'notifications', notifications: newNotifs, unread })
             lastCheck = new Date()

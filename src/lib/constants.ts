@@ -44,11 +44,11 @@ export const DEFAULT_TOKEN_BUDGETS: Record<AgentType, { input: number; output: n
   OFFER_BUILDER:           { input: 6000,  output: 2000 }, // carries SKILL + OPPORTUNITY outputs
   PORTFOLIO_BUILDER:       { input: 8000,  output: 3000 }, // carries 3 prior outputs; bio/case studies are verbose
   PROFILE_INTELLIGENCE:    { input: 10000, output: 3500 }, // carries 4 prior outputs; full profile is large
-  CLIENT_INTELLIGENCE:     { input: 6000,  output: 2500 }, // carries SKILL + OPPORTUNITY + OFFER outputs
+  CLIENT_INTELLIGENCE:     { input: 6000,  output: 5000 }, // carries SKILL + OPPORTUNITY + OFFER outputs; communicationScripts are verbose
   CLIENT_ACQUISITION:      { input: 8000,  output: 2500 }, // carries 4 prior outputs; emails + proposal
   RELATIONSHIP_SUCCESS:    { input: 6000,  output: 2000 }, // carries 3 prior outputs
   WORK_SUPPORT:            { input: 8000,  output: 2500 }, // carries 3 prior outputs; task plan is verbose
-  CLIENT_DISCOVERY:        { input: 6000,  output: 3000 }, // carries SKILL + OPPORTUNITY + OFFER; 6-8 prospects with urls
+  CLIENT_DISCOVERY:        { input: 6000,  output: 5000 }, // carries SKILL + OPPORTUNITY + OFFER; 6-8 prospects with urls
   DIGITAL_PRODUCT_BUILDER: { input: 5000,  output: 2000 },
   VIRTUAL_EMPLOYEE_TEAM:   { input: 8000,  output: 3000 },
   SAAS_OPPORTUNITY:        { input: 6000,  output: 2000 },

@@ -117,11 +117,12 @@ Respond with ONLY this JSON:
 }
 
 const INTENT_TO_LEAD_STAGE: Record<string, string> = {
-  INTERESTED:    'INTERESTED',
-  NEED_QUOTE:    'INTERESTED',
-  NEED_MEETING:  'INTERESTED',
-  NEED_SAMPLE:   'INTERESTED',
+  INTERESTED:    'GOT_REPLY',
+  NEED_QUOTE:    'GOT_REPLY',
+  NEED_MEETING:  'GOT_REPLY',
+  NEED_SAMPLE:   'GOT_REPLY',
   NOT_INTERESTED:'LOST',
+  WRONG_CONTACT: 'LOST',
 }
 
 export async function syncGmailForUser(userId: string): Promise<{ synced: number; newReplies: number }> {
@@ -134,11 +135,20 @@ export async function syncGmailForUser(userId: string): Promise<{ synced: number
   })
   const userEmail = gmailAccount?.accountEmail ?? ''
 
-  // Get threads that are still active
+  // Only sync threads that originated from outreach emails sent via the app
+  const tracks = await prisma.emailTrack.findMany({
+    where: { userId, gmailThreadId: { not: null } },
+    select: { gmailThreadId: true },
+  })
+  const trackedGmailIds = tracks.map(t => t.gmailThreadId).filter(Boolean) as string[]
+
+  if (!trackedGmailIds.length) return { synced: 0, newReplies: 0 }
+
   const threads = await prisma.emailThread.findMany({
     where: {
       userId,
-      status: { notIn: ['WON', 'LOST'] },
+      status:       { notIn: ['WON', 'LOST'] },
+      gmailThreadId: { in: trackedGmailIds },
     },
     include: {
       messages: { select: { gmailMessageId: true } },
@@ -190,6 +200,37 @@ export async function syncGmailForUser(userId: string): Promise<{ synced: number
         if (isInbound) hadNewInbound = true
       }
 
+      // Auto-link thread to lead via contactEmail if not already linked
+      if (!thread.leadId && thread.contactEmail) {
+        try {
+          const matched = await prisma.lead.findFirst({
+            where: { userId, contact: { contains: thread.contactEmail, mode: 'insensitive' } },
+            select: { id: true },
+          })
+          if (matched) {
+            await prisma.emailThread.update({
+              where: { id: thread.id },
+              data: { leadId: matched.id },
+            })
+            // Backfill lead stage from current thread status (catches already-stored replies)
+            const THREAD_TO_LEAD_STAGE: Record<string, string> = {
+              SENT: 'PROPOSAL_SENT', OPENED: 'PROPOSAL_SENT',
+              REPLIED: 'GOT_REPLY', INTERESTED: 'GOT_REPLY', NEGOTIATING: 'GOT_REPLY',
+              WON: 'WON', LOST: 'LOST',
+            }
+            const backfill = THREAD_TO_LEAD_STAGE[thread.status]
+            if (backfill) {
+              await prisma.lead.update({
+                where: { id: matched.id },
+                data:  { stage: backfill as 'PROPOSAL_SENT' | 'GOT_REPLY' | 'WON' | 'LOST', lastActivityAt: new Date() },
+              }).catch(() => {})
+            }
+            // Update local reference so the hadNewInbound block below can use it
+            ;(thread as { leadId: string | null }).leadId = matched.id
+          }
+        } catch { /* non-critical */ }
+      }
+
       if (hadNewInbound) {
         newReplies++
 
@@ -206,38 +247,47 @@ export async function syncGmailForUser(userId: string): Promise<{ synced: number
         const replyText = text || html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
         const analysis  = await analyzeReply(replyText, thread.contactName ?? '')
 
-        const newStatus = analysis.intent === 'NOT_INTERESTED' ? 'LOST'
-          : analysis.intent === 'NEED_QUOTE' || analysis.intent === 'INTERESTED' || analysis.intent === 'NEED_MEETING' ? 'REPLIED'
-          : 'REPLIED'
+        const newStatus = analysis.intent === 'NOT_INTERESTED' ? 'LOST' : 'REPLIED'
 
         await prisma.emailThread.update({
           where: { id: thread.id },
           data: {
-            status:       newStatus as 'SENT' | 'OPENED' | 'REPLIED' | 'INTERESTED' | 'NEGOTIATING' | 'WON' | 'LOST',
-            unreadCount:  { increment: 1 },
+            status:        newStatus as 'REPLIED' | 'LOST',
+            unreadCount:   { increment: 1 },
             lastMessageAt: new Date(),
-            aiIntent:     analysis.intent,
-            aiInsight:    `${analysis.summary}${analysis.aiInsight ? ' ' + analysis.aiInsight : ''}`,
+            aiIntent:      analysis.intent,
+            aiInsight:     `${analysis.summary}${analysis.aiInsight ? ' ' + analysis.aiInsight : ''}`,
           },
         })
 
-        // Update CRM lead stage if linked
-        if (thread.leadId && INTENT_TO_LEAD_STAGE[analysis.intent]) {
+        // Sync repliedAt back to EmailTrack
+        await prisma.emailTrack.updateMany({
+          where: { userId, gmailThreadId: thread.gmailThreadId, repliedAt: null },
+          data:  { repliedAt: new Date() },
+        }).catch(() => {})
+
+        // Update CRM lead stage — GOT_REPLY for any positive reply, LOST for not interested
+        if (thread.leadId) {
+          const newLeadStage = (analysis.intent === 'NOT_INTERESTED' || analysis.intent === 'WRONG_CONTACT')
+            ? 'LOST' : 'GOT_REPLY'
           await prisma.lead.update({
             where: { id: thread.leadId },
-            data:  { stage: INTENT_TO_LEAD_STAGE[analysis.intent] as 'INTERESTED' | 'LOST', lastActivityAt: new Date() },
+            data:  { stage: newLeadStage as 'GOT_REPLY' | 'LOST', lastActivityAt: new Date() },
           }).catch(() => {})
         }
 
-        // Create in-app notification
-        await NotificationService.send({
-          userId,
-          type: 'REPLY_RECEIVED',
-          channel: 'IN_APP',
-          title: `${thread.contactName || thread.contactEmail} replied!`,
-          body: analysis.summary,
-          meta: { threadId: thread.id, intent: analysis.intent, contactEmail: thread.contactEmail },
-        })
+        // Only notify for genuine client replies — skip automated/irrelevant responses
+        const SKIP_INTENTS = ['OUT_OF_OFFICE', 'SPAM', 'WRONG_CONTACT']
+        if (!SKIP_INTENTS.includes(analysis.intent)) {
+          await NotificationService.send({
+            userId,
+            type: 'REPLY_RECEIVED',
+            channel: 'IN_APP',
+            title: `${thread.contactName || thread.contactEmail} replied!`,
+            body: analysis.summary,
+            meta: { threadId: thread.id, intent: analysis.intent, contactEmail: thread.contactEmail },
+          })
+        }
 
         // Mark as read in Gmail (optional — respects user preference)
         // await markThreadRead(accessToken, thread.gmailThreadId)

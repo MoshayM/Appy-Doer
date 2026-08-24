@@ -28,10 +28,8 @@ async function resolveDbUser(email: string): Promise<AuthUser | null> {
     trialDaysRemaining = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   }
 
-  await prisma.user.update({
-    where: { id: dbUser.id },
-    data: { lastActiveAt: new Date() },
-  })
+  // fire-and-forget — don't block the page render on a non-critical write
+  prisma.user.update({ where: { id: dbUser.id }, data: { lastActiveAt: new Date() } }).catch(() => {})
 
   return { id: dbUser.id, email: dbUser.email, role: dbUser.role, plan: dbUser.plan, trialDaysRemaining }
 }

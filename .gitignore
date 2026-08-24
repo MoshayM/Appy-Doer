@@ -50,3 +50,4 @@ playwright-report/
 Thumbs.db
 desktop.ini
 *.bat
+e2e/.auth

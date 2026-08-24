@@ -108,15 +108,17 @@ export default async function AdminDashboard() {
 
       {/* Admin quick links */}
       <div className="grid md:grid-cols-3 gap-4">
-        {[
-          { title: 'AI Providers',          desc: 'API keys, models, global defaults', href: '/admin/ai-providers', icon: '🧩' },
-          { title: 'AI Control Center',   desc: 'Prompts, token budgets per agent', href: '/admin/ai-config',    icon: '🤖' },
-          { title: 'Offer Engine',        desc: 'Campaigns, targeting, discounts',  href: '/admin/offers',       icon: '💡' },
-          { title: 'Feature Flags',       desc: 'Toggle features, A/B tests',       href: '/admin/flags',        icon: '🚀' },
-          { title: 'User Management',     desc: 'View, edit, suspend users',        href: '/admin/users',        icon: '👥' },
-          { title: 'Revenue Analytics',   desc: 'MRR, ARR, churn, conversion',     href: '/admin/revenue',      icon: '💰' },
-          { title: 'Support Tickets',     desc: 'User issues, workflow problems',  href: '/admin/tickets',      icon: '🎫' },
-        ].map(a => (
+        {([
+          { title: 'User Management',   desc: 'View, edit, suspend users',         href: '/admin/users',        icon: '👥', superAdminOnly: false as boolean },
+          { title: 'Support Tickets',   desc: 'User issues, workflow problems',    href: '/admin/tickets',      icon: '🎫', superAdminOnly: false as boolean },
+          { title: 'AI Providers',      desc: 'API keys, models, global defaults', href: '/admin/ai-providers', icon: '🧩', superAdminOnly: true  as boolean },
+          { title: 'AI Control Center', desc: 'Prompts, token budgets per agent',  href: '/admin/ai-config',    icon: '🤖', superAdminOnly: true  as boolean },
+          { title: 'Offer Engine',      desc: 'Campaigns, targeting, discounts',   href: '/admin/offers',       icon: '💡', superAdminOnly: true  as boolean },
+          { title: 'Feature Flags',     desc: 'Toggle features, A/B tests',        href: '/admin/flags',        icon: '🚀', superAdminOnly: true  as boolean },
+          { title: 'Revenue Analytics', desc: 'MRR, ARR, churn, conversion',      href: '/admin/revenue',      icon: '💰', superAdminOnly: true  as boolean },
+        ])
+          .filter(a => !a.superAdminOnly || user.role === 'SUPER_ADMIN')
+          .map(a => (
           <a key={a.title} href={a.href} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-sm transition-all group block">
             <div className="text-2xl mb-3">{a.icon}</div>
             <div className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors text-sm">{a.title}</div>

@@ -25,6 +25,8 @@ export default async function DashboardPage() {
     { label: 'Offer Built',       done: false,                            href: '/dashboard/offers' },
     { label: 'Portfolio Ready',   done: false,                            href: '/dashboard/portfolio' },
     { label: 'First Client Won',  done: !!firstIncome,                   href: '/dashboard/crm' },
+    { label: 'Work Support',      done: agentRuns > 0,                   href: '/dashboard/workspace' },
+    { label: 'Client Hub',        done: leads.length > 0,                href: '/dashboard/crm' },
   ]
 
   return (
@@ -86,22 +88,8 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Quick actions */}
-          <div className="grid sm:grid-cols-3 gap-4">
-            {[
-              { title: 'Run Skill Assessment',   desc: 'Start your income journey',  href: '/dashboard/skills',        icon: '🧠' },
-              { title: 'Discover Opportunities', desc: 'Find your best income path', href: '/dashboard/opportunities', icon: '🎯' },
-              { title: 'Add a Lead',             desc: 'Track your client pipeline', href: '/dashboard/crm',           icon: '📋' },
-            ].map(a => (
-              <Link key={a.title} href={a.href} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-indigo-300 hover:shadow-sm transition-all group">
-                <div className="text-2xl mb-3">{a.icon}</div>
-                <div className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">{a.title}</div>
-                <div className="text-sm text-gray-500 mt-1">{a.desc}</div>
-              </Link>
-            ))}
-          </div>
 
-        </div>
+</div>
 
         {/* Right column — Activity Panel */}
         <ActivityPanel />

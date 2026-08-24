@@ -7,7 +7,7 @@ const COOKIE = 'workbuddy_session'
 const TTL    = 60 * 60 * 24 * 7 // 7 days
 
 export async function signSessionJwt(
-  payload: { sub: string; email?: string; platform?: string; nonce?: string },
+  payload: { sub: string; email?: string; platform?: string; nonce?: string; authMethod?: 'google' | 'email' },
   ttlSeconds = TTL,
 ) {
   return new SignJWT(payload)
@@ -17,10 +17,10 @@ export async function signSessionJwt(
     .sign(SECRET)
 }
 
-export async function verifySessionJwt(token: string): Promise<{ sub: string; email: string; platform?: string; nonce?: string } | null> {
+export async function verifySessionJwt(token: string): Promise<{ sub: string; email: string; platform?: string; nonce?: string; authMethod?: 'google' | 'email' } | null> {
   try {
     const { payload } = await jwtVerify(token, SECRET)
-    return payload as { sub: string; email: string; platform?: string; nonce?: string }
+    return payload as { sub: string; email: string; platform?: string; nonce?: string; authMethod?: 'google' | 'email' }
   } catch {
     return null
   }

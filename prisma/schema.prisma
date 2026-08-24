@@ -78,6 +78,7 @@ enum LeadStage {
   CONTACTED
   INTERESTED
   PROPOSAL_SENT
+  GOT_REPLY
   WON
   LOST
 }
@@ -234,6 +235,8 @@ model User {
   emailTracks        EmailTrack[]
   emailThreads       EmailThread[]
   tickets            SupportTicket[]
+  projectIncomes     ProjectIncome[]
+  commissions        PlatformCommission[]
 }
 
 model UserContext {
@@ -714,22 +717,89 @@ model EmailMessage {
   createdAt      DateTime    @default(now())
 }
 
+// ─── Project Income & Commission models ──────────────────────────────────────
+
+model ProjectIncome {
+  id             String               @id @default(cuid())
+  userId         String
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadId         String?
+  workspaceId    String?
+  projectTitle   String
+  clientName     String?
+  agreedAmount   Int                  @default(0)
+  receivedAmount Int                  @default(0)
+  currency       String               @default("INR")
+  dueDate        DateTime?
+  notes          String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  commissions    PlatformCommission[]
+
+  @@index([userId])
+}
+
+model PlatformCommission {
+  id               String        @id @default(cuid())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectIncomeId  String
+  projectIncome    ProjectIncome @relation(fields: [projectIncomeId], references: [id], onDelete: Cascade)
+  commissionRate   Float
+  commissionAmount Int
+  tokensConsumed   Int           @default(0)
+  tier             String        @default("BASIC")
+  status           String        @default("PENDING")
+  createdAt        DateTime      @default(now())
+
+  @@index([userId])
+  @@index([projectIncomeId])
+}
+
 // ─── Support Ticket model ─────────────────────────────────────────────────────
 
 model SupportTicket {
-  id              String         @id @default(cuid())
+  id              String          @id @default(cuid())
   userId          String
-  user            User           @relation(fields: [userId], references: [id])
+  user            User            @relation(fields: [userId], references: [id])
   title           String
   description     String
-  status          TicketStatus   @default(OPEN)
-  priority        TicketPriority @default(MEDIUM)
+  status          TicketStatus    @default(OPEN)
+  priority        TicketPriority  @default(MEDIUM)
   workflowContext String?
   resolution      String?
   resolvedAt      DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  messages        TicketMessage[]
 
   @@index([userId])
   @@index([status])
+}
+
+model TicketMessage {
+  id          String             @id @default(cuid())
+  ticketId    String
+  ticket      SupportTicket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderRole  String
+  senderId    String
+  senderName  String
+  body        String             @db.Text
+  createdAt   DateTime           @default(now())
+  attachments TicketAttachment[]
+
+  @@index([ticketId])
+}
+
+model TicketAttachment {
+  id          String        @id @default(cuid())
+  messageId   String
+  message     TicketMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  filename    String
+  mimeType    String
+  sizeBytes   Int
+  dataBase64  String        @db.Text
+  createdAt   DateTime      @default(now())
+
+  @@index([messageId])
 }

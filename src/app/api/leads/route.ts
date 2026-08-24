@@ -4,6 +4,18 @@ import { prisma } from '@/lib/prisma'
 import { logActivity } from '@/lib/activity'
 
 export const GET = withAuth(async (_req, user) => {
+  // Migrate old pipeline stages to new ones (one-shot, safe to run repeatedly)
+  await Promise.all([
+    prisma.lead.updateMany({
+      where: { userId: user.id, stage: 'CONTACTED' as never },
+      data:  { stage: 'PROPOSAL_SENT' },
+    }),
+    prisma.lead.updateMany({
+      where: { userId: user.id, stage: { in: ['INTERESTED'] as never[] } },
+      data:  { stage: 'GOT_REPLY' },
+    }),
+  ]).catch(() => {})
+
   const leads = await prisma.lead.findMany({
     where: { userId: user.id },
     include: { clientProfile: { select: { temperature: true } } },

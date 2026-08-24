@@ -97,6 +97,19 @@ export default function NotificationBell() {
     setUnread(0)
   }
 
+  async function deleteNotification(id: string) {
+    const wasUnread = notifications.find(n => n.id === id && !n.read)
+    await fetch(`/api/notifications/${id}`, { method: 'DELETE' })
+    setNotifications(prev => prev.filter(n => n.id !== id))
+    if (wasUnread) setUnread(prev => Math.max(0, prev - 1))
+  }
+
+  async function clearAll() {
+    await Promise.all(notifications.map(n => fetch(`/api/notifications/${n.id}`, { method: 'DELETE' })))
+    setNotifications([])
+    setUnread(0)
+  }
+
   return (
     <div className="relative" ref={drawerRef}>
       <button
@@ -118,11 +131,18 @@ export default function NotificationBell() {
         <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
             <span className="font-semibold text-gray-900 text-sm">Notifications</span>
-            {unread > 0 && (
-              <button onClick={markAllRead} className="text-xs text-indigo-600 hover:underline">
-                Mark all read
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {unread > 0 && (
+                <button onClick={markAllRead} className="text-xs text-indigo-600 hover:underline">
+                  Mark all read
+                </button>
+              )}
+              {notifications.length > 0 && (
+                <button onClick={clearAll} className="text-xs text-red-400 hover:text-red-600 hover:underline">
+                  Clear all
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
@@ -131,7 +151,7 @@ export default function NotificationBell() {
                 No notifications yet
               </div>
             ) : notifications.map(n => (
-              <div key={n.id} className={`px-4 py-3 ${n.read ? 'bg-white' : 'bg-indigo-50'}`}>
+              <div key={n.id} className={`group px-4 py-3 ${n.read ? 'bg-white' : 'bg-indigo-50'}`}>
                 <div className="flex items-start gap-2">
                   <span className="text-base shrink-0">{TYPE_ICON[n.type] ?? '🔔'}</span>
                   <div className="flex-1 min-w-0">
@@ -139,7 +159,18 @@ export default function NotificationBell() {
                     <div className="text-xs text-gray-500 mt-0.5 line-clamp-2">{n.body}</div>
                     <div className="text-xs text-gray-300 mt-1">{timeAgo(n.createdAt)}</div>
                   </div>
-                  {!n.read && <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-1"/>}
+                  <div className="flex items-center gap-1 shrink-0">
+                    {!n.read && <span className="w-2 h-2 rounded-full bg-indigo-500"/>}
+                    <button
+                      onClick={() => deleteNotification(n.id)}
+                      title="Delete"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded text-gray-300 hover:text-red-400 hover:bg-red-50"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 {n.type === 'REPLY_RECEIVED' && !!n.meta?.threadId && (
                   <a

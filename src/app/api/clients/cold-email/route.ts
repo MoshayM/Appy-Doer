@@ -53,10 +53,20 @@ export const POST = withAuth(async (req: NextRequest, user) => {
   const {
     prospectName, prospectCompany, prospectRole, prospectEmail,
     outreachAngle, prewrittenSubject, prewrittenBody,
-    sendVia = 'auto',  // 'gmail' | 'resend' | 'auto' (auto tries gmail first)
-    draftOnly = false, // when true, generate content only — do not send or create tracking record
-    leadId,
+    sendVia = 'auto',
+    draftOnly = false,
+    leadId: rawLeadId,
   } = await req.json()
+
+  // Auto-resolve leadId by email if not passed explicitly
+  let leadId: string | null = rawLeadId ?? null
+  if (!leadId && prospectEmail && !draftOnly) {
+    const matched = await prisma.lead.findFirst({
+      where: { userId: user.id, contact: { contains: prospectEmail, mode: 'insensitive' } },
+      select: { id: true },
+    })
+    if (matched) leadId = matched.id
+  }
 
   if (!prospectEmail && !outreachAngle) {
     return NextResponse.json({ error: { code: 'INVALID_INPUT', message: 'Prospect details required' } }, { status: 400 })
@@ -252,7 +262,7 @@ ${trackingId ? `<img src="${APP_URL}/api/track/email/${trackingId}" width="1" he
     try {
       await prisma.emailTrack.update({
         where: { trackingId },
-        data:  { sentVia: sentVia, gmailThreadId },
+        data:  { sentVia: sentVia, gmailThreadId, gmailMessageId },
       })
     } catch { /* non-critical */ }
   }
@@ -298,6 +308,16 @@ ${trackingId ? `<img src="${APP_URL}/api/track/email/${trackingId}" width="1" he
     } catch (err) {
       console.error('[cold-email] failed to create EmailThread/EmailMessage', err)
     }
+  }
+
+  // Auto-advance lead stage to Proposal Sent when email goes out
+  if (sent && leadId) {
+    try {
+      await prisma.lead.update({
+        where: { id: leadId },
+        data:  { stage: 'PROPOSAL_SENT', lastActivityAt: new Date() },
+      })
+    } catch { /* non-critical */ }
   }
 
   return NextResponse.json({

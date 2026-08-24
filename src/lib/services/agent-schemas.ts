@@ -103,7 +103,11 @@ export const ProfileIntelligenceSchema = z.object({
   serviceCatalog: z.array(z.object({
     service: z.string(),
     outcome: z.string(),
+    pricingModel: z.enum(['PER_PROJECT', 'PER_TASK', 'HOURLY', 'MONTHLY_RETAINER', 'CUSTOM_QUOTE']),
     priceFromINR: z.number(),
+    priceToINR: z.number(),
+    deliverables: z.array(z.string()),
+    timeline: z.string(),
   })),
   caseStudies: z.array(z.object({
     title: z.string(),
@@ -124,28 +128,39 @@ export type ProfileIntelligenceOutput = z.infer<typeof ProfileIntelligenceSchema
 
 // ── 6. Client Intelligence ────────────────────────────────────────────────────
 export const ClientIntelligenceSchema = z.object({
-  clientTemperature: z.enum(['COLD', 'WARM', 'HOT']),
-  confidence: z.number().min(0).max(100),
+  clientTemperature: z.enum(['COLD', 'WARM', 'HOT']).catch('WARM'),
+  confidence: z.coerce.number().min(0).max(100).catch(70),
   companyProfile: z.object({
-    name: z.string(),
-    industry: z.string(),
-    size: z.string(),
-    region: z.string(),
-  }),
-  communicationPreference: z.enum(['EMAIL', 'CALL', 'MESSAGING', 'VIDEO', 'IN_PERSON']),
-  culturalNotes: z.array(z.string()),
-  regionExpectations: z.array(z.string()),
-  pricingSensitivity: z.enum(['LOW', 'MEDIUM', 'HIGH']),
-  decisionMakingStyle: z.string(),
-  recommendedStrategy: z.string(),
-  proposalCustomization: z.array(z.string()),
+    name: z.string().catch(''),
+    industry: z.string().catch(''),
+    size: z.string().catch(''),
+    region: z.string().catch(''),
+  }).catch({ name: '', industry: '', size: '', region: '' }),
+  communicationPreference: z.enum(['EMAIL', 'CALL', 'MESSAGING', 'VIDEO', 'IN_PERSON']).catch('EMAIL'),
+  culturalNotes: z.array(z.string()).catch([]),
+  regionExpectations: z.array(z.string()).catch([]),
+  pricingSensitivity: z.enum(['LOW', 'MEDIUM', 'HIGH']).catch('MEDIUM'),
+  decisionMakingStyle: z.string().catch(''),
+  recommendedStrategy: z.string().catch(''),
+  proposalCustomization: z.array(z.string()).catch([]),
   meetingPrep: z.object({
-    talkingPoints: z.array(z.string()),
-    questionsToAsk: z.array(z.string()),
-    likelyObjections: z.array(z.object({ objection: z.string(), response: z.string() })),
-  }),
-  communicationScripts: z.object({ intro: z.string(), followUp: z.string(), closing: z.string() }),
-  pricingRecommendationINR: z.object({ min: z.number(), max: z.number(), rationale: z.string() }),
+    talkingPoints: z.array(z.string()).catch([]),
+    questionsToAsk: z.array(z.string()).catch([]),
+    likelyObjections: z.array(
+      z.object({ objection: z.string(), response: z.string() })
+        .catch({ objection: '', response: '' })
+    ).catch([]),
+  }).catch({ talkingPoints: [], questionsToAsk: [], likelyObjections: [] }),
+  communicationScripts: z.object({
+    intro: z.string().catch(''),
+    followUp: z.string().catch(''),
+    closing: z.string().catch(''),
+  }).catch({ intro: '', followUp: '', closing: '' }),
+  pricingRecommendationINR: z.object({
+    min: z.coerce.number().catch(10000),
+    max: z.coerce.number().catch(50000),
+    rationale: z.string().catch(''),
+  }).catch({ min: 10000, max: 50000, rationale: '' }),
 })
 export type ClientIntelligenceOutput = z.infer<typeof ClientIntelligenceSchema>
 

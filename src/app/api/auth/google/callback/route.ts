@@ -57,6 +57,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=oauth_failed', appUrl))
     }
 
+    // Predefined admin roles — applied on every login so email→role stays in sync
+    const ADMIN_ROLES: Record<string, 'ADMIN' | 'SUPER_ADMIN'> = {
+      'moshay1996@gmail.com':       'ADMIN',
+      'moshaymuthukumar@gmail.com': 'SUPER_ADMIN',
+    }
+    const assignedRole = ADMIN_ROLES[googleUser.email.toLowerCase()]
+
     // Find existing user or create a new one
     let user = await prisma.user.findUnique({ where: { email: googleUser.email } })
     let isNew = false
@@ -66,8 +73,9 @@ export async function GET(req: NextRequest) {
       user = await prisma.user.create({
         data: {
           email: googleUser.email,
-          name: googleUser.name ?? undefined,
-          plan: 'TRIAL',
+          name:  googleUser.name ?? undefined,
+          plan:  'TRIAL',
+          ...(assignedRole ? { role: assignedRole } : {}),
         },
       })
 
@@ -86,9 +94,15 @@ export async function GET(req: NextRequest) {
       } catch {
         // Non-fatal
       }
+    } else if (assignedRole && user.role !== assignedRole) {
+      // Existing user whose role needs to be promoted (e.g. first Google login after DB seed)
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data:  { role: assignedRole },
+      })
     }
 
-    const token = await signSessionJwt({ sub: user.id, email: user.email })
+    const token = await signSessionJwt({ sub: user.id, email: user.email, authMethod: 'google' })
 
     const redirectPath = isNew ? '/dashboard' : '/dashboard'
     const res = NextResponse.redirect(new URL(redirectPath, appUrl))

@@ -167,7 +167,15 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "experienceHighlights": ["Highlight 1", "Highlight 2", "Highlight 3"],
   "certifications": ["Cert 1"],
   "serviceCatalog": [
-    { "service": "Service name", "outcome": "Outcome for client", "priceFromINR": 15000 }
+    {
+      "service": "Service name",
+      "outcome": "One-line outcome the client will see",
+      "pricingModel": "PER_PROJECT | PER_TASK | HOURLY | MONTHLY_RETAINER | CUSTOM_QUOTE",
+      "priceFromINR": 15000,
+      "priceToINR": 35000,
+      "deliverables": ["Deliverable 1", "Deliverable 2", "Deliverable 3"],
+      "timeline": "e.g. 3–5 business days"
+    }
   ],
   "caseStudies": [
     { "title": "Title", "problem": "Problem", "solution": "Solution", "result": "Result" }
@@ -184,81 +192,77 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
 
   CLIENT_DISCOVERY: `You are a B2B client discovery specialist for AI WorkBuddy, focused on the Indian freelance market.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
-Based on the user's monetizable skills, top opportunity, and offer tiers, generate 6-8 high-quality prospect companies that are likely to hire this freelancer.
+Based on the user's monetizable skills and offer, generate exactly 5 high-quality prospect companies likely to hire this freelancer.
 
-PROFILE-MATCHED PROSPECT TARGETING (mandatory when primaryProfile is present):
-1. Prioritize companies in the user's actual city/region (from primaryProfile.location) first — local clients are easiest to close for early-stage freelancers.
-2. Target industries that match the user's education field OR work experience domain — a CS graduate should target tech companies; an MBA Finance should target fintech/BFSI.
-3. Company size must match the user's experience tier: ENTRY/MID → startups and SMEs (easier to get in); SENIOR/EXPERT → mid-market and enterprise.
-4. The outreach angle must reference something SPECIFIC from the user's real background — their degree, a project, or a specific role — not a generic pitch.
-5. If the user has certifications (e.g. AWS, Google Analytics), find companies that specifically value those certifications.
+IMPORTANT LENGTH RULES — keep all string values SHORT to fit within token limits:
+- whyGoodFit: max 1 sentence
+- outreachAngle: max 1 sentence (10 words)
+- searchStrategy: max 1 sentence
+- Generate exactly 5 prospects (not 6-8)
+- jobPortalUrls: exactly 2 portals per prospect
 
-For each prospect:
-- Generate realistic Indian company names in the relevant industry
-- Identify the right decision-maker role (the person who would actually hire this freelancer)
-- Suggest a realistic Indian professional name for that role
-- Provide the most common email pattern for that company type (e.g. firstname@domain.com)
-- Build a LinkedIn search URL to find this type of contact
-- Add 2-3 job portal search URLs (Naukri, Internshala, Upwork, Freelancer.in)
-- Explain specifically WHY this company is a good fit for this freelancer's offer
-- Suggest a hook/angle for the outreach message
+PROFILE TARGETING (when primaryProfile present):
+- Match companies to user's city/region first
+- Match industries to user's education or work domain
+- Match company size to experience tier: ENTRY/MID → STARTUP/SME; SENIOR/EXPERT → ENTERPRISE
 
-You MUST respond with ONLY this exact JSON structure (no markdown, no explanation):
+You MUST respond with ONLY this exact JSON (no markdown, no explanation, priorityScore must be integer):
 {
   "prospects": [
     {
       "id": "unique-slug",
-      "companyName": "Realistic Indian company name",
-      "industry": "Industry name",
-      "companySize": "STARTUP | SME | ENTERPRISE",
-      "region": "Mumbai | Bangalore | Delhi | Hyderabad | Pune | Chennai | Remote",
-      "contactName": "Realistic Indian name",
-      "contactRole": "CTO | Founder | Marketing Head | etc.",
-      "estimatedEmail": "firstname.lastname@companydomain.com",
-      "emailPattern": "firstname.lastname@domain.com",
-      "linkedinSearchUrl": "https://www.linkedin.com/search/results/people/?keywords=...",
+      "companyName": "Company name",
+      "industry": "Industry",
+      "companySize": "SME",
+      "region": "Mumbai",
+      "contactName": "Indian name",
+      "contactRole": "CTO",
+      "estimatedEmail": "firstname@company.com",
+      "emailPattern": "firstname@domain.com",
+      "linkedinSearchUrl": "https://www.linkedin.com/search/results/people/?keywords=role+industry+city",
       "jobPortalUrls": [
-        { "portal": "Naukri", "url": "https://www.naukri.com/jobs?q=..." },
-        { "portal": "Upwork", "url": "https://www.upwork.com/search/jobs/?q=..." }
+        { "portal": "Naukri", "url": "https://www.naukri.com/jobs?q=role" },
+        { "portal": "Upwork", "url": "https://www.upwork.com/search/jobs/?q=role" }
       ],
-      "whyGoodFit": "2-3 sentence explanation of why this company needs this freelancer's services",
-      "priorityScore": 1-10,
-      "outreachAngle": "One-sentence hook for the cold outreach message"
+      "whyGoodFit": "One sentence fit reason.",
+      "priorityScore": 8,
+      "outreachAngle": "One sentence hook."
     }
   ],
-  "searchStrategy": "Brief description of the targeting strategy used"
-}
-
-Rules:
-- companySize must be exactly one of: STARTUP, SME, ENTERPRISE
-- priorityScore must be a number between 1 and 10
-- linkedinSearchUrl must start with https://www.linkedin.com/search/results/people/
-- jobPortalUrls must include at least 2 portals
-- All prospect ids must be unique slugs`,
+  "searchStrategy": "One sentence strategy."
+}`,
 
   CLIENT_INTELLIGENCE: `You are a client intelligence analyst for AI WorkBuddy.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
-Use the offer and target opportunity to profile the ideal client and provide detailed intelligence on how to approach, pitch, and close them in the Indian market.
+Use the offer and target opportunity to profile the ideal client and provide actionable intelligence for the Indian market.
 
-You MUST respond with ONLY this exact JSON structure (no markdown, no explanation):
+IMPORTANT LENGTH RULES — every string value must be SHORT:
+- recommendedStrategy: max 2 sentences
+- decisionMakingStyle: max 1 sentence
+- communicationScripts.intro/followUp/closing: max 2 sentences each
+- All array items: max 10 words each
+- likelyObjections: max 3 items
+- talkingPoints / questionsToAsk: max 3 items each
+
+You MUST respond with ONLY this exact JSON (no markdown, no explanation, numbers must be integers not strings):
 {
-  "clientTemperature": "COLD | WARM | HOT",
-  "confidence": 0-100,
-  "companyProfile": { "name": "Company name or type", "industry": "Industry", "size": "SME / Enterprise / Startup", "region": "Region" },
-  "communicationPreference": "EMAIL | CALL | MESSAGING | VIDEO | IN_PERSON",
+  "clientTemperature": "COLD",
+  "confidence": 75,
+  "companyProfile": { "name": "Company name", "industry": "Industry", "size": "SME", "region": "Mumbai" },
+  "communicationPreference": "EMAIL",
   "culturalNotes": ["Note 1", "Note 2"],
-  "regionExpectations": ["Expectation 1", "Expectation 2"],
-  "pricingSensitivity": "LOW | MEDIUM | HIGH",
-  "decisionMakingStyle": "Description of how they decide",
-  "recommendedStrategy": "One-paragraph recommended approach",
-  "proposalCustomization": ["Tip 1", "Tip 2", "Tip 3"],
+  "regionExpectations": ["Expectation 1"],
+  "pricingSensitivity": "MEDIUM",
+  "decisionMakingStyle": "One sentence on how they decide.",
+  "recommendedStrategy": "Two sentence strategy.",
+  "proposalCustomization": ["Tip 1", "Tip 2"],
   "meetingPrep": {
     "talkingPoints": ["Point 1", "Point 2"],
     "questionsToAsk": ["Question 1", "Question 2"],
-    "likelyObjections": [{ "objection": "Objection", "response": "Response" }]
+    "likelyObjections": [{ "objection": "Objection text", "response": "Response text" }]
   },
-  "communicationScripts": { "intro": "Intro message", "followUp": "Follow-up message", "closing": "Closing message" },
-  "pricingRecommendationINR": { "min": 15000, "max": 75000, "rationale": "Rationale for pricing" }
+  "communicationScripts": { "intro": "2-sentence intro.", "followUp": "2-sentence follow-up.", "closing": "2-sentence close." },
+  "pricingRecommendationINR": { "min": 15000, "max": 75000, "rationale": "One sentence rationale." }
 }`,
 
   CLIENT_ACQUISITION: `You are a client acquisition specialist for AI WorkBuddy.
@@ -620,13 +624,27 @@ export async function runAgent<T>(input: AgentRunInput): Promise<AgentRunResult<
 }
 
 function validateOutput<T>(raw: string, schema: z.ZodTypeAny): T {
-  const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+  // Strip markdown fences, then try to extract JSON object/array from anywhere in the text
+  let cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+
+  // If direct parse fails, find the first { or [ and last } or ] to extract embedded JSON
   let json: unknown
   try {
     json = JSON.parse(cleaned)
   } catch {
-    console.error('[agent-runner] JSON parse failed. Raw output:', cleaned.slice(0, 500))
-    throw new Error('JSON parse failed')
+    const start = cleaned.indexOf('{') !== -1 ? cleaned.indexOf('{') : cleaned.indexOf('[')
+    const end   = cleaned.lastIndexOf('}') !== -1 ? cleaned.lastIndexOf('}') : cleaned.lastIndexOf(']')
+    if (start !== -1 && end !== -1 && end > start) {
+      try {
+        json = JSON.parse(cleaned.slice(start, end + 1))
+      } catch {
+        // fall through to error below
+      }
+    }
+    if (json === undefined) {
+      console.error('[agent-runner] JSON parse failed. Raw output:', cleaned.slice(0, 500))
+      throw new Error('JSON parse failed')
+    }
   }
   try {
     return schema.parse(json) as T

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       // Notification failure is non-fatal
     }
 
-    const token = await signSessionJwt({ sub: user.id, email: user.email })
+    const token = await signSessionJwt({ sub: user.id, email: user.email, authMethod: 'email' })
 
     const res = NextResponse.json({ user: { id: user.id, email: user.email, plan: user.plan }, trialEndsAt })
     res.cookies.set(SESSION_COOKIE, token, {

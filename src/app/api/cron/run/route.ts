@@ -90,5 +90,21 @@ export async function POST(req: NextRequest) {
     results.gmailReplies = 0
   }
 
+  // 7. Auto-mark stale leads as Lost (no activity in 90 days, no work order)
+  try {
+    const threeMonthsAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+    const stale = await prisma.lead.updateMany({
+      where: {
+        stage:          { in: ['LEAD_IDENTIFIED', 'PROPOSAL_SENT', 'GOT_REPLY'] },
+        lastActivityAt: { lt: threeMonthsAgo },
+      },
+      data: { stage: 'LOST' },
+    })
+    results.staleLeadsLost = stale.count
+  } catch (err) {
+    console.error('[cron] stale lead sweep failed', err)
+    results.staleLeadsLost = 0
+  }
+
   return NextResponse.json({ success: true, results })
 }

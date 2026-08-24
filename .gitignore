@@ -15,6 +15,10 @@ build/
 .env.test.local
 .env.production.local
 
+# Sensitive credential files
+Neon_connection_string.txt
+neon_connection_string.txt
+
 # Prisma
 prisma/generated/
 
@@ -51,3 +55,6 @@ Thumbs.db
 desktop.ini
 *.bat
 e2e/.auth
+
+.vercel
+.env*

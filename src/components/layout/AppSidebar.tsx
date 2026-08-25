@@ -105,29 +105,23 @@ export default function AppSidebar({ role, plan, email }: Props) {
         <div className="flex items-center gap-2.5">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
-              <linearGradient id="sb-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#4f46e5"/>
-                <stop offset="100%" stopColor="#7c3aed"/>
+              <linearGradient id="sb-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#4338ca"/><stop offset="100%" stopColor="#6d28d9"/>
               </linearGradient>
-              <clipPath id="sb-clip"><rect width="40" height="40" rx="10"/></clipPath>
             </defs>
-            <rect width="40" height="40" rx="10" fill="url(#sb-grad)"/>
-            {/* AI arcs */}
-            <g clipPath="url(#sb-clip)">
-              <path d="M12 27 Q20 17 28 27" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity=".7"/>
-              <path d="M8 31 Q20 13 32 31"   stroke="white" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity=".45"/>
-            </g>
-            {/* Head */}
-            <circle cx="20" cy="12" r="4" fill="white"/>
-            {/* Circuit wires */}
-            <line x1="16.5" y1="10" x2="14.5" y2="8.2" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity=".6"/>
-            <line x1="20"   y1="8"  x2="20"   y2="6"   stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity=".6"/>
-            <line x1="23.5" y1="10" x2="25.5" y2="8.2" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity=".6"/>
-            <circle cx="20" cy="5.5" r="1.5" fill="#c4b5fd" opacity=".9"/>
-            {/* Body */}
-            <path d="M17 16 L20 22 L23 16" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            <path d="M18.5 21 L16 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-            <path d="M21.5 21 L24 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            <rect width="40" height="40" rx="10" fill="url(#sb-bg)"/>
+            {/* "A" legs */}
+            <path d="M8 33 L20 7 L32 33" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            {/* Crossbar */}
+            <line x1="13" y1="23" x2="27" y2="23" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+            {/* Circuit nodes */}
+            <circle cx="13" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+            <circle cx="20" cy="23" r="2.2" fill="#c4b5fd" opacity=".85"/>
+            <circle cx="27" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+            {/* Apex spark */}
+            <circle cx="20" cy="7" r="5" fill="#6d28d9" opacity=".4"/>
+            <circle cx="20" cy="7" r="3.5" fill="#c4b5fd" opacity=".85"/>
+            <circle cx="20" cy="7" r="1.7" fill="white" opacity=".95"/>
           </svg>
           <div>
             <div className="font-bold text-gray-900 text-sm tracking-tight">Appy<span className="text-indigo-600">Doer</span></div>

@@ -1,0 +1,1535 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AppyDoer â€” Developer & Admin Reference</title>
+<style>
+  :root {
+    --bg: #0f172a; --bg2: #1e293b; --bg3: #0d1b2e;
+    --primary: #4f46e5; --primary-light: #818cf8; --primary-dim: #312794;
+    --accent: #fbbf24; --green: #10b981; --red: #ef4444; --orange: #f97316;
+    --text: #f1f5f9; --muted: #94a3b8; --border: #334155;
+    --code-bg: #1e293b; --tag-bg: #1e293b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+    font-size: 15px;
+  }
+  a { color: var(--primary-light); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* â”€â”€ Layout â”€â”€ */
+  .layout { display: flex; min-height: 100vh; }
+  nav {
+    width: 280px; min-width: 240px; background: var(--bg3);
+    border-right: 1px solid var(--border); padding: 1.5rem 0;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  nav .logo { padding: 0 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+  nav .logo h1 { font-size: 1.15rem; font-weight: 700; color: var(--text); }
+  nav .logo p  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  nav ul { list-style: none; padding: 1rem 0; }
+  nav li a {
+    display: block; padding: 0.4rem 1.25rem;
+    font-size: 0.82rem; color: var(--muted);
+    border-left: 3px solid transparent; transition: all 0.15s;
+  }
+  nav li a:hover { color: var(--text); background: #1e293b; text-decoration: none; }
+  nav .nav-section { padding: 0.8rem 1.25rem 0.25rem; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.08em; color: #475569; font-weight: 600; }
+
+  main { flex: 1; padding: 2.5rem 3rem; max-width: 1100px; }
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav { width: 100%; height: auto; position: static; }
+    main { padding: 1.5rem; }
+  }
+
+  /* â”€â”€ Typography â”€â”€ */
+  h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;
+       background: linear-gradient(90deg, #818cf8, #4f46e5); -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent; }
+  h2 { font-size: 1.55rem; font-weight: 700; margin: 3rem 0 1rem;
+       padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-dim); color: var(--text); }
+  h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.6rem; color: #a5b4fc; }
+  h4 { font-size: 1rem; font-weight: 600; margin: 1.2rem 0 0.4rem; color: var(--primary-light); }
+  p  { margin-bottom: 0.8rem; color: var(--muted); }
+  strong { color: var(--text); }
+  ul, ol { margin: 0.5rem 0 0.8rem 1.5rem; }
+  li { margin-bottom: 0.3rem; color: var(--muted); }
+  li strong { color: var(--text); }
+  code {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.82em;
+    font-family: 'Cascadia Code', 'Fira Code', monospace; color: #fbbf24;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.1rem 1.25rem; overflow-x: auto;
+    margin: 0.75rem 0 1.2rem; font-size: 0.83em;
+    font-family: 'Cascadia Code', 'Fira Code', monospace; color: #e2e8f0;
+  }
+  pre code { background: none; border: none; padding: 0; color: inherit; }
+  blockquote {
+    border-left: 3px solid var(--primary); padding-left: 1rem;
+    margin: 1rem 0; color: var(--muted); font-style: italic;
+  }
+
+  /* â”€â”€ Components â”€â”€ */
+  .hero {
+    background: linear-gradient(135deg, #1e293b 0%, #0d1b2e 100%);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 2rem 2.5rem; margin-bottom: 2rem;
+  }
+  .hero .subtitle { color: #818cf8; font-size: 1.1rem; margin: 0.4rem 0 1rem; }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem; margin-top: 1.2rem;
+  }
+  .meta-card {
+    background: #0f172a; border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem;
+  }
+  .meta-card .label { font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.07em; color: #64748b; }
+  .meta-card .value { font-size: 0.92rem; font-weight: 600; color: var(--text);
+    margin-top: 0.2rem; }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem 1.4rem; margin-bottom: 1rem;
+  }
+  .card h4 { margin-top: 0; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 750px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .badge {
+    display: inline-block; padding: 0.15em 0.55em; border-radius: 4px;
+    font-size: 0.72em; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-right: 0.3em;
+  }
+  .badge-indigo { background: #312794; color: #a5b4fc; }
+  .badge-green  { background: #064e3b; color: #6ee7b7; }
+  .badge-yellow { background: #713f12; color: #fde68a; }
+  .badge-red    { background: #7f1d1d; color: #fca5a5; }
+  .badge-gray   { background: #1e293b; color: #94a3b8; }
+  .badge-orange { background: #7c2d12; color: #fdba74; }
+
+  .rule-box {
+    border: 1px solid var(--primary-dim); border-left: 4px solid var(--primary);
+    border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0;
+    background: rgba(79,70,229,0.06);
+  }
+  .rule-box.warn { border-color: #f97316; border-left-color: #f97316;
+    background: rgba(249,115,22,0.06); }
+  .rule-box.danger { border-color: #ef4444; border-left-color: #ef4444;
+    background: rgba(239,68,68,0.06); }
+  .rule-box .rule-num { font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #818cf8; margin-bottom: 0.3rem; }
+  .rule-box.warn .rule-num { color: #f97316; }
+  .rule-box.danger .rule-num { color: #ef4444; }
+
+  .table-wrap { overflow-x: auto; margin: 0.75rem 0 1.25rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    text-align: left; padding: 0.6rem 0.9rem;
+    background: #1e293b; color: #818cf8; font-weight: 600;
+    border-bottom: 2px solid var(--border);
+  }
+  td { padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--muted); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(79,70,229,0.05); }
+
+  .toc-link { font-size: 0.82rem; }
+  section { margin-bottom: 3rem; }
+
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+    margin: 0.5rem 0 1rem;
+  }
+  .flow-step {
+    background: var(--primary-dim); color: #c7d2fe;
+    padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600;
+  }
+  .flow-arrow { color: var(--accent); font-weight: 700; }
+
+  .env-table td:first-child { font-family: monospace; color: #fbbf24; }
+  .env-table td:last-child  { font-size: 0.8rem; }
+
+  .agent-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.2rem; margin-bottom: 0.75rem;
+  }
+  .agent-card .agent-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+  .agent-card .agent-name { font-weight: 700; font-size: 1rem; color: var(--text); }
+  .agent-card .agent-meta { font-size: 0.78rem; color: var(--muted); }
+  .agent-card pre { margin-bottom: 0; }
+
+  #toc-list li { margin-bottom: 0.1rem; }
+  #toc-list li a { font-size: 0.85rem; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• NAVIGATION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<nav>
+  <div class="logo">
+    <h1>AppyDoer</h1>
+    <p>Developer &amp; Admin Reference</p>
+  </div>
+  <ul>
+    <li class="nav-section">Overview</li>
+    <li><a href="#overview">Product Overview</a></li>
+    <li><a href="#vision">Vision &amp; KPIs</a></li>
+    <li><a href="#income-chain">Income Chain</a></li>
+    <li><a href="#rules">8 Non-Negotiable Rules</a></li>
+
+    <li class="nav-section">Architecture</li>
+    <li><a href="#architecture">4-Layer Architecture</a></li>
+    <li><a href="#state-machine">State Machine</a></li>
+    <li><a href="#shared-memory">Shared Memory Layer</a></li>
+    <li><a href="#rbac">RBAC &amp; Access Control</a></li>
+
+    <li class="nav-section">AI Agents</li>
+    <li><a href="#agent-runner">AgentRunner Pipeline</a></li>
+    <li><a href="#mvp-agents">MVP Agents (9)</a></li>
+    <li><a href="#phase-agents">Phase 2â€“4 Agents (5)</a></li>
+    <li><a href="#vet">Virtual Employee Team</a></li>
+
+    <li class="nav-section">Data &amp; API</li>
+    <li><a href="#database">Database Schema</a></li>
+    <li><a href="#api">API Reference</a></li>
+
+    <li class="nav-section">Business Logic</li>
+    <li><a href="#plans">Subscription Plans</a></li>
+    <li><a href="#trial">Trial Logic</a></li>
+    <li><a href="#offer-engine">Smart Upgrade Engine</a></li>
+    <li><a href="#billing">Payment Abstraction</a></li>
+    <li><a href="#email">Email &amp; Notifications</a></li>
+    <li><a href="#celebrations">Milestones &amp; Celebrations</a></li>
+
+    <li class="nav-section">Infrastructure</li>
+    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#env-vars">Environment Variables</a></li>
+    <li><a href="#scheduler">Scheduler &amp; Cron</a></li>
+
+    <li class="nav-section">Admin</li>
+    <li><a href="#admin-dashboard">Admin Dashboard</a></li>
+    <li><a href="#super-admin">Super Admin</a></li>
+
+    <li class="nav-section">Roadmap</li>
+    <li><a href="#roadmap">Phase Roadmap</a></li>
+    <li><a href="#mvp-done">MVP Definition of Done</a></li>
+    <li><a href="#decision-log">Decision Log</a></li>
+  </ul>
+</nav>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>AppyDoer</h1>
+  <p class="subtitle">AI Workforce Operating System â€” Developer &amp; Admin Reference v1.0</p>
+  <p>
+    This document is the authoritative technical and functional reference for <strong>AppyDoer</strong>.
+    It covers product vision, system architecture, all 14 AI agents, database schema, API surface,
+    subscription logic, payment/email abstraction, admin features, and deployment configuration.
+  </p>
+  <div class="meta-grid">
+    <div class="meta-card"><div class="label">Version</div><div class="value">1.0 â€” 2026</div></div>
+    <div class="meta-card"><div class="label">Market</div><div class="value">India-First Â· INR â‚¹</div></div>
+    <div class="meta-card"><div class="label">Primary Model</div><div class="value">claude-sonnet-4-6</div></div>
+    <div class="meta-card"><div class="label">Framework</div><div class="value">Next.js 14+ App Router</div></div>
+    <div class="meta-card"><div class="label">Database</div><div class="value">PostgreSQL (Supabase/Neon)</div></div>
+    <div class="meta-card"><div class="label">Currency</div><div class="value">â‚¹ Indian Rupee (INR)</div></div>
+  </div>
+</div>
+
+<!-- â•â•â• SECTION: Overview â•â•â• -->
+<section id="overview">
+<h2>1. Product Overview</h2>
+<p>
+  AppyDoer is an <strong>AI Workforce Operating System</strong> that helps working professionals
+  discover opportunities, acquire clients, deliver actual work, maintain relationships, and build
+  recurring income â€” supported by an AI-powered virtual team.
+</p>
+<div class="rule-box">
+  <div class="rule-num">What it IS NOT</div>
+  Not a course platform Â· Not a freelance marketplace Â· Not a job board Â· Not a generic business-education product.
+</div>
+
+<h3>Target User</h3>
+<ul>
+  <li><strong>Demographic:</strong> Working professionals, 25â€“45 years old in India</li>
+  <li><strong>Industries:</strong> Tech, Marketing, Consulting, Design, Product Management, Business Operations</li>
+  <li><strong>Income goal:</strong> â‚¹25,000 â€“ â‚¹1,00,000+/month in side and recurring income</li>
+  <li><strong>Language:</strong> English (v1)</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Vision â•â•â• -->
+<section id="vision">
+<h2>2. Vision &amp; KPIs</h2>
+<blockquote>
+  "An AI Workforce Operating System that helps users discover opportunities, acquire clients, deliver work,
+  maintain relationships, and build recurring income with an AI-powered virtual team."
+</blockquote>
+
+<h3>Primary KPI</h3>
+<div class="rule-box">
+  <div class="rule-num">Core Metric</div>
+  <strong>How many users earned their first online income using the platform?</strong>
+  This is the only metric that matters above all others. Every feature must move users along the income chain.
+</div>
+
+<h3>Secondary KPIs</h3>
+<ul>
+  <li>Trial-to-paid conversion rate</li>
+  <li>Offer conversion rate (Smart Upgrade Engine)</li>
+  <li>Repeat-business rate</li>
+  <li>Work-delivery success rate</li>
+  <li>Relationship retention rate</li>
+  <li>MRR / ARR / Monthly churn</li>
+  <li>Agent productivity (outputs per 1,000 tokens)</li>
+  <li>Revenue milestones reached (â‚¹1k Â· â‚¹10k Â· â‚¹50k Â· â‚¹1L Â· â‚¹5L)</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Income Chain â•â•â• -->
+<section id="income-chain">
+<h2>3. The AI-Powered Income Chain</h2>
+<p>Every feature is justified by its contribution to this chain. Features that don't move a user forward are not built.</p>
+<div class="flow">
+  <span class="flow-step">ðŸŽ“ Skills</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ” Opportunities</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ’¼ Offers</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ–¼ Profile/Portfolio</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ¤ Clients</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ“¦ Work Delivery</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ’¬ Relationships</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ’¸ Recurring Revenue</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">ðŸ“ˆ Business Growth</span>
+</div>
+
+<div class="table-wrap">
+<table>
+  <tr><th>Stage</th><th>AI Agent</th><th>Dashboard</th><th>Plan required</th></tr>
+  <tr><td>Skills</td><td>Skill Assessment Agent</td><td>/dashboard/skills</td><td>Trial+</td></tr>
+  <tr><td>Opportunities</td><td>Opportunity Discovery Agent</td><td>/dashboard/opportunities</td><td>Trial+</td></tr>
+  <tr><td>Offers</td><td>Offer Builder Agent</td><td>/dashboard/offers</td><td>Trial+</td></tr>
+  <tr><td>Profile/Portfolio</td><td>Profile Intelligence + Portfolio Builder</td><td>/dashboard/profile, /dashboard/portfolio</td><td>Trial+</td></tr>
+  <tr><td>Clients</td><td>Client Intelligence + Client Acquisition</td><td>/dashboard/clients, /dashboard/crm</td><td>Trial+</td></tr>
+  <tr><td>Work Delivery</td><td>Work Support Agent + VET (Ph.3)</td><td>/dashboard/workspace</td><td>Trial+ / Premium (VET)</td></tr>
+  <tr><td>Relationships</td><td>Relationship Success Agent</td><td>/dashboard/relationship</td><td>Trial+</td></tr>
+  <tr><td>Revenue</td><td>Revenue Growth Agent (Ph.4)</td><td>/dashboard/income</td><td>Premium (Ph.4)</td></tr>
+  <tr><td>Business Growth</td><td>Business Scaling Agent (Ph.4)</td><td>/dashboard/workspace</td><td>Premium (Ph.4)</td></tr>
+</table>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Rules â•â•â• -->
+<section id="rules">
+<h2>4. 8 Non-Negotiable Architectural Rules</h2>
+<p>These are <strong>final platform requirements</strong>. Do not deviate without flagging, explaining the tradeoff, and getting explicit confirmation.</p>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 1 â€” Custom State Machine</div>
+  <strong>No LangChain. No autonomous loops.</strong> The journey is a predictable, structured workflow.
+  The Virtual Employee Team is a <em>bounded, orchestrated</em> multi-agent workflow (deterministic fan-out â†’ role agents â†’ fan-in â†’ QA â†’ delivery) on this same state machine â€” not autonomous self-directing loops.
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 2 â€” Strict JSON Outputs</div>
+  All agent outputs are <strong>strict JSON validated against a Zod schema</strong> before being written to memory or rendered.
+  Reject + retry once on malformed output. This applies to every agent, including all Virtual Employee roles.
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 3 â€” Shared Memory Layer</div>
+  Every agent reads from and writes to <strong>one shared UserContext store</strong>. Agents are never isolated.
+  The VET additionally shares a <strong>project-scoped ProjectContext</strong> under the same shared-memory discipline.
+</div>
+
+<div class="rule-box warn">
+  <div class="rule-num">Rule 4 â€” Payment Abstraction</div>
+  The app <strong>NEVER talks to a payment gateway directly</strong>. Flow: App â†’ PaymentService â†’ Adapter (Razorpay / Cashfree / Stripe / PayPal). Annual billing flows through the same abstraction.
+</div>
+
+<div class="rule-box warn">
+  <div class="rule-num">Rule 5 â€” Email/Notification Abstraction</div>
+  The app â†’ EmailService â†’ Adapter (Resend / SendGrid / SES). Trial-countdown reminders, offer/FOMO notifications, and relationship/renewal reminders are all dispatched through the Notification Service; never by constructing provider payloads inline.
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 6 â€” Subscription Plans â‰  Platform Roles</div>
+  These are <strong>two separate axes</strong>. A plan (Trial/Pro/Premium/Free) controls customer feature access.
+  A role (Super Admin / Admin) controls platform management. <strong>Never merge them into one enum.</strong>
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 7 â€” Super Admin = Full, Unrestricted, Automatic Access</div>
+  Super Admin has access to <strong>everything</strong> â€” all phases, all agents, all dashboards, all analytics, all controls.
+  Zero manual permission assignment, now and for every future feature.
+  Implementation: authorization checks short-circuit to <code>allow</code> when <code>role === 'SUPER_ADMIN'</code> before evaluating any plan/phase/feature-flag logic.
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Rule 8 â€” Phase Gating Applies Only to End Users</div>
+  Admins and Super Admins are <strong>never phase-restricted</strong>. Phase gating only applies to customer accounts.
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Architecture â•â•â• -->
+<section id="architecture">
+<h2>5. System Architecture â€” 4 Layers</h2>
+
+<h3 id="state-machine">Presentation Layer</h3>
+<ul>
+  <li><strong>Next.js App Router</strong> (Server + Client components, TypeScript strict mode)</li>
+  <li>Customer app: trial countdown, dashboard, offer banners, CRM, income dashboard</li>
+  <li>Published profile sites at <code>/p/:slug</code> (server-rendered, public)</li>
+  <li>Super Admin + Admin management dashboard at <code>/admin</code></li>
+  <li>Tailwind CSS 3 + ShadCN UI components</li>
+</ul>
+
+<h3>API Layer</h3>
+<ul>
+  <li>Next.js Route Handlers (<code>/api/*</code>)</li>
+  <li>Every protected route: auth check â†’ entitlement guard â†’ usage guard</li>
+  <li>Entitlement guard order: <code>SUPER_ADMIN?</code> â†’ role check â†’ plan check â†’ phase check â†’ feature-flag check</li>
+  <li>Daily AI usage guard: checks DailyUsage record (IST date key), rejects + triggers upgrade CTA if limit exceeded</li>
+  <li>Error format: <code>{"error": {"code": "PLAN_REQUIRED", "message": "...", "upgradeTrigger": true}}</code></li>
+</ul>
+
+<h3>Service Layer</h3>
+<ul>
+  <li><code>AgentRunner</code> â€” 9-step agent execution pipeline (see Â§7)</li>
+  <li><code>TeamOrchestrator</code> â€” bounded Virtual Employee Team coordination</li>
+  <li><code>SharedMemoryService</code> â€” UserContext read/write with optimistic locking</li>
+  <li><code>PaymentService</code> â†’ GatewayAdapter â†’ {Razorpay, Cashfree, Stripe, PayPal}</li>
+  <li><code>EmailService / NotificationService</code> â†’ EmailAdapter â†’ {Resend, SendGrid, SES}</li>
+  <li><code>OfferEngine</code> â€” scoring + personalization + campaign materialization</li>
+  <li><code>SchedulerService</code> â€” trial countdown, offer expiry, reminders, weekly digest</li>
+  <li><code>ProfileService</code>, <code>ClientIntelService</code>, <code>CRMService</code>, <code>RelationshipService</code></li>
+  <li><code>BillingService</code>, <code>AnalyticsService</code></li>
+</ul>
+
+<h3>Data Layer</h3>
+<ul>
+  <li>Prisma ORM â†’ PostgreSQL (Supabase/Neon) â€” only data access path</li>
+  <li>Object storage (Supabase Storage / S3) for PDFs + portfolio assets</li>
+  <li>Redis (optional): offer scoring cache, rate-limit counters, distributed job locks</li>
+  <li>External APIs: Anthropic, OpenAI, Razorpay, Cashfree, Resend, Stripe, PayPal</li>
+  <li>Scheduler: Vercel Cron + pg_cron</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Shared Memory â•â•â• -->
+<section id="shared-memory">
+<h2>6. Shared Memory Layer</h2>
+<p>
+  All agents share a single <strong>UserContext</strong> object per user.
+  No agent is isolated â€” every agent reads what prior agents wrote and writes what future agents will read.
+  Optimistic locking via <code>version</code> field prevents concurrent overwrites.
+</p>
+
+<h3>UserContext Fields</h3>
+<pre><code>UserContext {
+  userId, profession, experienceYears
+  skills: string[]
+  interests: string[]
+  selectedOpportunityId: string | null
+  generatedOffers: Offer[]
+  portfolioAssets: Asset[]
+  professionalProfiles: ProfProfile[]    // Profile Intelligence output
+  clientSummaries: ClientSummary[]       // Client Intelligence output
+  relationshipSummary: RelSummary | null // Relationship Success output
+  crmActivitySummary: string | null      // Client Acquisition output
+  revenueMilestones: Milestone[]
+  engagementScore: number (0-100)        // used by Offer Engine
+  profileCompletion: number (0-100)
+  version: number                        // optimistic locking
+}</code></pre>
+
+<h3>ProjectContext (Workspace / VET)</h3>
+<pre><code>ProjectContext {
+  sharedContext: string          // AI-generated project brief
+  contextVersion: number
+  tasks: Task[]
+  roleOutputs: {                 // Written by each VET role agent
+    [role: string]: RoleOutput
+  }
+}</code></pre>
+
+<div class="rule-box warn">
+  <div class="rule-num">Important</div>
+  State is saved <em>before</em> the model call. A failed model call never loses prior progress.
+  Partial output is <em>never</em> written to memory â€” only fully validated JSON is persisted.
+</div>
+</section>
+
+<!-- â•â•â• SECTION: RBAC â•â•â• -->
+<section id="rbac">
+<h2>7. RBAC &amp; Access Control</h2>
+
+<p>Two independent axes: <strong>subscription plan</strong> and <strong>platform role</strong>.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>Level</th><th>Type</th><th>Access</th><th>AI Outputs/day</th></tr>
+  <tr><td><span class="badge badge-yellow">SUPER_ADMIN</span></td><td>Role</td><td>Everything. Auto-granted for all new features. Zero manual setup.</td><td>Unlimited</td></tr>
+  <tr><td><span class="badge badge-orange">ADMIN</span></td><td>Role</td><td>Platform management per preset (Support/Content/Finance). Never phase-restricted.</td><td>Unlimited</td></tr>
+  <tr><td><span class="badge badge-green">PREMIUM</span></td><td>Plan (Annual)</td><td>MVP + Phase 2 + 3 + 4 (as released). Auto-gets new customer features.</td><td>~1,000/mo fair use</td></tr>
+  <tr><td><span class="badge badge-indigo">PRO</span></td><td>Plan (Monthly)</td><td>All MVP features.</td><td>100/day</td></tr>
+  <tr><td><span class="badge badge-gray">TRIAL</span></td><td>Plan (7 days)</td><td>Full Pro access for 7 days. Countdown banner always visible.</td><td>100/day</td></tr>
+  <tr><td><span class="badge badge-red">FREE</span></td><td>Plan (Locked)</td><td>Read-only. 0 new generations. Upgrade wall on every AI action.</td><td>0</td></tr>
+</table>
+</div>
+
+<h3>Guard Implementation</h3>
+<pre><code>// Pseudocode â€” applied in every protected route handler
+export async function guardRequest(userId: string, feature: Feature) {
+  const user = await getUser(userId)
+
+  // Rule 7: Super Admin short-circuit
+  if (user.role === 'SUPER_ADMIN') return { allowed: true }
+
+  // Admin role checks (no phase-gating)
+  if (user.role === 'ADMIN') {
+    return checkAdminPreset(user.adminPreset, feature)
+  }
+
+  // Customer plan checks
+  const plan = user.subscription?.plan
+  if (plan === 'FREE') return { allowed: false, code: 'UPGRADE_REQUIRED' }
+
+  // Phase check
+  const requiredPhase = FEATURE_PHASE[feature]
+  if (plan !== 'PREMIUM' && requiredPhase > MVP_PHASE) {
+    return { allowed: false, code: 'PLAN_REQUIRED', upgradeTrigger: true }
+  }
+
+  // Daily usage check
+  const usage = await getDailyUsage(userId)
+  if (usage.count >= PLAN_DAILY_LIMIT[plan]) {
+    return { allowed: false, code: 'DAILY_LIMIT_REACHED', upgradeTrigger: true }
+  }
+
+  return { allowed: true }
+}</code></pre>
+</section>
+
+<!-- â•â•â• SECTION: AgentRunner â•â•â• -->
+<section id="agent-runner">
+<h2>8. AgentRunner â€” 9-Step Execution Pipeline</h2>
+<p>Every agent call goes through this pipeline in order. Super Admin short-circuits at step 1.</p>
+
+<ol>
+  <li><strong>Authorize</strong> â€” role/plan/phase/feature-flag check. Super Admin â†’ instant ALLOW.</li>
+  <li><strong>Check Usage</strong> â€” daily AI-output limit for the plan. Reject + upgrade trigger if exceeded.</li>
+  <li><strong>Read Memory</strong> â€” load UserContext (+ optional ProjectContext) from SharedMemoryService.</li>
+  <li><strong>Build Prompt</strong> â€” system prompt from DB AgentConfig + memory context, capped at input token budget.</li>
+  <li><strong>Call Model</strong> â€” <code>claude-sonnet-4-6</code> (fallback OpenAI). <code>max_tokens</code> = agent's output budget.</li>
+  <li><strong>Validate</strong> â€” parse + Zod-validate strict JSON schema. Retry once on malformed output.</li>
+  <li><strong>Persist</strong> â€” write structured output to shared memory + domain table (e.g., OpportunityRoadmap).</li>
+  <li><strong>Increment</strong> â€” record one AI output against user's IST-keyed daily counter.</li>
+  <li><strong>Return</strong> â€” <code>{ data: T, usage: {...}, remainingDailyOutputs: number }</code></li>
+</ol>
+
+<div class="rule-box warn">
+  <div class="rule-num">Retry Behaviour</div>
+  On step 6 failure (malformed JSON): retry step 5 once with an error-correction prompt suffix.
+  On second failure: return <code>{ error: "AGENT_OUTPUT_INVALID" }</code>. Never write partial output.
+</div>
+</section>
+
+<!-- â•â•â• SECTION: MVP Agents â•â•â• -->
+<section id="mvp-agents">
+<h2>9. MVP Agents (9 Agents)</h2>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸŽ“</span>
+    <div>
+      <div class="agent-name">Skill Assessment Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 2,000 Â· Route: POST /api/agents/opportunity-discovery (via run)</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Onboarding answers (profession, experience, self-rated skills, goals)</p>
+  <p><strong>Output JSON schema:</strong></p>
+  <pre><code>{
+  "classification": "Full Stack Developer",
+  "coreSkills": ["React", "Node.js", "PostgreSQL"],
+  "monetizableSkills": [
+    { "skill": "React", "demandScore": 9, "averageINR": 85000 }
+  ],
+  "experienceTier": "INTERMEDIATE",
+  "readinessScore": 72,
+  "recommendedFocusAreas": ["TypeScript", "System Design"],
+  "indiaMarketContext": "..."
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ”</span>
+    <div>
+      <div class="agent-name">Opportunity Discovery Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 4,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> UserContext.skills, profession, interests, goals, India market context</p>
+  <pre><code>{
+  "opportunities": [
+    {
+      "id": "uuid",
+      "title": "SaaS UI Freelancing",
+      "description": "...",
+      "monthlyPotentialINR": 75000,
+      "difficultyScore": 6,
+      "timeToFirstIncomeWeeks": 4,
+      "requiredSkills": ["React", "Figma"],
+      "indiaContext": "Growing demand in Tier-1 cities",
+      "quickStartSteps": ["Create Upwork profile", "..."]
+    }
+  ],
+  "topRecommendationId": "uuid"
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ’¼</span>
+    <div>
+      <div class="agent-name">Offer Builder Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 3,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Selected opportunity, skills, experience tier</p>
+  <pre><code>{
+  "offerName": "React UI Development Package",
+  "tiers": [
+    { "name": "Starter", "priceINR": 15000, "deliverables": ["3 pages", "responsive"] },
+    { "name": "Growth",  "priceINR": 35000, "deliverables": ["8 pages", "animations"] },
+    { "name": "Scale",   "priceINR": 75000, "deliverables": ["Custom design system"] }
+  ],
+  "idealClientProfile": "...",
+  "salesPitch": "...",
+  "valueProposition": "..."
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ–¼</span>
+    <div>
+      <div class="agent-name">Portfolio Builder Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 5,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Skills, offers, past projects (optional uploads), industry context</p>
+  <pre><code>{
+  "caseStudies": [
+    { "title": "...", "challenge": "...", "solution": "...", "result": "..." }
+  ],
+  "headline": "Full Stack Developer building SaaS products",
+  "linkedInSummary": "...",
+  "portfolioHighlights": ["..."]
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ‘¤</span>
+    <div>
+      <div class="agent-name">Profile Intelligence Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 6,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Skills, portfolio, work history, optional social/upload, target industry</p>
+  <pre><code>{
+  "headline": "...",
+  "summary": "...",
+  "skillsMatrix": { "core": [...], "emerging": [...] },
+  "serviceCatalog": [...],
+  "caseStudies": [...],
+  "websiteSlug": "john-doe-developer",
+  "resumePdfUrl": "https://...",
+  "versions": { "startup": {...}, "enterprise": {...} }
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ§ </span>
+    <div>
+      <div class="agent-name">Client Intelligence Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 4,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Lead record, company website, CRM history, industry vertical</p>
+  <pre><code>{
+  "clientTemperature": "HOT",
+  "temperatureScore": 8.5,
+  "communicationScripts": { "email": "...", "linkedin": "..." },
+  "meetingPrep": { "agenda": [...], "objectionHandlers": [...] },
+  "pricingRecommendationINR": 55000,
+  "dealVelocity": "2-3 weeks",
+  "riskFlags": ["...]
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ“§</span>
+    <div>
+      <div class="agent-name">Client Acquisition Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 3,000 Â· Two sub-modes: Outreach + Proposal</div>
+    </div>
+  </div>
+  <p><strong>Outreach mode output:</strong> subject, body, followUpSequence, personalisationHooks</p>
+  <p><strong>Proposal mode output:</strong> executiveSummary, scopeOfWork, timeline, investmentINR, paymentSchedule</p>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ’¬</span>
+    <div>
+      <div class="agent-name">Relationship Success Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 3,000</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Won client profile, project history, relationship timeline</p>
+  <pre><code>{
+  "relationshipScore": 82,
+  "scheduledActions": [
+    { "type": "CHECK_IN", "dueDays": 7, "script": "..." },
+    { "type": "UPSELL_OPPORTUNITY", "dueDays": 30, "script": "..." }
+  ],
+  "anniversaryReminder": "...",
+  "renewalForecast": { "probability": 0.78, "suggestedTimingDays": 60 }
+}</code></pre>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span style="font-size:1.4rem">ðŸ› </span>
+    <div>
+      <div class="agent-name">Work Support Agent</div>
+      <div class="agent-meta"><span class="badge badge-green">MVP</span> Token budget: 6,000 Â· AI co-worker for work delivery</div>
+    </div>
+  </div>
+  <p><strong>Input:</strong> Won lead + offer + ProjectContext + task description + user notes</p>
+  <pre><code>{
+  "requirementAnalysis": "...",
+  "taskPlan": [{ "step": 1, "title": "...", "estimatedHours": 4 }],
+  "solution": "...",
+  "content": "...",
+  "costEstimateINR": 45000,
+  "nextStep": "Send draft to client for review"
+}</code></pre>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Phase Agents â•â•â• -->
+<section id="phase-agents">
+<h2>10. Phase 2â€“4 Agents (5 Agents)</h2>
+
+<div class="grid-2">
+<div class="card">
+  <h4>ðŸ“¦ Digital Product Builder (Phase 2)</h4>
+  <p>Generates templates, eBooks, Notion dashboards, mini-courses. Token budget: 5,000.</p>
+</div>
+<div class="card">
+  <h4>ðŸš€ SaaS Opportunity Agent (Phase 3)</h4>
+  <p>Identifies SaaS opportunities, generates MVP spec and monetization strategy. Token budget: 6,000.</p>
+</div>
+<div class="card">
+  <h4>ðŸ¤– Virtual Employee Team (Phase 3)</h4>
+  <p>8-role bounded orchestration (PM, BA, Tech, QA, Creative, Comms, Research, Delivery). Token budget: 8,000 per run across all roles.</p>
+</div>
+<div class="card">
+  <h4>ðŸ“ˆ Revenue Growth Agent (Phase 4)</h4>
+  <p>Pricing optimization, upsell strategy, revenue forecast. Token budget: 4,000.</p>
+</div>
+<div class="card">
+  <h4>ðŸ¢ Business Scaling Agent (Phase 4)</h4>
+  <p>Delegation, hiring advisement, team structure, scaling roadmap. Token budget: 4,000.</p>
+</div>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: VET â•â•â• -->
+<section id="vet">
+<h2>11. Virtual Employee Team (Phase 3, Premium)</h2>
+
+<div class="rule-box">
+  <div class="rule-num">Non-Negotiable: Bounded Orchestration Only</div>
+  The VET is <em>not</em> an autonomous multi-agent system. It is a <strong>deterministic, bounded workflow</strong>:
+  fan-out to role agents â†’ fan-in â†’ QA â†’ one fix cycle max â†’ delivery. No open-ended self-direction.
+</div>
+
+<h3>Execution Flow</h3>
+<div class="flow">
+  <span class="flow-step">1. Requirement Analysis (BA)</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">2. Task Breakdown (PM)</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">3. Fan-out to Roles (parallel)</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">4. QA Review</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">5. Fix (if needed, max 1)</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">6. Final Delivery (Coordinator)</span>
+</div>
+
+<h3>8 Employee Roles</h3>
+<div class="grid-2">
+  <ul>
+    <li>Project Manager (PM)</li>
+    <li>Business Analyst (BA)</li>
+    <li>Technical Specialist</li>
+    <li>Quality Assurance</li>
+  </ul>
+  <ul>
+    <li>Creative Specialist</li>
+    <li>Communication Specialist</li>
+    <li>Research Specialist</li>
+    <li>Delivery Coordinator</li>
+  </ul>
+</div>
+
+<h3>Key Constraints</h3>
+<ul>
+  <li>Max 1 QA â†’ fix â†’ re-QA cycle</li>
+  <li>Max parallel fan-out per run (configurable, default 3)</li>
+  <li>Per-run token ceiling (8,000 total across all roles, DB-configurable)</li>
+  <li>All role agents run through standard AgentRunner â†’ JSON validated â†’ Zod schema enforced</li>
+  <li>Role outputs written to ProjectContext (shared memory) â€” later roles read earlier ones</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Database â•â•â• -->
+<section id="database">
+<h2>12. Database Schema (Prisma + PostgreSQL)</h2>
+<p>Prisma is the <strong>only</strong> data access path. No raw SQL except in monitored migrations.</p>
+
+<h3>Core Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>User</code></td><td>id, email, passwordHash, role, plan, trialEndsAt, subscriptionId</td><td>Auth + identity</td></tr>
+  <tr><td><code>UserContext</code></td><td>userId (unique), skills[], interests[], engagementScore, version</td><td>Shared AI memory</td></tr>
+  <tr><td><code>DailyUsage</code></td><td>userId, dateKey (YYYY-MM-DD IST), count, plan</td><td>AI output counter</td></tr>
+  <tr><td><code>AgentRun</code></td><td>userId, agentType, status, inputTokens, outputTokens, durationMs, output JSON</td><td>Audit + analytics</td></tr>
+  <tr><td><code>ActivityLog</code></td><td>userId, action, entityType, entityId, metadata JSON</td><td>User activity timeline</td></tr>
+</table>
+</div>
+
+<h3>Billing Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>Subscription</code></td><td>userId, plan (TRIAL/PRO/PREMIUM/FREE), status, provider, providerSubId, billingInterval, currentPeriodEnd</td><td>Plan lifecycle</td></tr>
+  <tr><td><code>Payment</code></td><td>userId, subscriptionId, amountINR, gstAmount, status, provider, providerPaymentId</td><td>Payment records</td></tr>
+  <tr><td><code>OfferCampaign</code></td><td>name, type, targetingRules JSON, discountPct, maxDiscountPct, expiresAt, status</td><td>Offer Engine campaigns</td></tr>
+  <tr><td><code>SubscriptionOffer</code></td><td>userId, campaignId, originalPriceINR, discountedPriceINR, expiresAt, status</td><td>Per-user offer instance</td></tr>
+</table>
+</div>
+
+<h3>Income Chain Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>OpportunityRoadmap</code></td><td>userId, opportunities JSON, selectedOpportunityId</td><td>Opportunity Discovery output</td></tr>
+  <tr><td><code>Offer</code></td><td>userId, opportunityId, offerName, tiers JSON, idealClientProfile</td><td>Offer Builder output</td></tr>
+  <tr><td><code>PortfolioAsset</code></td><td>userId, type, url, title, caseStudyJson</td><td>Portfolio Builder output</td></tr>
+  <tr><td><code>Lead</code></td><td>userId, stage (IDENTIFIEDâ†’WONâ†’CHURNED), company, contactEmail, isFirstIncome, wonAt</td><td>CRM pipeline</td></tr>
+  <tr><td><code>RevenueMilestone</code></td><td>userId, amountINR, milestoneName, achievedAt</td><td>Income milestones + celebrations</td></tr>
+</table>
+</div>
+
+<h3>Profile &amp; Client Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>ProfessionalProfile</code></td><td>userId, slug (unique), headline, summary, resumePdfUrl, isPublished</td><td>Profile Intelligence output</td></tr>
+  <tr><td><code>ProfileVersion</code></td><td>profileId, versionTag, tailoredFor, content JSON</td><td>Per-industry/client tailored variants</td></tr>
+  <tr><td><code>ClientProfile</code></td><td>userId, leadId, company, contactName, temperatureScore</td><td>Client Intelligence output</td></tr>
+  <tr><td><code>ClientRelationship</code></td><td>userId, clientProfileId, relationshipScore, nextAction, nextActionDue</td><td>Relationship Success output</td></tr>
+</table>
+</div>
+
+<h3>Work Delivery Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>ProjectWorkspace</code></td><td>userId, title, objective, status, sharedContext JSON (ProjectContext)</td><td>Workspace container</td></tr>
+  <tr><td><code>ProjectTask</code></td><td>workspaceId, title, status, elaboration JSON, deletedAt (soft)</td><td>Work Support tasks</td></tr>
+  <tr><td><code>VirtualEmployee</code></td><td>workspaceId, role, persona, status</td><td>VET role assignment</td></tr>
+  <tr><td><code>VirtualEmployeeTask</code></td><td>employeeId, taskId, status, roleOutput JSON</td><td>VET role output</td></tr>
+</table>
+</div>
+
+<h3>Config &amp; System Models</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Model</th><th>Key Fields</th><th>Purpose</th></tr>
+  <tr><td><code>AgentConfig</code></td><td>agentType, modelId, systemPrompt, inputTokenBudget, outputTokenBudget</td><td>DB-backed model config (Super Admin editable)</td></tr>
+  <tr><td><code>FeatureFlag</code></td><td>key, value (boolean/percentage/segment), description</td><td>Runtime feature toggles</td></tr>
+  <tr><td><code>SuccessStory</code></td><td>userId, title, incomeAmountINR, status (PENDING/APPROVED/PUBLISHED)</td><td>Community success stories</td></tr>
+  <tr><td><code>NotificationCampaign</code></td><td>type, targetSegment, channels, scheduledAt, status</td><td>Scheduled notification campaigns</td></tr>
+  <tr><td><code>EmailThread</code></td><td>userId, leadId, gmailThreadId, subject, lastMessageAt</td><td>Gmail outreach tracking</td></tr>
+  <tr><td><code>EmailMessage</code></td><td>threadId, gmailMessageId, direction (SENT/RECEIVED), snippet, isRead</td><td>Individual email messages</td></tr>
+</table>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: API â•â•â• -->
+<section id="api">
+<h2>13. API Reference</h2>
+
+<h3>Authentication</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/api/auth/register</td><td>Register + start 7-day trial. Body: {email, password, name, profession}. Returns: {user, token, trialEndsAt}</td></tr>
+  <tr><td>POST</td><td>/api/auth/login</td><td>Email+password login. Returns: {user, token}</td></tr>
+  <tr><td>GET</td><td>/api/auth/me</td><td>Current user + subscription info. Auth required.</td></tr>
+  <tr><td>POST</td><td>/api/auth/google/callback</td><td>Google OAuth callback (gmail.modify scope for Gmail outreach)</td></tr>
+</table>
+</div>
+
+<h3>Profile</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET/PATCH</td><td>/api/profile</td><td>Get or update user profile</td></tr>
+  <tr><td>POST</td><td>/api/profile/intelligence</td><td>Run Profile Intelligence Agent. Generates resume/site/catalog.</td></tr>
+  <tr><td>POST</td><td>/api/profile/publish</td><td>Publish profile site at /p/:slug</td></tr>
+  <tr><td>GET</td><td>/p/:slug</td><td>Public profile page (server-rendered, no auth required)</td></tr>
+</table>
+</div>
+
+<h3>AI Agents</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Body</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/api/agents/run</td><td>{agentType, userPrompt?}</td><td>Generic agent runner</td></tr>
+  <tr><td>POST</td><td>/api/agents/opportunity-discovery</td><td>{}</td><td>Discover opportunities using UserContext</td></tr>
+  <tr><td>POST</td><td>/api/agents/offer-builder</td><td>{opportunityId}</td><td>Build service offer for selected opportunity</td></tr>
+  <tr><td>POST</td><td>/api/agents/client-acquisition</td><td>{mode: "outreach"|"proposal", leadId}</td><td>Generate outreach or proposal</td></tr>
+  <tr><td>POST</td><td>/api/client/intelligence</td><td>{leadId}</td><td>Run Client Intelligence for a lead</td></tr>
+  <tr><td>POST</td><td>/api/relationship</td><td>{clientProfileId}</td><td>Run Relationship Success Agent</td></tr>
+</table>
+</div>
+
+<h3>Workspace (Work Support)</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET/POST</td><td>/api/workspace</td><td>List all workspaces + tasks / Create workspace</td></tr>
+  <tr><td>GET/PATCH/DELETE</td><td>/api/workspace/:id</td><td>Get / update / delete a workspace</td></tr>
+  <tr><td>POST</td><td>/api/workspace/:id/tasks</td><td>Add task to workspace</td></tr>
+  <tr><td>POST</td><td>/api/workspace/tasks/:id/elaborate</td><td>Run Work Support Agent for a task (AI elaboration)</td></tr>
+  <tr><td>POST</td><td>/api/virtual-team</td><td>{workspaceId, requirement} â€” Run VET (Phase 3, Premium)</td></tr>
+</table>
+</div>
+
+<h3>CRM &amp; Clients</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET/POST</td><td>/api/leads</td><td>List all leads / Create a lead</td></tr>
+  <tr><td>GET/PATCH/DELETE</td><td>/api/leads/:id</td><td>Get / update / archive a lead. PATCH to stage=WON triggers First Income Celebration.</td></tr>
+  <tr><td>POST</td><td>/api/clients/cold-email</td><td>Send cold email via Gmail. Creates EmailThread record.</td></tr>
+  <tr><td>GET</td><td>/api/email/threads</td><td>List Gmail threads for the user</td></tr>
+  <tr><td>GET</td><td>/api/email/threads/:id/reply</td><td>Reply to a Gmail thread via Gmail API</td></tr>
+</table>
+</div>
+
+<h3>Billing &amp; Offers</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/api/billing/plans</td><td>List available plans with pricing</td></tr>
+  <tr><td>POST</td><td>/api/billing/subscribe</td><td>{plan, interval, offerId?} â€” Create subscription with optional offer discount</td></tr>
+  <tr><td>POST</td><td>/api/billing/cancel</td><td>Cancel subscription (grace period applies)</td></tr>
+  <tr><td>GET</td><td>/api/offers/personalized</td><td>Get current personalized offer for the user</td></tr>
+  <tr><td>POST</td><td>/api/offers/:id/accept</td><td>Accept an offer â†’ discounted checkout flow</td></tr>
+  <tr><td>POST</td><td>/api/webhooks/razorpay</td><td>Razorpay webhook (signature-verified)</td></tr>
+  <tr><td>POST</td><td>/api/webhooks/cashfree</td><td>Cashfree webhook (signature-verified)</td></tr>
+</table>
+</div>
+
+<h3>Admin APIs (Role-gated)</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Role</th><th>Description</th></tr>
+  <tr><td>GET/PUT</td><td>/api/admin/ai-config</td><td>SUPER_ADMIN</td><td>View/update AgentConfig (model, prompt, token budgets)</td></tr>
+  <tr><td>GET/PUT</td><td>/api/admin/feature-flags</td><td>SUPER_ADMIN</td><td>Manage feature flags</td></tr>
+  <tr><td>GET/PATCH</td><td>/api/admin/users</td><td>SUPPORT_ADMIN+</td><td>User management</td></tr>
+  <tr><td>GET</td><td>/api/admin/analytics/revenue</td><td>FINANCE_ADMIN+</td><td>Revenue analytics (MRR, ARR, churn)</td></tr>
+  <tr><td>GET/PUT</td><td>/api/admin/offers</td><td>FINANCE_ADMIN+</td><td>Manage OfferCampaigns</td></tr>
+  <tr><td>GET</td><td>/api/admin/reports/export</td><td>varies</td><td>Export PDF/Excel/CSV reports</td></tr>
+  <tr><td>POST</td><td>/api/cron/run</td><td>CRON_SECRET header</td><td>Scheduled job endpoint (Vercel Cron)</td></tr>
+</table>
+</div>
+
+<h3>Notifications &amp; SSE</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/api/notifications</td><td>List in-app notifications for the user</td></tr>
+  <tr><td>GET</td><td>/api/sse/notifications</td><td>Server-Sent Events stream for real-time notifications</td></tr>
+  <tr><td>GET</td><td>/api/dashboard/income</td><td>Income dashboard data</td></tr>
+  <tr><td>GET</td><td>/api/milestones</td><td>Revenue milestones achieved</td></tr>
+</table>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Plans â•â•â• -->
+<section id="plans">
+<h2>14. Subscription Plans</h2>
+
+<div class="table-wrap">
+<table>
+  <tr><th>Plan</th><th>Price</th><th>Billing</th><th>AI Outputs</th><th>Features</th></tr>
+  <tr>
+    <td><span class="badge badge-gray">TRIAL</span></td>
+    <td>â‚¹0 (no card)</td>
+    <td>7 days from signup</td>
+    <td>100/day</td>
+    <td>Full Pro access + live countdown + all MVP agents</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-indigo">PRO</span></td>
+    <td>â‚¹999/month</td>
+    <td>Monthly auto-renew</td>
+    <td>100/day</td>
+    <td>All MVP features Â· Unlimited CRM Â· Full income dashboard</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">PREMIUM</span></td>
+    <td>â‚¹19,999/year<br><small>(â‰ˆâ‚¹1,667/mo)</small></td>
+    <td>Annual (lower effective rate)</td>
+    <td>~1,000/month (fair use)</td>
+    <td>All MVP + Phase 2/3/4 (as released) Â· VET Â· Priority AI Â· Personalized offers Â· Premium support</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-red">FREE</span></td>
+    <td>â‚¹0</td>
+    <td>Post-trial if not subscribed</td>
+    <td>0/day</td>
+    <td>Read-only access to prior data only Â· Upgrade wall on all AI actions</td>
+  </tr>
+</table>
+</div>
+
+<h3>Priority AI Processing (Premium Benefit)</h3>
+<p>Implemented as a <strong>higher token budget</strong> (not queue prioritization). Premium users get a larger input context and more detailed outputs per agent call. Revisit queue prioritization at scale.</p>
+</section>
+
+<!-- â•â•â• SECTION: Trial â•â•â• -->
+<section id="trial">
+<h2>15. 7-Day Trial Logic</h2>
+
+<h3>Signup â†’ Trial Start</h3>
+<pre><code>// On /api/auth/register success:
+await db.subscription.create({
+  data: {
+    userId: user.id,
+    plan: 'TRIAL',
+    status: 'TRIALING',
+    trialEndsAt: addDays(new Date(), 7),
+    billingInterval: null,
+    provider: null,
+  }
+})</code></pre>
+
+<h3>Trial Countdown System</h3>
+<ul>
+  <li>Countdown banner visible on <em>every</em> page of the customer app</li>
+  <li>Scheduler fires daily at 00:00 IST â†’ sends reminder notification</li>
+  <li>Heavy reminders: Day 5, Day 3, Day 2, Day 1, last 24 hours</li>
+  <li>Each reminder attaches the user's current personalized offer (if any)</li>
+  <li>Channels: IN_APP + EMAIL</li>
+</ul>
+
+<h3>Trial â†’ FREE Transition (on expiry, no subscription)</h3>
+<pre><code>// Cron job at 00:00 IST:
+const expiredTrials = await db.subscription.findMany({
+  where: { plan: 'TRIAL', status: 'TRIALING', trialEndsAt: { lt: now } }
+})
+for (const sub of expiredTrials) {
+  await db.subscription.update({
+    where: { id: sub.id },
+    data: { plan: 'FREE', status: 'EXPIRED' }
+  })
+  // Persist data in read-only mode; block all AI actions
+}</code></pre>
+
+<h3>Daily Usage Reset</h3>
+<ul>
+  <li>Reset at 00:00 IST â€” achieved by using <code>YYYY-MM-DD</code> IST date as a key</li>
+  <li>DailyUsage record: <code>{ userId, dateKey: "2026-08-24", count: 43, plan: "TRIAL" }</code></li>
+  <li>On each AgentRunner call: <code>upsert</code> the record, check count vs plan limit before calling the model</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Offer Engine â•â•â• -->
+<section id="offer-engine">
+<h2>16. Smart Upgrade Engine (Offer Engine)</h2>
+<p>A launch feature. AI-personalized, limited-time, dynamic-discount upgrade offers.</p>
+
+<h3>Offer Types</h3>
+<ul>
+  <li><code>LIMITED_TIME</code> â€” time-boxed discount</li>
+  <li><code>DYNAMIC_DISCOUNT</code> â€” discount computed per-user from engagement score</li>
+  <li><code>PERSONALIZED_UPGRADE</code> â€” tailored to user's stated goals</li>
+  <li><code>FOMO</code> â€” scarcity/urgency messaging</li>
+  <li><code>TRIAL_CONVERSION</code> â€” specifically for trialâ†’paid conversion</li>
+</ul>
+
+<h3>Scoring Inputs</h3>
+<ul>
+  <li>User activity patterns (frequency + recency of logins)</li>
+  <li>AI usage frequency (daily outputs used / limit)</li>
+  <li>Engagement score from UserContext (0â€“100)</li>
+  <li>Opportunity potential (monthlyPotentialINR from discovery)</li>
+  <li>Profile completion % from UserContext</li>
+  <li>Days remaining in trial</li>
+  <li>Prior offer impressions and acceptance history</li>
+  <li>Predicted conversion likelihood (ML-derived or heuristic)</li>
+</ul>
+
+<h3>Guardrails</h3>
+<ul>
+  <li>At most 1 active offer per user at a time</li>
+  <li>Discounts never exceed campaign's <code>maxDiscountPct</code></li>
+  <li>Super Admin can pause any campaign via feature flag</li>
+  <li>All impressions, clicks, and accepts are logged to OfferCampaign analytics</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Billing â•â•â• -->
+<section id="billing">
+<h2>17. Payment Abstraction Layer</h2>
+<div class="flow">
+  <span class="flow-step">App</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">PaymentService</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">GatewayAdapter (interface)</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">Razorpay (MVP)</span>
+  <span class="flow-arrow">or</span>
+  <span class="flow-step">Cashfree (failover)</span>
+  <span class="flow-arrow">or</span>
+  <span class="flow-step">Stripe (Phase 2)</span>
+</div>
+
+<h3>PaymentService Interface</h3>
+<pre><code>interface PaymentService {
+  createSubscription(params: CreateSubParams): Promise&lt;SubscriptionResult&gt;
+  upgradeSubscription(params: UpgradeSubParams): Promise&lt;SubscriptionResult&gt;
+  cancelSubscription(subscriptionId: string): Promise&lt;void&gt;
+  handleWebhook(provider: Provider, payload: unknown, signature: string): Promise&lt;void&gt;
+  getPortalUrl(userId: string): Promise&lt;string&gt;
+}</code></pre>
+
+<h3>Subscription Lifecycle</h3>
+<ul>
+  <li>Create â†’ provider subscription ID stored in Subscription record</li>
+  <li>Webhook: normalize to internal <code>SubscriptionEvent</code> â†’ update DB</li>
+  <li>Failed payment â†’ 3-day grace period â†’ suspend â†’ notify user</li>
+  <li>GST 18% calculated on all INR transactions. Optional GSTIN stored on User.</li>
+  <li>Annual Premium eligible for personalized discounts from Offer Engine</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Email â•â•â• -->
+<section id="email">
+<h2>18. Email &amp; Notification Service</h2>
+<div class="flow">
+  <span class="flow-step">App</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">EmailService / NotificationService</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">EmailAdapter</span><span class="flow-arrow">â†’</span>
+  <span class="flow-step">Resend (MVP)</span>
+  <span class="flow-arrow">or</span>
+  <span class="flow-step">SendGrid</span>
+  <span class="flow-arrow">or</span>
+  <span class="flow-step">Amazon SES</span>
+</div>
+
+<h3>Notification Types</h3>
+<ul>
+  <li><code>OTP</code> / <code>EMAIL_VERIFY</code> / <code>PASSWORD_RESET</code> / <code>WELCOME</code></li>
+  <li><code>TRIAL_COUNTDOWN</code> (Day 7â†’0) + personalized FOMO offer attachment</li>
+  <li><code>FIRST_INCOME_CELEBRATION</code> â€” celebration email when lead moves to WON</li>
+  <li><code>MILESTONE_ACHIEVED</code> â€” â‚¹1k, â‚¹10k, â‚¹50k, â‚¹1L, â‚¹5L milestones</li>
+  <li><code>RELATIONSHIP_CHECKIN</code> â€” scheduled by Relationship Success Agent</li>
+  <li><code>RENEWAL_REMINDER</code> â€” 30/7/1 days before subscription renewal</li>
+  <li><code>WEEKLY_DIGEST</code> â€” activity + income + opportunity summary</li>
+</ul>
+
+<h3>Channels</h3>
+<ul>
+  <li><code>IN_APP</code> â€” stored in DB, streamed via SSE (/api/sse/notifications), shown in NotificationBell</li>
+  <li><code>EMAIL</code> â€” dispatched via EmailAdapter</li>
+  <li><code>PUSH</code> â€” optional, reserved for future</li>
+</ul>
+
+<h3>Gmail Outreach Integration (Phase 1 Extension)</h3>
+<ul>
+  <li>OAuth scope: <code>gmail.modify</code> + labels</li>
+  <li>EmailThread + EmailMessage models track sent/received</li>
+  <li>Gmail sync cron runs every 2 minutes to pull new replies</li>
+  <li>Reply Intelligence agent generates smart reply suggestions</li>
+  <li>CRM stage auto-updates on reply received</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Celebrations â•â•â• -->
+<section id="celebrations">
+<h2>19. Milestones &amp; First Income Celebration</h2>
+
+<h3>First Income Trigger</h3>
+<pre><code>// In PATCH /api/leads/:id when stage transitions to WON:
+if (lead.stage === 'WON' &amp;&amp; !user.hasEarnedFirstIncome) {
+  await db.user.update({ where: { id }, data: { hasEarnedFirstIncome: true } })
+  await db.revenueMilestone.create({ data: {
+    userId, amountINR: lead.estimatedValueINR,
+    milestoneName: 'FIRST_INCOME', achievedAt: new Date()
+  }})
+  await notificationService.send({
+    type: 'FIRST_INCOME_CELEBRATION',
+    userId,
+    channels: ['IN_APP', 'EMAIL'],
+  })
+  // Trigger Relationship Success Agent for first post-win check-in
+  await agentRunner.run({ agentType: 'RELATIONSHIP_SUCCESS', userId, ... })
+  // Fire analytics event â€” this is the PRIMARY KPI moment
+  await analytics.track('first_income_earned', { userId, amountINR: lead.estimatedValueINR })
+}</code></pre>
+
+<h3>Revenue Milestones</h3>
+<ul>
+  <li>â‚¹1,000 â€” First Step</li>
+  <li>â‚¹10,000 â€” Five Figures</li>
+  <li>â‚¹50,000 â€” Halfway to â‚¹1L</li>
+  <li>â‚¹1,00,000 â€” Six Figures</li>
+  <li>â‚¹5,00,000 â€” Five Lakh Club</li>
+</ul>
+<p>Each milestone fires a <code>MILESTONE_ACHIEVED</code> notification (IN_APP + EMAIL) and creates a RevenueMilestone record.</p>
+</section>
+
+<!-- â•â•â• SECTION: Tech Stack â•â•â• -->
+<section id="tech-stack">
+<h2>20. Technology Stack</h2>
+
+<div class="grid-3">
+<div class="card">
+  <h4>Frontend</h4>
+  <ul>
+    <li>Next.js 14+ (App Router)</li>
+    <li>TypeScript 5+ (strict)</li>
+    <li>Tailwind CSS 3+</li>
+    <li>ShadCN UI (Radix-based)</li>
+    <li>TanStack Query v5</li>
+    <li>Recharts</li>
+    <li>Zod (validation)</li>
+  </ul>
+</div>
+<div class="card">
+  <h4>Backend</h4>
+  <ul>
+    <li>Next.js Route Handlers</li>
+    <li>PostgreSQL 15+ (Supabase/Neon)</li>
+    <li>Prisma ORM 5+</li>
+    <li>Supabase Auth</li>
+    <li>Custom JWT sessions</li>
+    <li>Redis (optional)</li>
+    <li>Vercel Cron + pg_cron</li>
+  </ul>
+</div>
+<div class="card">
+  <h4>AI &amp; Payments</h4>
+  <ul>
+    <li>claude-sonnet-4-6 (primary)</li>
+    <li>OpenAI GPT (fallback)</li>
+    <li>Razorpay (MVP primary)</li>
+    <li>Cashfree (MVP failover)</li>
+    <li>Stripe (Phase 2, global)</li>
+    <li>PayPal (Phase 2, global)</li>
+    <li>Resend / SendGrid / SES</li>
+  </ul>
+</div>
+</div>
+
+<div class="rule-box">
+  <div class="rule-num">Model Configuration</div>
+  Model IDs, agent token budgets, and system prompts are stored in <code>AgentConfig</code> (DB-backed).
+  Super Admin edits them at runtime via AI Control Center. <strong>Never hardcode a model string in business logic.</strong>
+  Always read: <code>const config = await db.agentConfig.findUnique({ where: { agentType } })</code>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Env Vars â•â•â• -->
+<section id="env-vars">
+<h2>21. Environment Variables</h2>
+
+<div class="table-wrap">
+<table class="env-table">
+  <tr><th>Variable</th><th>Required</th><th>Description</th></tr>
+  <tr><td>DATABASE_URL</td><td>âœ…</td><td>Neon/Supabase Postgres connection string</td></tr>
+  <tr><td>DIRECT_URL</td><td>âœ…</td><td>Direct Postgres URL (pooler bypass for Prisma migrations)</td></tr>
+  <tr><td>NEXT_PUBLIC_SUPABASE_URL</td><td>âœ…</td><td>Supabase project URL</td></tr>
+  <tr><td>NEXT_PUBLIC_SUPABASE_ANON_KEY</td><td>âœ…</td><td>Supabase anon key (public)</td></tr>
+  <tr><td>SUPABASE_SERVICE_ROLE_KEY</td><td>âœ…</td><td>Supabase service role key (server-side only, never expose)</td></tr>
+  <tr><td>ANTHROPIC_API_KEY</td><td>âœ…</td><td>Anthropic API key for claude-sonnet-4-6</td></tr>
+  <tr><td>OPENAI_API_KEY</td><td>âœ…</td><td>OpenAI API key for fallback model</td></tr>
+  <tr><td>RAZORPAY_KEY_ID</td><td>âœ…</td><td>Razorpay key ID</td></tr>
+  <tr><td>RAZORPAY_KEY_SECRET</td><td>âœ…</td><td>Razorpay key secret</td></tr>
+  <tr><td>RAZORPAY_WEBHOOK_SECRET</td><td>âœ…</td><td>Webhook signature verification</td></tr>
+  <tr><td>CASHFREE_APP_ID</td><td>âœ…</td><td>Cashfree app ID (failover)</td></tr>
+  <tr><td>CASHFREE_SECRET_KEY</td><td>âœ…</td><td>Cashfree secret key</td></tr>
+  <tr><td>CASHFREE_WEBHOOK_SECRET</td><td>âœ…</td><td>Cashfree webhook signature</td></tr>
+  <tr><td>STRIPE_SECRET_KEY</td><td>Phase 2</td><td>Stripe secret key (global payments)</td></tr>
+  <tr><td>STRIPE_WEBHOOK_SECRET</td><td>Phase 2</td><td>Stripe webhook secret</td></tr>
+  <tr><td>PAYPAL_CLIENT_ID</td><td>Phase 2</td><td>PayPal client ID</td></tr>
+  <tr><td>PAYPAL_CLIENT_SECRET</td><td>Phase 2</td><td>PayPal client secret</td></tr>
+  <tr><td>RESEND_API_KEY</td><td>âœ…</td><td>Resend email provider (MVP primary)</td></tr>
+  <tr><td>SENDGRID_API_KEY</td><td>Optional</td><td>SendGrid backup email provider</td></tr>
+  <tr><td>AWS_SES_ACCESS_KEY</td><td>Optional</td><td>Amazon SES access key</td></tr>
+  <tr><td>AWS_SES_SECRET_KEY</td><td>Optional</td><td>Amazon SES secret key</td></tr>
+  <tr><td>CRON_SECRET</td><td>âœ…</td><td>Secures /api/cron/run endpoint from unauthorized calls</td></tr>
+  <tr><td>REDIS_URL</td><td>Optional</td><td>Redis for offer scoring cache, rate-limit, job locks</td></tr>
+  <tr><td>NEXT_PUBLIC_APP_URL</td><td>âœ…</td><td>Public app URL (e.g. https://app.appydoer.vercel.app)</td></tr>
+  <tr><td>NEXT_PUBLIC_PROFILE_BASE_URL</td><td>âœ…</td><td>Base URL for public profile sites (e.g. https://appydoer.vercel.app)</td></tr>
+  <tr><td>APP_TIMEZONE</td><td>âœ…</td><td>Asia/Kolkata (used for IST daily reset)</td></tr>
+  <tr><td>JWT_SECRET</td><td>âœ…</td><td>Secret for signing custom JWT sessions</td></tr>
+  <tr><td>GOOGLE_CLIENT_ID</td><td>Gmail feature</td><td>Google OAuth client ID (gmail.modify scope)</td></tr>
+  <tr><td>GOOGLE_CLIENT_SECRET</td><td>Gmail feature</td><td>Google OAuth client secret</td></tr>
+</table>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Scheduler â•â•â• -->
+<section id="scheduler">
+<h2>22. Scheduler &amp; Cron Jobs</h2>
+<p>All scheduled work runs through Vercel Cron (or pg_cron). Never ad-hoc timers.</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th>Cron</th><th>Schedule</th><th>Job</th></tr>
+  <tr><td>trial-countdown</td><td>Daily 00:00 IST</td><td>Send trial reminder to users within 5 days of expiry. Attach personalized offer.</td></tr>
+  <tr><td>trial-expiry</td><td>Daily 00:01 IST</td><td>Transition expired TRIAL â†’ FREE. Fire TRIAL_EXPIRED notification.</td></tr>
+  <tr><td>gmail-sync</td><td>Every 2 minutes</td><td>Pull new Gmail replies for all connected accounts. Update EmailThread/Message. Fire SSE notification.</td></tr>
+  <tr><td>relationship-actions</td><td>Daily 09:00 IST</td><td>Surface due relationship actions (check-ins, renewals, birthdays). Fire reminders.</td></tr>
+  <tr><td>offer-expiry</td><td>Hourly</td><td>Expire SubscriptionOffers past their expiry date. Update status to EXPIRED.</td></tr>
+  <tr><td>weekly-digest</td><td>Monday 08:00 IST</td><td>Send weekly income + activity + opportunity summary to all Pro/Premium users.</td></tr>
+  <tr><td>milestone-check</td><td>Daily</td><td>Aggregate income from WON leads. Fire milestone notifications if new thresholds crossed.</td></tr>
+</table>
+</div>
+
+<pre><code>// vercel.json cron config
+{
+  "crons": [
+    { "path": "/api/cron/run?job=trial-countdown", "schedule": "0 18 * * *" },
+    { "path": "/api/cron/run?job=trial-expiry",    "schedule": "1 18 * * *" },
+    { "path": "/api/cron/run?job=gmail-sync",      "schedule": "*/2 * * * *" },
+    { "path": "/api/cron/run?job=offer-expiry",    "schedule": "0 * * * *" }
+  ]
+}</code></pre>
+<p><small>Note: Vercel Cron uses UTC. 18:00 UTC = 00:00 IST (IST = UTC+5:30 â‰ˆ UTC+6 for whole-hour alignment).</small></p>
+</section>
+
+<!-- â•â•â• SECTION: Admin Dashboard â•â•â• -->
+<section id="admin-dashboard">
+<h2>23. Admin Dashboard</h2>
+
+<div class="grid-3">
+<div class="card"><h4>User Management</h4>
+  <ul>
+    <li>View/search/filter users</li>
+    <li>Edit subscription plan</li>
+    <li>Suspend/delete accounts</li>
+    <li>View activity logs</li>
+  </ul>
+</div>
+<div class="card"><h4>Revenue Analytics</h4>
+  <ul>
+    <li>MRR Â· ARR Â· Churn rate</li>
+    <li>Trial-to-paid conversion</li>
+    <li>Payment history + refunds</li>
+    <li>GST reporting</li>
+  </ul>
+</div>
+<div class="card"><h4>AI Control Center</h4>
+  <ul>
+    <li>Edit model per agent type</li>
+    <li>Edit system prompts</li>
+    <li>Set token budgets</li>
+    <li>Monitor agent error rates</li>
+  </ul>
+</div>
+<div class="card"><h4>Offer Engine</h4>
+  <ul>
+    <li>Create / pause campaigns</li>
+    <li>Set targeting rules</li>
+    <li>Set discount bands</li>
+    <li>View conversion analytics</li>
+  </ul>
+</div>
+<div class="card"><h4>Feature Flags</h4>
+  <ul>
+    <li>Boolean / % / segment flags</li>
+    <li>A/B testing toggles</li>
+    <li>Phase rollout controls</li>
+    <li>Emergency kill switches</li>
+  </ul>
+</div>
+<div class="card"><h4>Community</h4>
+  <ul>
+    <li>Review submitted success stories</li>
+    <li>Approve / reject / publish</li>
+    <li>Moderate content</li>
+    <li>Email featured users</li>
+  </ul>
+</div>
+</div>
+
+<h3>Admin Permission Presets</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Preset</th><th>Access</th></tr>
+  <tr><td>Support Admin</td><td>User management, activity logs, support tickets</td></tr>
+  <tr><td>Content Admin</td><td>Success stories, community content, email templates</td></tr>
+  <tr><td>Finance Admin</td><td>Revenue analytics, payments, refunds, offer campaigns, exports</td></tr>
+</table>
+</div>
+</section>
+
+<!-- â•â•â• SECTION: Super Admin â•â•â• -->
+<section id="super-admin">
+<h2>24. Super Admin â€” Global Access Mode</h2>
+
+<div class="rule-box danger">
+  <div class="rule-num">Rule 7 Implementation Requirement</div>
+  <strong>Every new feature, agent, dashboard, and capability must automatically be available to Super Admin
+  â€” with zero manual permission setup, forever.</strong>
+  The only implementation pattern that satisfies this: short-circuit ALL authorization checks with
+  <code>if (user.role === 'SUPER_ADMIN') return { allowed: true }</code> as the very first guard.
+</div>
+
+<h3>What Super Admin Has</h3>
+<ul>
+  <li>All MVP + Phase 2 + 3 + 4 features from day one</li>
+  <li>All 14 agents (including Phase 3/4 agents before they ship to customers)</li>
+  <li>Full AI Control Center (model, prompt, token budget per agent)</li>
+  <li>Full Feature Flag management (including kill switches)</li>
+  <li>Full Offer Engine (create, pause, modify campaigns)</li>
+  <li>All analytics, all exports, all system logs</li>
+  <li>All admin dashboards (User, Revenue, CRM, Email, Monitoring)</li>
+  <li>Beta and experimental features automatically</li>
+  <li>Super Admin AI outputs are not counted against any daily limit</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: Roadmap â•â•â• -->
+<section id="roadmap">
+<h2>25. Feature Roadmap</h2>
+
+<h3>MVP (0â€“100 users)</h3>
+<ul>
+  <li>User auth + 7-day trial with live countdown + daily reminders</li>
+  <li>Skill Assessment Agent â†’ Opportunity Discovery â†’ Offer Builder â†’ Portfolio Builder</li>
+  <li>Profile Intelligence (resume / profile site / service catalog)</li>
+  <li>Client Intelligence (lead temperature + strategy)</li>
+  <li>Client Acquisition (Outreach + Proposal modes + Gmail integration)</li>
+  <li>Relationship Success Center</li>
+  <li>Work Support Center (AI co-worker)</li>
+  <li>CRM pipeline (6 stages: IDENTIFIED â†’ CONTACTED â†’ MEETING â†’ PROPOSAL â†’ NEGOTIATION â†’ WON/CHURNED)</li>
+  <li>Income Dashboard + Revenue milestones</li>
+  <li>Smart Upgrade Engine (AI-personalized offers)</li>
+  <li>Razorpay + Cashfree billing (INR)</li>
+  <li>First Income Celebration system</li>
+  <li>Super Admin + Admin dashboard</li>
+</ul>
+
+<h3>Phase 2 (100â€“1,000 users)</h3>
+<ul>
+  <li>Digital Product Builder Agent (templates, eBooks, Notion)</li>
+  <li>Product Validation, Pricing, Launch Planner, Landing Page Generator</li>
+  <li>Stripe + PayPal (global USD/GBP/EUR payments)</li>
+  <li>Full gamification UI (XP, badges, leaderboard)</li>
+</ul>
+
+<h3>Phase 3 (1,000â€“5,000 users)</h3>
+<ul>
+  <li>Virtual Employee Team Workspace (8 AI role agents, bounded orchestration)</li>
+  <li>SaaS Opportunity Agent + MVP Planning + Monetization Strategy</li>
+  <li>SaaS Validation + SaaS Roadmap Generator</li>
+</ul>
+
+<h3>Phase 4 (5,000+ users)</h3>
+<ul>
+  <li>Revenue Growth Agent + Business Scaling Agent</li>
+  <li>Revenue Optimization, Delegation Advisor, Team Building</li>
+  <li>Business Intelligence Dashboard</li>
+</ul>
+</section>
+
+<!-- â•â•â• SECTION: MVP Done â•â•â• -->
+<section id="mvp-done">
+<h2>26. MVP â€” Definition of Done</h2>
+<p>A user can complete the entire income journey end-to-end:</p>
+<ol>
+  <li><strong>Sign up</strong> â†’ start the 7-day trial with a live countdown</li>
+  <li><strong>Complete skill assessment</strong> â†’ readiness score + monetizable skills</li>
+  <li><strong>Discover an opportunity</strong> â†’ monthly INR potential + difficulty</li>
+  <li><strong>Build an offer</strong> â†’ service tiers + pricing</li>
+  <li><strong>Generate Profile Intelligence profile</strong> â†’ resume + public profile site</li>
+  <li><strong>Add a lead</strong> â†’ run Client Intelligence (temperature + proposal)</li>
+  <li><strong>Generate outreach</strong> â†’ send via Gmail â†’ track in CRM</li>
+  <li><strong>Relationship Success Agent</strong> â†’ schedule follow-ups/reminders</li>
+  <li><strong>Use Work Support Agent</strong> â†’ deliver the work</li>
+  <li><strong>Mark client WON</strong> â†’ trigger First Income Celebration</li>
+  <li><strong>Income Dashboard</strong> â†’ see earnings + milestones</li>
+  <li><strong>Smart Upgrade Engine</strong> â†’ personalized offer appears during/after trial</li>
+  <li><strong>Subscription billing</strong> â†’ Razorpay (Cashfree failover), monthly Pro + annual Premium</li>
+  <li><strong>Super Admin</strong> â†’ manages everything from admin dashboard</li>
+</ol>
+</section>
+
+<!-- â•â•â• SECTION: Decision Log â•â•â• -->
+<section id="decision-log">
+<h2>27. Decision Log</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Date</th><th>Decision</th></tr>
+  <tr><td>2026-05-30</td><td>Initial spec set compiled from product + engineering decision documents 1â€“5.</td></tr>
+  <tr><td>2026-06-17</td><td>Rebranded AI-SHOS â†’ AppyDoer. Merged AI Workforce Studio expansion. Vision broadened to AI Workforce OS. Income chain extended with Profile, Work Delivery, Relationships. Replaced unlimited Free with 7-day trial + locked post-trial Free state. Resolved Pro=monthly / Premium=annual. Added Smart Upgrade Engine. Added Profile Intelligence, Client Intelligence, Relationship Success, Work Support, VET, Revenue Growth, Business Scaling agents. Â§3.1 preserved by defining VET as bounded orchestrated workflow.</td></tr>
+  <tr><td>2026-06-21</td><td>Added full Gmail outreach platform (10 phases): OAuth scope upgraded to gmail.modify + labels. EmailThread + EmailMessage DB models added. Gmail sync service (2-min cron). Reply Intelligence agent (REPLY_INTELLIGENCE). SSE notifications. Outreach dashboard. Conversation thread view with reply composer. NotificationBell component. CRM auto-stage update on reply.</td></tr>
+</table>
+</div>
+</section>
+
+<footer>
+  <p>AppyDoer â€” Developer &amp; Admin Reference v1.0 Â· Generated 2026-08-24 Â· Confidential</p>
+  <p>Primary KPI: <strong>How many users earned their first online income?</strong></p>
+</footer>
+
+</main>
+</div>
+
+</body>
+</html>
+

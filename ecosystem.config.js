@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'ai-workbuddy',
+      name: 'appydoer',
       script: 'node',
       args: 'node_modules/next/dist/bin/next start -p 3001',
       cwd: 'D:\\project\\Ai Workbuddy',

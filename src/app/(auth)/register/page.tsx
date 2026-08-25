@@ -193,8 +193,23 @@ export default function RegisterPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
-            <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">W</div>
-            <span className="font-bold text-gray-900">AppyDoer</span>
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="rm-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#4338ca"/><stop offset="100%" stopColor="#6d28d9"/>
+                </linearGradient>
+              </defs>
+              <rect width="40" height="40" rx="10" fill="url(#rm-bg)"/>
+              <path d="M8 33 L20 7 L32 33" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <line x1="13" y1="23" x2="27" y2="23" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+              <circle cx="13" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+              <circle cx="20" cy="23" r="2.2" fill="#c4b5fd" opacity=".85"/>
+              <circle cx="27" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+              <circle cx="20" cy="7" r="5" fill="#6d28d9" opacity=".4"/>
+              <circle cx="20" cy="7" r="3.5" fill="#c4b5fd" opacity=".85"/>
+              <circle cx="20" cy="7" r="1.7" fill="white" opacity=".95"/>
+            </svg>
+            <span className="font-bold text-gray-900">Appy<span className="text-indigo-600">Doer</span></span>
           </div>
 
           <div className="mb-8">

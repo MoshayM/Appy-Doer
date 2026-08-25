@@ -57,23 +57,19 @@ function LeftPanel() {
       <div className="relative flex items-center gap-3">
         {/* AppyDoer logo icon */}
         <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <clipPath id="lp-clip"><rect width="40" height="40" rx="10"/></clipPath>
-          </defs>
           <rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.18)"/>
-          {/* AI arcs */}
-          <g clipPath="url(#lp-clip)">
-            <path d="M12 27 Q20 17 28 27" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity=".7"/>
-            <path d="M8 31 Q20 13 32 31"   stroke="white" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity=".45"/>
-          </g>
-          {/* Head + circuit */}
-          <circle cx="20" cy="12" r="4" fill="white"/>
-          <line x1="20" y1="8" x2="20" y2="6" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity=".65"/>
-          <circle cx="20" cy="5.5" r="1.5" fill="rgba(196,181,253,0.95)"/>
-          {/* Body */}
-          <path d="M17 16 L20 22 L23 16" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          <path d="M18.5 21 L16 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-          <path d="M21.5 21 L24 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+          {/* "A" legs */}
+          <path d="M8 33 L20 7 L32 33" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          {/* Crossbar */}
+          <line x1="13" y1="23" x2="27" y2="23" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+          {/* Circuit nodes */}
+          <circle cx="13" cy="23" r="2.2" fill="rgba(165,180,252,0.75)"/>
+          <circle cx="20" cy="23" r="2.2" fill="rgba(196,181,253,0.9)"/>
+          <circle cx="27" cy="23" r="2.2" fill="rgba(165,180,252,0.75)"/>
+          {/* Apex spark */}
+          <circle cx="20" cy="7" r="5" fill="rgba(109,40,217,0.4)"/>
+          <circle cx="20" cy="7" r="3.5" fill="rgba(196,181,253,0.9)"/>
+          <circle cx="20" cy="7" r="1.7" fill="white" opacity=".95"/>
         </svg>
         <span className="font-bold text-lg tracking-tight">Appy<span className="text-indigo-300">Doer</span></span>
       </div>
@@ -169,22 +165,23 @@ export default function LoginPage() {
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
             <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
-                <linearGradient id="ml-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#4f46e5"/><stop offset="100%" stopColor="#7c3aed"/>
+                <linearGradient id="ml-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#4338ca"/><stop offset="100%" stopColor="#6d28d9"/>
                 </linearGradient>
-                <clipPath id="ml-clip"><rect width="40" height="40" rx="10"/></clipPath>
               </defs>
-              <rect width="40" height="40" rx="10" fill="url(#ml-grad)"/>
-              <g clipPath="url(#ml-clip)">
-                <path d="M12 27 Q20 17 28 27" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity=".7"/>
-                <path d="M8 31 Q20 13 32 31"   stroke="white" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity=".45"/>
-              </g>
-              <circle cx="20" cy="12" r="4" fill="white"/>
-              <line x1="20" y1="8" x2="20" y2="6" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity=".6"/>
-              <circle cx="20" cy="5.5" r="1.5" fill="#c4b5fd" opacity=".9"/>
-              <path d="M17 16 L20 22 L23 16" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-              <path d="M18.5 21 L16 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-              <path d="M21.5 21 L24 30" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+              <rect width="40" height="40" rx="10" fill="url(#ml-bg)"/>
+              {/* "A" legs */}
+              <path d="M8 33 L20 7 L32 33" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              {/* Crossbar */}
+              <line x1="13" y1="23" x2="27" y2="23" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+              {/* Circuit nodes */}
+              <circle cx="13" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+              <circle cx="20" cy="23" r="2.2" fill="#c4b5fd" opacity=".85"/>
+              <circle cx="27" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
+              {/* Apex spark */}
+              <circle cx="20" cy="7" r="5" fill="#6d28d9" opacity=".4"/>
+              <circle cx="20" cy="7" r="3.5" fill="#c4b5fd" opacity=".85"/>
+              <circle cx="20" cy="7" r="1.7" fill="white" opacity=".95"/>
             </svg>
             <span className="font-bold text-gray-900">Appy<span className="text-indigo-600">Doer</span></span>
           </div>

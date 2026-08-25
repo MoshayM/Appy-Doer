@@ -55,8 +55,14 @@ function LeftPanel() {
       <NeuralBackground />
 
       <div className="relative flex items-center gap-3">
-        <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center font-bold text-lg">W</div>
-        <span className="font-semibold text-lg tracking-tight">AI WorkBuddy</span>
+        {/* AppyDoer logo icon */}
+        <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.18)" />
+          <path d="M10 29 L20 11 L30 29" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          <line x1="14" y1="23" x2="26" y2="23" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M20 8 L17 12 M20 8 L23 12" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="font-bold text-lg tracking-tight">Appy<span className="text-indigo-300">Doer</span></span>
       </div>
 
       <div className="relative space-y-8">
@@ -149,7 +155,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
             <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">W</div>
-            <span className="font-bold text-gray-900">AI WorkBuddy</span>
+            <span className="font-bold text-gray-900">Appy<span className="text-indigo-600">Doer</span></span>
           </div>
 
           <div className="mb-8">

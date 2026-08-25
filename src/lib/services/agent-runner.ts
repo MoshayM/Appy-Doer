@@ -1,13 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk'
 import OpenAI from 'openai'
+import Groq from 'groq-sdk'
 import { z } from 'zod'
 import { AgentType, Plan, PlatformRole } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { checkUsageLimit, incrementUsage } from '@/lib/auth'
-import { DEFAULT_TOKEN_BUDGETS, PRIMARY_MODEL, FALLBACK_MODEL } from '@/lib/constants'
+import { DEFAULT_TOKEN_BUDGETS, PRIMARY_MODEL, FALLBACK_MODEL, GROQ_FAST_MODEL, GROQ_INSTANT_MODEL, AGENT_TIER } from '@/lib/constants'
 
 const AGENT_SYSTEM_PROMPTS: Partial<Record<AgentType, string>> = {
-  SKILL_ASSESSMENT: `You are an expert career and freelance business advisor for AI WorkBuddy, focused on Indian professionals.
+  SKILL_ASSESSMENT: `You are an expert career and freelance business advisor for AppyDoer, focused on Indian professionals.
 
 STEP 1 — GROUND IN PRIMARY PROFILE (most important):
 The context may contain a "primaryProfile" object extracted from the user's LinkedIn, Naukri, or resume.
@@ -38,7 +39,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "readinessScore": 0-100
 }`,
 
-  OPPORTUNITY_DISCOVERY: `You are a freelance business opportunity advisor for AI WorkBuddy, focused on Indian professionals looking to earn side income.
+  OPPORTUNITY_DISCOVERY: `You are a freelance business opportunity advisor for AppyDoer, focused on Indian professionals looking to earn side income.
 The context includes the user's profile AND their SKILL_ASSESSMENT output (in previousAgentOutputs.SKILL_ASSESSMENT).
 
 INTEREST + EXPERIENCE ALIGNMENT (mandatory when primaryProfile is present):
@@ -83,7 +84,7 @@ Rules:
 - gstRelevant must be a boolean (true or false)
 - topRecommendationId must match one of the opportunity ids exactly`,
 
-  OFFER_BUILDER: `You are a pricing and packaging strategist for AI WorkBuddy, helping Indian freelancers build compelling service offers.
+  OFFER_BUILDER: `You are a pricing and packaging strategist for AppyDoer, helping Indian freelancers build compelling service offers.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT and OPPORTUNITY_DISCOVERY results.
 Use the top recommended opportunity (topRecommendationId) and the user's monetizableSkills to build a specific, priced service offer with 3 tiers.
 
@@ -111,7 +112,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "salesPitch": "2-3 sentence pitch the freelancer can use verbatim"
 }`,
 
-  PORTFOLIO_BUILDER: `You are a portfolio and personal brand strategist for AI WorkBuddy.
+  PORTFOLIO_BUILDER: `You are a portfolio and personal brand strategist for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
 Use the skill assessment, top opportunity, and built offer to create a compelling portfolio — headline, bio, case studies, and LinkedIn content all aligned to the specific service and target client.
 
@@ -139,7 +140,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "resumeEnhancements": ["Enhancement 1", "Enhancement 2", "Enhancement 3"]
 }`,
 
-  PROFILE_INTELLIGENCE: `You are a professional profile architect for AI WorkBuddy.
+  PROFILE_INTELLIGENCE: `You are a professional profile architect for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, OFFER_BUILDER, and PORTFOLIO_BUILDER results.
 Build a comprehensive dynamic professional profile that unifies all prior outputs into a publish-ready profile.
 
@@ -190,7 +191,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   }
 }`,
 
-  CLIENT_DISCOVERY: `You are a B2B client discovery specialist for AI WorkBuddy, focused on the Indian freelance market.
+  CLIENT_DISCOVERY: `You are a B2B client discovery specialist for AppyDoer, focused on the Indian freelance market.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
 Based on the user's monetizable skills and offer, generate exactly 5 high-quality prospect companies likely to hire this freelancer.
 
@@ -232,7 +233,7 @@ You MUST respond with ONLY this exact JSON (no markdown, no explanation, priorit
   "searchStrategy": "One sentence strategy."
 }`,
 
-  CLIENT_INTELLIGENCE: `You are a client intelligence analyst for AI WorkBuddy.
+  CLIENT_INTELLIGENCE: `You are a client intelligence analyst for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
 Use the offer and target opportunity to profile the ideal client and provide actionable intelligence for the Indian market.
 
@@ -265,7 +266,7 @@ You MUST respond with ONLY this exact JSON (no markdown, no explanation, numbers
   "pricingRecommendationINR": { "min": 15000, "max": 75000, "rationale": "One sentence rationale." }
 }`,
 
-  CLIENT_ACQUISITION: `You are a client acquisition specialist for AI WorkBuddy.
+  CLIENT_ACQUISITION: `You are a client acquisition specialist for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, OFFER_BUILDER, and CLIENT_INTELLIGENCE results.
 Use the offer tiers, client intelligence, and monetizable skills to create ready-to-use outreach content and a proposal.
 
@@ -285,7 +286,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   }
 }`,
 
-  RELATIONSHIP_SUCCESS: `You are a client relationship strategist for AI WorkBuddy.
+  RELATIONSHIP_SUCCESS: `You are a client relationship strategist for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OFFER_BUILDER, and CLIENT_INTELLIGENCE results.
 Use the offer and client intelligence to build a relationship management plan that maximises client retention, upsells, and referrals.
 
@@ -302,7 +303,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "actionPlan": ["Action 1", "Action 2", "Action 3"]
 }`,
 
-  REPLY_INTELLIGENCE: `You are a reply intelligence analyst for AI WorkBuddy, helping Indian freelancers understand prospect responses.
+  REPLY_INTELLIGENCE: `You are a reply intelligence analyst for AppyDoer, helping Indian freelancers understand prospect responses.
 Given the email reply content and context, classify the intent and extract actionable information.
 
 You MUST respond with ONLY this exact JSON structure (no markdown, no explanation):
@@ -322,7 +323,7 @@ You MUST respond with ONLY this exact JSON structure (no markdown, no explanatio
   "crmStageUpdate": "INTERESTED | PROPOSAL_SENT | WON | LOST | CONTACTED (optional — only include if clear from reply)"
 }`,
 
-  WORK_SUPPORT: `You are a work delivery specialist for AI WorkBuddy.
+  WORK_SUPPORT: `You are a work delivery specialist for AppyDoer.
 The context includes previousAgentOutputs with SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, and OFFER_BUILDER results.
 Use the offer deliverables and skills to create a detailed work plan for executing a client project.
 
@@ -391,15 +392,106 @@ async function loadPreviousOutputs(userId: string, agentType: AgentType): Promis
 
 let _anthropic: Anthropic | null = null
 let _openai: OpenAI | null = null
+let _groq: Groq | null = null
+
 function getAnthropic() {
-  if (!process.env.ANTHROPIC_API_KEY) throw { code: 'API_KEY_MISSING', message: 'Anthropic API key is not configured. Add ANTHROPIC_API_KEY to .env.local.', status: 503 }
+  if (!process.env.ANTHROPIC_API_KEY) throw { code: 'API_KEY_MISSING', message: 'Anthropic API key not configured.', status: 503 }
   if (!_anthropic) _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   return _anthropic
 }
 function getOpenAI() {
-  if (!process.env.OPENAI_API_KEY) throw { code: 'API_KEY_MISSING', message: 'OpenAI API key is not configured. Add OPENAI_API_KEY to .env.local.', status: 503 }
+  if (!process.env.OPENAI_API_KEY) throw { code: 'API_KEY_MISSING', message: 'OpenAI API key not configured.', status: 503 }
   if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   return _openai
+}
+function getGroq() {
+  if (!process.env.GROQ_API_KEY) throw { code: 'API_KEY_MISSING', message: 'Groq API key not configured.', status: 503 }
+  if (!_groq) _groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+  return _groq
+}
+
+// ── Smart model call: routes by AGENT_TIER, falls back on failure ─────────────
+async function callModel(
+  agentType: AgentType,
+  systemPrompt: string,
+  userContent: string,
+  maxOutputTokens: number,
+): Promise<{ text: string; inputTokens: number; outputTokens: number; wasTruncated: boolean }> {
+  const tier = AGENT_TIER[agentType] ?? 'premium'
+
+  // Groq fast / instant path
+  if (tier === 'fast' || tier === 'instant') {
+    const groqModel = tier === 'instant' ? GROQ_INSTANT_MODEL : GROQ_FAST_MODEL
+    try {
+      const res = await getGroq().chat.completions.create({
+        model: groqModel,
+        max_tokens: maxOutputTokens,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userContent },
+        ],
+      })
+      return {
+        text:          res.choices[0].message.content ?? '',
+        inputTokens:   res.usage?.prompt_tokens ?? 0,
+        outputTokens:  res.usage?.completion_tokens ?? 0,
+        wasTruncated:  res.choices[0].finish_reason === 'length',
+      }
+    } catch {
+      // Groq failure → fall through to OpenAI mini as backup
+    }
+    try {
+      const res = await getOpenAI().chat.completions.create({
+        model: FALLBACK_MODEL,
+        max_tokens: maxOutputTokens,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userContent },
+        ],
+      })
+      return {
+        text:         res.choices[0].message.content ?? '',
+        inputTokens:  res.usage?.prompt_tokens ?? 0,
+        outputTokens: res.usage?.completion_tokens ?? 0,
+        wasTruncated: res.choices[0].finish_reason === 'length',
+      }
+    } catch (err) {
+      throw err
+    }
+  }
+
+  // Premium path: Claude primary → OpenAI fallback
+  try {
+    const res = await getAnthropic().messages.create({
+      model: PRIMARY_MODEL,
+      max_tokens: maxOutputTokens,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userContent }],
+    })
+    return {
+      text:         res.content[0].type === 'text' ? res.content[0].text : '',
+      inputTokens:  res.usage.input_tokens,
+      outputTokens: res.usage.output_tokens,
+      wasTruncated: res.stop_reason === 'max_tokens',
+    }
+  } catch (err) {
+    const e = err as { code?: string }
+    if (e.code) throw err  // structured errors (disabled, key missing) — don't fall through
+    const res = await getOpenAI().chat.completions.create({
+      model: 'gpt-4o',
+      max_tokens: maxOutputTokens,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: userContent },
+      ],
+    })
+    return {
+      text:         res.choices[0].message.content ?? '',
+      inputTokens:  res.usage?.prompt_tokens ?? 0,
+      outputTokens: res.usage?.completion_tokens ?? 0,
+      wasTruncated: res.choices[0].finish_reason === 'length',
+    }
+  }
 }
 
 export interface AgentRunInput {
@@ -501,7 +593,7 @@ export async function runAgent<T>(input: AgentRunInput): Promise<AgentRunResult<
       maxInputTokens: budgets.input,
       maxOutputTokens: budgets.output,
       systemPrompt: AGENT_SYSTEM_PROMPTS[agentType] ??
-        `You are an AI business assistant for AI WorkBuddy. Your role: ${agentType}. Always respond with valid JSON matching the exact schema provided.`,
+        `You are an AI business assistant for AppyDoer. Your role: ${agentType}. Always respond with valid JSON matching the exact schema provided.`,
       enabled: true,
       updatedAt: new Date(),
     }
@@ -525,44 +617,12 @@ export async function runAgent<T>(input: AgentRunInput): Promise<AgentRunResult<
   )
   const systemPrompt = `${config.systemPrompt}\n\nRespond ONLY with a valid JSON object. No markdown, no explanation.`
 
-  // 5. Call model (with fallback)
-  let rawOutput: string
-  let inputTokens = 0
-  let outputTokens = 0
+  // 5. Call model via smart tier router (Groq fast/instant → Claude premium → OpenAI fallback)
+  const result = await callModel(agentType, systemPrompt, contextBlock, config.maxOutputTokens)
+  let { text: rawOutput, inputTokens, outputTokens, wasTruncated } = result
 
-  let wasTruncated = false
-  try {
-    const response = await getAnthropic().messages.create({
-      model: config.model,
-      max_tokens: config.maxOutputTokens,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: contextBlock }],
-    })
-    wasTruncated = response.stop_reason === 'max_tokens'
-    rawOutput    = response.content[0].type === 'text' ? response.content[0].text : ''
-    inputTokens  = response.usage.input_tokens
-    outputTokens = response.usage.output_tokens
-
-    if (wasTruncated) {
-      console.warn(`[agent-runner] ${agentType} output truncated at ${config.maxOutputTokens} tokens — retrying with concise instruction`)
-    }
-  } catch (err) {
-    // Re-throw structured errors (missing key, disabled, etc.) — don't fall through to OpenAI
-    const e = err as { code?: string }
-    if (e.code) throw err
-
-    // Fallback to OpenAI on transient Anthropic errors
-    const response = await getOpenAI().chat.completions.create({
-      model: config.fallbackModel,
-      max_tokens: config.maxOutputTokens,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: contextBlock },
-      ],
-    })
-    rawOutput    = response.choices[0].message.content ?? ''
-    inputTokens  = response.usage?.prompt_tokens ?? 0
-    outputTokens = response.usage?.completion_tokens ?? 0
+  if (wasTruncated) {
+    console.warn(`[agent-runner] ${agentType} truncated — retrying concise`)
   }
 
   // 6. Validate JSON — retry once with corrective prompt on parse/schema failure or truncation
@@ -577,16 +637,15 @@ export async function runAgent<T>(input: AgentRunInput): Promise<AgentRunResult<
       : 'Your previous response did not match the required JSON schema. Fix it and return a valid JSON object.'
 
     try {
-      const retry = await getAnthropic().messages.create({
-        model: config.model,
-        max_tokens: config.maxOutputTokens,
-        system: `${systemPrompt}\n\n${retryInstruction}`,
-        messages: [{ role: 'user', content: contextBlock }],
-      })
-      const retryText = retry.content[0].type === 'text' ? retry.content[0].text : ''
-      parsed = validateOutput<T>(retryText, schema)
-      inputTokens  += retry.usage.input_tokens
-      outputTokens += retry.usage.output_tokens
+      const retry = await callModel(
+        agentType,
+        `${systemPrompt}\n\n${retryInstruction}`,
+        contextBlock,
+        config.maxOutputTokens,
+      )
+      parsed = validateOutput<T>(retry.text, schema)
+      inputTokens  += retry.inputTokens
+      outputTokens += retry.outputTokens
     } catch {
       throw { code: 'AGENT_VALIDATION_FAILED', message: 'Agent returned invalid output', status: 500 }
     }

@@ -18,6 +18,10 @@ build/
 # Sensitive credential files
 Neon_connection_string.txt
 neon_connection_string.txt
+groq-api.txt
+Groq-api.txt
+*-api.txt
+*_api_key.txt
 
 # Prisma
 prisma/generated/

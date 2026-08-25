@@ -129,7 +129,7 @@ export default async function BillingPage() {
           <span className="text-red-500 text-lg shrink-0">⚠</span>
           <div>
             <p className="font-semibold text-red-800 text-sm">Your trial has ended</p>
-            <p className="text-red-600 text-sm mt-0.5">All your data is preserved. Subscribe to continue using AI WorkBuddy.</p>
+            <p className="text-red-600 text-sm mt-0.5">All your data is preserved. Subscribe to continue using AppyDoer.</p>
           </div>
         </div>
       )}

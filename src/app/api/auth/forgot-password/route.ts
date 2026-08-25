@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const resetUrl = `${APP_URL}/reset-password?token=${encodeURIComponent(token)}`
     await sendEmail({
       to: user.email,
-      subject: 'Reset your AI WorkBuddy password',
+      subject: 'Reset your AppyDoer password',
       html: buildResetEmail(resetUrl, user.email),
     })
 

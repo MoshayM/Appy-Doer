@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { PlatformRole, Plan } from '@prisma/client'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { LogOut } from 'lucide-react'
+import { LogOut, Menu, X } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard',               label: 'Dashboard',            icon: '📊' },
@@ -55,6 +55,7 @@ const isAdmin = (role: PlatformRole) => role === 'ADMIN' || role === 'SUPER_ADMI
 export default function AppSidebar({ role, plan, email }: Props) {
   const pathname = usePathname()
   const [loggingOut, setLoggingOut] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const isFreelancerActive = navItems.some(
     item => pathname === item.href || pathname.startsWith(item.href + '/'),
@@ -97,18 +98,65 @@ export default function AppSidebar({ role, plan, email }: Props) {
     </button>
   )
 
-  return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+  const SidebarContent = () => (
+    <>
       {/* Logo */}
-      <div className="p-6 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">W</div>
+      <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="sb-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#6366f1"/>
+                <stop offset="100%" stopColor="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <rect width="40" height="40" rx="10" fill="url(#sb-grad)"/>
+            <path d="M10 29 L20 11 L30 29" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            <line x1="14" y1="23" x2="26" y2="23" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
+            <path d="M20 8 L17 12 M20 8 L23 12" stroke="rgba(255,255,255,0.65)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
           <div>
-            <div className="font-bold text-gray-900 text-sm">AI WorkBuddy</div>
+            <div className="font-bold text-gray-900 text-sm tracking-tight">Appy<span className="text-indigo-600">Doer</span></div>
             <div className="text-xs text-gray-400">{accountLabel(role, plan)}</div>
           </div>
         </div>
+        {/* Mobile close button */}
+        <button className="lg:hidden p-1 rounded-lg text-gray-400 hover:text-gray-600" onClick={() => setMobileOpen(false)}>
+          <X size={18} />
+        </button>
       </div>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile hamburger trigger — fixed top-left */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-xl shadow-md border border-gray-200 text-gray-600"
+        onClick={() => setMobileOpen(o => !o)}
+        aria-label="Open menu"
+      >
+        <Menu size={20} />
+      </button>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — desktop always visible, mobile drawer */}
+      <aside className={cn(
+        'bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out',
+        // Desktop: static in layout flow
+        'lg:relative lg:translate-x-0 lg:w-64 lg:flex',
+        // Mobile: fixed drawer from left
+        'fixed inset-y-0 left-0 z-50 w-72',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      )}>
+      <SidebarContent />
 
       {/* Nav */}
       <nav className="flex-1 py-4 overflow-y-auto">
@@ -244,6 +292,7 @@ export default function AppSidebar({ role, plan, email }: Props) {
           </button>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }

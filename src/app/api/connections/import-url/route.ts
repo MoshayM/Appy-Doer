@@ -65,10 +65,10 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       try {
         const [userRes, reposRes] = await Promise.all([
           timedFetch(`https://api.github.com/users/${username}`, {
-            headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'WorkBuddy' },
+            headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'AppyDoer' },
           }),
           timedFetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
-            headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'WorkBuddy' },
+            headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'AppyDoer' },
           }),
         ])
 

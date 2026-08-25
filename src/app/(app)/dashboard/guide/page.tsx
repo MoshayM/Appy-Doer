@@ -10,8 +10,8 @@ const MODULES = [
     color: 'indigo',
     sections: [
       {
-        title: 'Welcome to AI WorkBuddy',
-        body: `AI WorkBuddy is your AI-powered freelance command center. It combines intelligent agents, client outreach tools, financial tracking, and workspace automation into a single platform — designed to turn your expertise into a sustainable freelance income.`,
+        title: 'Welcome to AppyDoer',
+        body: `AppyDoer is your AI-powered freelance command center. It combines intelligent agents, client outreach tools, financial tracking, and workspace automation into a single platform — designed to turn your expertise into a sustainable freelance income.`,
         steps: [
           'Complete your profile with your profession and core skills',
           'Run the Income Planner to identify your most valuable services',
@@ -276,7 +276,7 @@ const MODULES = [
           'Google users: click the link to Google Account Security for password management',
           'Forgot your password? Use the "Forgot password?" link on the login screen',
         ],
-        tip: 'Use a strong, unique password for your AI WorkBuddy account — it stores sensitive client data and communication. Enable 2FA on your Google account if you use Google Sign-In.',
+        tip: 'Use a strong, unique password for your AppyDoer account — it stores sensitive client data and communication. Enable 2FA on your Google account if you use Google Sign-In.',
       },
       {
         title: 'Subscription & Billing',

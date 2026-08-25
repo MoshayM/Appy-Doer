@@ -38,7 +38,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-cyan-500 rounded-md flex items-center justify-center text-white font-bold text-sm">W</div>
-            <span className="font-bold text-slate-900 text-lg">AI WorkBuddy</span>
+            <span className="font-bold text-slate-900 text-lg">AppyDoer</span>
           </div>
           <div className="flex items-center gap-5">
             <Link href="/login" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Sign In</Link>
@@ -105,10 +105,10 @@ export default function LandingPage() {
               </div>
             ))}
 
-            {/* Center "AI WorkBuddy" card */}
+            {/* Center "AppyDoer" card */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-cyan-500 rounded-2xl px-6 py-4 flex flex-col items-center gap-1 shadow-xl shadow-cyan-200 z-10">
               <span className="text-4xl font-black text-white tracking-tighter">AI</span>
-              <span className="text-xs font-semibold text-cyan-100 tracking-wide">WorkBuddy</span>
+              <span className="text-xs font-semibold text-cyan-100 tracking-wide">AppyDoer</span>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center sm:items-start gap-1">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-cyan-500 rounded-md flex items-center justify-center text-white font-bold text-xs">W</div>
-              <span className="font-bold text-white text-base">AI WorkBuddy</span>
+              <span className="font-bold text-white text-base">AppyDoer</span>
             </div>
             <p className="text-slate-500 text-xs">Your AI-Powered Workforce Operating System</p>
           </div>
@@ -200,7 +200,7 @@ export default function LandingPage() {
             <Link href="/login" className="text-slate-400 hover:text-white transition-colors">Sign In</Link>
             <Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors">Dashboard</Link>
           </div>
-          <p className="text-slate-600 text-xs">© 2026 AI WorkBuddy. All rights reserved.</p>
+          <p className="text-slate-600 text-xs">© 2026 AppyDoer. All rights reserved.</p>
         </div>
       </footer>
 

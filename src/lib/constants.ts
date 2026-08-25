@@ -57,5 +57,34 @@ export const DEFAULT_TOKEN_BUDGETS: Record<AgentType, { input: number; output: n
   REPLY_INTELLIGENCE:      { input: 2000,  output: 600  },
 }
 
+// ─── Primary tiers (cost-optimised × quality) ────────────────────────────────
+// Premium tier  → Claude Sonnet 4.6  (deep reasoning, nuanced prose, complex JSON)
+// Fast tier     → Groq llama-3.3-70b (structured tasks, speed, ~10× cheaper)
+// Instant tier  → Groq llama-3.1-8b  (ultra-fast short tasks, reply suggestions)
+// Fallback      → OpenAI GPT-4o-mini  (universal safety net)
 export const PRIMARY_MODEL   = 'claude-sonnet-4-6'
-export const FALLBACK_MODEL  = 'gpt-4o'
+export const FALLBACK_MODEL  = 'gpt-4o-mini'
+
+export const GROQ_FAST_MODEL    = 'llama-3.3-70b-versatile'
+export const GROQ_INSTANT_MODEL = 'llama-3.1-8b-instant'
+
+// Per-agent tier assignment: 'premium' | 'fast' | 'instant'
+// premium  → Claude Sonnet  (high reasoning, creative, nuanced)
+// fast     → Groq 70B       (structured JSON, analysis, cost-effective)
+// instant  → Groq 8B        (quick suggestions, short outputs)
+export const AGENT_TIER: Record<string, 'premium' | 'fast' | 'instant'> = {
+  // Premium — quality is the deciding factor
+  PROFILE_INTELLIGENCE:  'premium',
+  CLIENT_INTELLIGENCE:   'premium',
+  WORK_SUPPORT:          'premium',
+  CLIENT_ACQUISITION:    'premium',
+  CLIENT_DISCOVERY:      'premium',
+  PORTFOLIO_BUILDER:     'premium',
+  // Fast — structured JSON, high-volume, speed matters
+  SKILL_ASSESSMENT:      'fast',
+  OPPORTUNITY_DISCOVERY: 'fast',
+  OFFER_BUILDER:         'fast',
+  RELATIONSHIP_SUCCESS:  'fast',
+  // Instant — short, quick, fire-and-forget
+  REPLY_INTELLIGENCE:    'instant',
+}

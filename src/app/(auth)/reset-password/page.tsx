@@ -154,7 +154,7 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-2 justify-center mb-8">
           <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold">W</div>
-          <span className="font-bold text-gray-900 text-lg">AI WorkBuddy</span>
+          <span className="font-bold text-gray-900 text-lg">AppyDoer</span>
         </div>
         <Suspense fallback={<div className="bg-white rounded-2xl border p-8 text-center text-gray-400">Loading…</div>}>
           <ResetForm />

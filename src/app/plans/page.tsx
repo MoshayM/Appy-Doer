@@ -191,7 +191,7 @@ export default async function PlansPage() {
       <nav className="flex items-center justify-between px-8 py-4 border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">W</div>
-          <span className="font-bold text-white text-sm">AI WorkBuddy</span>
+          <span className="font-bold text-white text-sm">AppyDoer</span>
         </Link>
         <div className="flex items-center gap-3">
           {currentPlan === 'NONE' ? (

@@ -1,0 +1,39 @@
+{
+  "name": "AppyDoer — AI Workforce OS",
+  "short_name": "AppyDoer",
+  "description": "Discover opportunities, acquire clients, deliver work, and build recurring income with your AI-powered virtual team.",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0f0f1a",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    { "src": "/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon.svg",      "sizes": "any",     "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "AppyDoer Dashboard"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Dashboard",      "url": "/dashboard",             "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Client Outreach","url": "/dashboard/clients",     "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Work Support",   "url": "/dashboard/workspace",   "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }] }
+  ]
+}

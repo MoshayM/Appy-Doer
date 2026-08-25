@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
-const FROM   = process.env.RESEND_FROM_EMAIL ?? 'AI WorkBuddy <noreply@workbuddy.ai>'
+const FROM   = process.env.RESEND_FROM_EMAIL ?? 'AppyDoer <noreply@workbuddy.ai>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
 export async function sendEmail({
@@ -27,7 +27,7 @@ export function buildResetEmail(resetUrl: string, email: string): string {
 <div style="max-width:480px;margin:40px auto;background:#fff;border-radius:16px;padding:40px;border:1px solid #e5e7eb">
   <div style="text-align:center;margin-bottom:28px">
     <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:#4F46E5;border-radius:12px;color:#fff;font-weight:700;font-size:20px">W</div>
-    <div style="margin-top:8px;font-weight:700;color:#111827;font-size:18px">AI WorkBuddy</div>
+    <div style="margin-top:8px;font-weight:700;color:#111827;font-size:18px">AppyDoer</div>
   </div>
   <h2 style="margin:0 0 8px;color:#111827;font-size:20px;font-weight:700">Reset your password</h2>
   <p style="margin:0 0 20px;color:#6B7280;font-size:14px;line-height:1.6">

@@ -241,7 +241,7 @@ ${trackingId ? `<img src="${APP_URL}/api/track/email/${trackingId}" width="1" he
         method: 'POST',
         headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'AI WorkBuddy <onboarding@resend.dev>',
+          from: 'AppyDoer <onboarding@resend.dev>',
           to:   [prospectEmail],
           subject,
           html: htmlBody,

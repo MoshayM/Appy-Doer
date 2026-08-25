@@ -34,7 +34,7 @@ export const NotificationService = {
       const user = await prisma.user.findUnique({ where: { id: userId } })
       if (user?.email) {
         await getResend().emails.send({
-          from: 'AI WorkBuddy <noreply@workbuddy.app>',
+          from: 'AppyDoer <noreply@workbuddy.app>',
           to: user.email,
           subject: title,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:auto"><h2>${title}</h2><p>${body}</p></div>`,
@@ -49,7 +49,7 @@ export const NotificationService = {
       ? 'Your trial has ended — upgrade to keep access'
       : `${daysLeft} day${daysLeft > 1 ? 's' : ''} left in your trial`
     const body = daysLeft === 0
-      ? 'Your AI WorkBuddy trial has expired. Upgrade to Pro or Premium to continue generating income.'
+      ? 'Your AppyDoer trial has expired. Upgrade to Pro or Premium to continue generating income.'
       : `You have ${daysLeft} day${daysLeft > 1 ? 's' : ''} remaining. Don't lose your work — subscribe now.`
 
     await NotificationService.send({
@@ -60,7 +60,7 @@ export const NotificationService = {
 
   async sendFirstIncomeCelebration(userId: string, amountINR: number) {
     const title = '🎉 First Income Achieved!'
-    const body  = `Congratulations! You just marked your first client as Won. This is the moment AI WorkBuddy was built for. Your first income milestone has been unlocked.`
+    const body  = `Congratulations! You just marked your first client as Won. This is the moment AppyDoer was built for. Your first income milestone has been unlocked.`
 
     await NotificationService.send({
       userId, type: 'CELEBRATION', channel: 'EMAIL', title, body,
@@ -85,7 +85,7 @@ export const NotificationService = {
   },
 
   async sendWeeklyDigest(userId: string, stats: Record<string, number>) {
-    const title = 'Your AI WorkBuddy Week in Review'
+    const title = 'Your AppyDoer Week in Review'
     const body  = `This week: ${stats.leadsAdded ?? 0} new leads, ${stats.aiOutputs ?? 0} AI outputs, ${stats.wonLeads ?? 0} deals won.`
 
     await NotificationService.send({

@@ -11,7 +11,7 @@ function errorPopup(platform: string, message: string): NextResponse {
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Error — WorkBuddy</title>
+  <title>Error — AppyDoer</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,sans-serif;background:#fef2f2;display:flex;align-items:center;justify-content:center;min-height:100vh}

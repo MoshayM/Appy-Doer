@@ -25,7 +25,7 @@ function popupResponse(ok: boolean, platform: string, message: string): NextResp
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${ok ? 'Connected' : 'Error'} — WorkBuddy</title>
+  <title>${ok ? 'Connected' : 'Error'} — AppyDoer</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,sans-serif;background:${bg};display:flex;align-items:center;justify-content:center;min-height:100vh}

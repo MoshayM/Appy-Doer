@@ -57,7 +57,7 @@ function LeftPanel() {
 
       <div className="relative flex items-center gap-3">
         <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center font-bold text-lg">W</div>
-        <span className="font-semibold text-lg tracking-tight">AI WorkBuddy</span>
+        <span className="font-semibold text-lg tracking-tight">AppyDoer</span>
       </div>
 
       <div className="relative space-y-8">
@@ -70,7 +70,7 @@ function LeftPanel() {
             Start earning more<br />with AI today
           </h2>
           <p className="text-indigo-200 text-base leading-relaxed max-w-xs">
-            AI WorkBuddy helps freelancers discover opportunities, build compelling profiles, and land high-value clients.
+            AppyDoer helps freelancers discover opportunities, build compelling profiles, and land high-value clients.
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function RegisterPage() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
             <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">W</div>
-            <span className="font-bold text-gray-900">AI WorkBuddy</span>
+            <span className="font-bold text-gray-900">AppyDoer</span>
           </div>
 
           <div className="mb-8">

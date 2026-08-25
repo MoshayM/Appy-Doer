@@ -139,7 +139,7 @@ export default async function PublicProfilePage({ params }: Props) {
         {/* CTA */}
         <section className="bg-indigo-50 rounded-2xl p-8 text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-2">Ready to work together?</h2>
-          <p className="text-gray-600 mb-6">Powered by AI WorkBuddy</p>
+          <p className="text-gray-600 mb-6">Powered by AppyDoer</p>
           <a
             href={`mailto:?subject=Let's work together`}
             className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"

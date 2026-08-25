@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         userId: user.id,
         type: 'WELCOME',
         channel: 'EMAIL',
-        title: 'Welcome to AI WorkBuddy — your 7-day trial starts now',
+        title: 'Welcome to AppyDoer — your 7-day trial starts now',
         body: 'Your full-access trial has started. Discover opportunities, build your profile, and land your first client.',
         meta: { trialEndsAt: trialEndsAt.toISOString() },
       })

@@ -61,7 +61,7 @@ export default async function DashboardPage() {
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
               <div className="text-3xl mb-2">🎉</div>
               <h2 className="text-xl font-bold mb-1">First Income Achieved!</h2>
-              <p className="text-green-100">Congratulations on landing your first client. This is what AI WorkBuddy was built for.</p>
+              <p className="text-green-100">Congratulations on landing your first client. This is what AppyDoer was built for.</p>
             </div>
           )}
 

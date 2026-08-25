@@ -53,7 +53,7 @@ function buildHtmlReport(taskTitle: string, result: ExecutionResult): string {
 
   <!-- Header -->
   <div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:32px 40px;color:#fff">
-    <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.1em;opacity:.75;text-transform:uppercase">AI WorkBuddy · Deliverable Report</p>
+    <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.1em;opacity:.75;text-transform:uppercase">AppyDoer · Deliverable Report</p>
     <h1 style="margin:0;font-size:22px;font-weight:700">${esc(taskTitle)}</h1>
   </div>
 
@@ -99,7 +99,7 @@ function buildHtmlReport(taskTitle: string, result: ExecutionResult): string {
 
   <!-- Footer -->
   <div style="border-top:1px solid #e5e7eb;padding:16px 40px;background:#f9fafb;text-align:center">
-    <p style="margin:0;font-size:11px;color:#9ca3af">Prepared by AI WorkBuddy · Confidential</p>
+    <p style="margin:0;font-size:11px;color:#9ca3af">Prepared by AppyDoer · Confidential</p>
   </div>
 </div>
 </body>
@@ -145,7 +145,7 @@ function buildTextReport(taskTitle: string, result: ExecutionResult): string {
     parts.push('NEXT STEPS', line, ...steps.map((s, i) => `${i + 1}. ${s}`), '')
   }
 
-  parts.push(bar, 'Prepared by AI WorkBuddy · Confidential', bar)
+  parts.push(bar, 'Prepared by AppyDoer · Confidential', bar)
   return parts.join('\n')
 }
 

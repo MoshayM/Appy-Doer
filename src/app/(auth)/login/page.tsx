@@ -46,9 +46,9 @@ function NeuralBackground() {
 
 function LeftPanel() {
   const features = [
-    { icon: Zap, text: 'AI opportunity discovery' },
-    { icon: Target, text: 'Smart client intelligence' },
-    { icon: TrendingUp, text: 'Income tracking & growth' },
+    { icon: Zap, text: 'AI skill & opportunity discovery' },
+    { icon: Target, text: 'Gmail-powered client outreach' },
+    { icon: TrendingUp, text: 'Income tracking & AI delivery' },
   ]
 
   return (
@@ -66,10 +66,10 @@ function LeftPanel() {
             7-day free trial · No card required
           </div>
           <h2 className="text-4xl font-bold leading-tight tracking-tight">
-            Your AI-powered<br />freelance co-pilot
+            Your AI workforce<br />operating system
           </h2>
           <p className="text-indigo-200 text-base leading-relaxed max-w-xs">
-            Discover opportunities, build your profile, and grow income — all guided by AI.
+            Discover opportunities, acquire clients, deliver work, and build recurring income with an AI-powered team.
           </p>
         </div>
 
@@ -250,6 +250,12 @@ export default function LoginPage() {
             <Link href="/register" className="text-indigo-600 font-semibold hover:underline">
               Start free trial
             </Link>
+          </p>
+          <p className="text-center text-xs text-gray-400 mt-4">
+            By signing in you agree to our{' '}
+            <a href="/terms" className="underline hover:text-gray-600">Terms</a>
+            {' & '}
+            <a href="/privacy" className="underline hover:text-gray-600">Privacy Policy</a>
           </p>
         </div>
       </div>

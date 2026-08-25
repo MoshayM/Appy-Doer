@@ -3,17 +3,18 @@ import AppyDoerLogo from '@/components/AppyDoerLogo'
 
 export default function LandingPage() {
   const features = [
-    { icon: '🤖', title: '9 AI Agents', desc: 'From skill assessment to revenue growth — a full AI team working for you.', accent: 'cyan' },
+    { icon: '🤖', title: '11 AI Agents', desc: 'From skill discovery to Gmail-powered outreach — 11 specialized agents working as your AI income team.', accent: 'cyan' },
     { icon: '🎯', title: 'Client Intelligence', desc: 'Know your client before the first meeting — style, budget, and fit score.', accent: 'amber' },
     { icon: '⚡', title: 'Work Support Center', desc: 'Your AI co-worker for delivery — plan, execute, and ship faster.', accent: 'cyan' },
     { icon: '🌐', title: 'Profile Builder', desc: 'Auto-generate resume and public profile site from your skill map.', accent: 'amber' },
     { icon: '🤝', title: 'Relationship Engine', desc: 'Never let a client go cold — automated follow-ups and renewal triggers.', accent: 'cyan' },
     { icon: '💡', title: 'Smart Upgrade Engine', desc: 'Personalized upgrade offers by AI based on your engagement data.', accent: 'amber' },
+    { icon: '📧', title: 'Gmail Outreach', desc: 'Connect Gmail and send, track, and reply to client emails with AI-suggested responses.', accent: 'cyan' },
   ]
 
   const stats = [
-    { number: '9', label: 'AI Agents' },
-    { number: '65+', label: 'Currencies Supported' },
+    { number: '11', label: 'AI Agents' },
+    { number: 'INR', label: 'India-First Pricing' },
     { number: '7-Day', label: 'Free Trial' },
     { number: '100%', label: 'AI-Powered' },
   ]
@@ -21,7 +22,7 @@ export default function LandingPage() {
   const incomeSteps = ['Skills', 'Opportunities', 'Offers', 'Profile', 'Clients', 'Work', 'Relationships', 'Revenue', 'Growth']
 
   const floatingCards = [
-    { icon: '🤖', label: '9 AI Agents', pos: 'top-0 left-4' },
+    { icon: '🤖', label: '11 AI Agents', pos: 'top-0 left-4' },
     { icon: '🧠', label: 'Skill Map', pos: 'top-0 left-1/2 -translate-x-1/2' },
     { icon: '🎯', label: 'Lead Gen', pos: 'top-0 right-4' },
     { icon: '⚡', label: 'Work AI', pos: 'top-1/2 left-0 -translate-y-1/2' },
@@ -37,10 +38,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <AppyDoerLogo size={36} variant="icon" />
-            <span className="font-bold text-slate-900 text-lg">Appy<span className="text-indigo-600">Doer</span></span>
-          </div>
+          <AppyDoerLogo size={36} />
           <div className="flex items-center gap-5">
             <Link href="/login" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Sign In</Link>
             <Link href="/register" className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
@@ -74,7 +72,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <p className="text-sm text-slate-400 font-medium">
-            Join 500+ freelancers and consultants growing their income with AI
+            Built for India-first professionals — no card, no commitment, start in minutes.
           </p>
         </div>
       </section>
@@ -173,7 +171,7 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-900 mb-4">Start growing your income today</h2>
           <p className="text-slate-500 mb-10">
-            7-day free trial, no credit card required. Full access to all 9 AI agents. Pricing tailored to your country.
+            7-day free trial, no credit card required. Full access to all 11 AI agents. INR pricing, no hidden charges.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/register" className="bg-cyan-500 hover:bg-cyan-600 text-white px-9 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg shadow-cyan-100">
@@ -190,16 +188,15 @@ export default function LandingPage() {
       <footer className="bg-slate-900 py-12 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center sm:items-start gap-1">
-            <div className="flex items-center gap-2">
-              <AppyDoerLogo size={28} surface="dark" variant="icon" />
-              <span className="font-bold text-white text-base">Appy<span className="text-indigo-400">Doer</span></span>
-            </div>
+            <AppyDoerLogo size={28} surface="dark" />
             <p className="text-slate-500 text-xs">Your AI-Powered Workforce Operating System</p>
           </div>
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-6 text-sm flex-wrap justify-center">
             <Link href="/plans" className="text-slate-400 hover:text-white transition-colors">Plans</Link>
             <Link href="/login" className="text-slate-400 hover:text-white transition-colors">Sign In</Link>
             <Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors">Dashboard</Link>
+            <Link href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="text-slate-400 hover:text-white transition-colors">Terms</Link>
           </div>
           <p className="text-slate-600 text-xs">© 2026 AppyDoer. All rights reserved.</p>
         </div>

@@ -42,13 +42,13 @@ export default function AppyDoerLogo({
   const muzzleF= '#e9eaec'   // muzzle slightly lighter
   const sw     = 2.5
 
-  const h = Math.round(size * 208 / 200)
+  const h = Math.round(size * 232 / 200)
 
   const Icon = (
     <svg
       width={size}
       height={h}
-      viewBox="0 0 200 208"
+      viewBox="0 0 200 232"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="AppyDoer"
@@ -121,27 +121,27 @@ export default function AppyDoerLogo({
           <path d="M130 50 Q128 66 129 83" stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".32"/>
         </g>
 
-        {/* ── BODY (horizontal oval, 3/4 view) ── */}
-        <ellipse cx="100" cy="148" rx="50" ry="34"
+        {/* ── BODY (horizontal oval, enlarged 3/4 view) ── */}
+        <ellipse cx="100" cy="152" rx="54" ry="44"
           fill={body} stroke={ink} strokeWidth={sw}/>
-        {/* Chest marking (matches puppy.PNG) */}
-        <ellipse cx="86" cy="140" rx="16" ry="12"
+        {/* Chest marking */}
+        <ellipse cx="86" cy="144" rx="17" ry="14"
           fill="none" stroke={ink} strokeWidth="1.1" opacity=".50"/>
-        <path d="M76 153 Q82 161 78 166" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
-        <path d="M92 151 Q98 159 94 164" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
+        <path d="M76 165 Q82 174 78 179" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
+        <path d="M92 163 Q98 172 94 177" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
 
         {/* ── BACK LEGS (right/far side — dimmer = depth) ── */}
-        <path d="M140 170 Q141 184 142 196" stroke={ink} strokeWidth="2.0" strokeLinecap="round" fill="none" opacity=".60"/>
-        <ellipse cx="142" cy="201" rx="12" ry="7"   fill={body} stroke={ink} strokeWidth="1.8" opacity=".60"/>
-        <circle cx="133" cy="195" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
-        <circle cx="142" cy="194" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
-        <circle cx="151" cy="195" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
+        <path d="M140 184 Q141 198 142 210" stroke={ink} strokeWidth="2.0" strokeLinecap="round" fill="none" opacity=".60"/>
+        <ellipse cx="142" cy="215" rx="12" ry="7"   fill={body} stroke={ink} strokeWidth="1.8" opacity=".60"/>
+        <circle cx="133" cy="209" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
+        <circle cx="142" cy="208" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
+        <circle cx="151" cy="209" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
 
-        <path d="M118 171 Q119 184 120 196" stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none" opacity=".74"/>
-        <ellipse cx="120" cy="201" rx="13" ry="7.5" fill={body} stroke={ink} strokeWidth="1.9" opacity=".74"/>
-        <circle cx="110" cy="194" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
-        <circle cx="120" cy="193" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
-        <circle cx="130" cy="194" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
+        <path d="M118 185 Q119 198 120 210" stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none" opacity=".74"/>
+        <ellipse cx="120" cy="215" rx="13" ry="7.5" fill={body} stroke={ink} strokeWidth="1.9" opacity=".74"/>
+        <circle cx="110" cy="208" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
+        <circle cx="120" cy="207" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
+        <circle cx="130" cy="208" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
 
         {/* ── TAIL (upper-right of body, will flip to upper-left) ── */}
         <g style={isStatic
@@ -160,17 +160,17 @@ export default function AppyDoerLogo({
         </g>
 
         {/* ── FRONT LEGS (left/near side — full opacity) ── */}
-        <path d="M94 170 Q95 184 96 196"  stroke={ink} strokeWidth="2.3" strokeLinecap="round" fill="none" opacity=".92"/>
-        <ellipse cx="96" cy="201" rx="14" ry="8.5" fill={body} stroke={ink} strokeWidth="2.1" opacity=".92"/>
-        <circle cx="86"  cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
-        <circle cx="96"  cy="193" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
-        <circle cx="106" cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
+        <path d="M94 184 Q95 198 96 210"  stroke={ink} strokeWidth="2.3" strokeLinecap="round" fill="none" opacity=".92"/>
+        <ellipse cx="96" cy="215" rx="14" ry="8.5" fill={body} stroke={ink} strokeWidth="2.1" opacity=".92"/>
+        <circle cx="86"  cy="208" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
+        <circle cx="96"  cy="207" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
+        <circle cx="106" cy="208" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
 
-        <path d="M70 169 Q70 183 71 196"  stroke={ink} strokeWidth="2.4" strokeLinecap="round" fill="none"/>
-        <ellipse cx="71" cy="201" rx="15" ry="9"   fill={body} stroke={ink} strokeWidth="2.2"/>
-        <circle cx="60"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
-        <circle cx="71"  cy="193" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
-        <circle cx="82"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        <path d="M70 183 Q70 197 71 210"  stroke={ink} strokeWidth="2.4" strokeLinecap="round" fill="none"/>
+        <ellipse cx="71" cy="215" rx="15" ry="9"   fill={body} stroke={ink} strokeWidth="2.2"/>
+        <circle cx="60"  cy="208" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        <circle cx="71"  cy="207" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        <circle cx="82"  cy="208" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
 
         {/* ── HEAD (large chibi, over ear bases) ── */}
         <circle cx="90" cy="68" r="44" fill={body} stroke={ink} strokeWidth={sw}/>

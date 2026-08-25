@@ -2,26 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Cross-browser baseline ──────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* iOS Safari: prevent auto font-size inflation on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Smooth anchor scrolling (Chrome, Safari, Firefox) */
+  scroll-behavior: smooth;
+  /* iOS momentum scrolling on older devices */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent horizontal overflow on mobile */
+  overflow-x: hidden;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #171717;
+  background: #ffffff;
+  /* Better font rendering on macOS / iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* iOS safe-area for notch / Dynamic Island */
+  padding-left:   env(safe-area-inset-left);
+  padding-right:  env(safe-area-inset-right);
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+  min-height: 100dvh;         /* dynamic viewport height — fixes iOS Safari bar */
 }
 
+/* ── Touch & interaction ─────────────────────────────────── */
+
+/* Remove tap highlight on mobile WebKit / Blink */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Speed up taps — removes 300ms delay on mobile */
+button,
+a,
+[role="button"],
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Pointer cursor on interactive elements */
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/* ── Focus (accessibility + keyboard nav) ────────────────── */
+
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hide default outline only when mouse is used */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Scrollbar (desktop hover only — Chrome, Edge, Safari) ─ */
+
+@media (hover: hover) {
+  ::-webkit-scrollbar              { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track        { background: transparent; }
+  ::-webkit-scrollbar-thumb        { background: #d1d5db; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover  { background: #9ca3af; }
+  /* Firefox */
+  *                                { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+}
+
+/* ── PWA / safe-area helpers ─────────────────────────────── */
+
+/* Bottom padding for iOS home indicator */
+.pb-safe   { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.pt-safe   { padding-top:    max(0px,  env(safe-area-inset-top));    }
+
+/* ── Utilities ───────────────────────────────────────────── */
+
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-balance { text-wrap: balance; }
+  .text-pretty  { text-wrap: pretty;  }
+
+  /* Disable text selection on UI chrome */
+  .no-select { user-select: none; -webkit-user-select: none; }
+
+  /* Full dynamic height (fixes iOS Safari bottom bar) */
+  .h-dvh  { height: 100dvh; }
+  .min-h-dvh { min-height: 100dvh; }
+}
+
+/* ── Image defaults ──────────────────────────────────────── */
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Input / form resets ─────────────────────────────────── */
+
+input, textarea, select {
+  /* iOS Safari adds rounded corners and shadow by default */
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+/* ── Animation preference (accessibility) ───────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

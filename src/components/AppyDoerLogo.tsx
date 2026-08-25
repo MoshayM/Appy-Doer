@@ -18,41 +18,13 @@ export default function AppyDoerLogo({
   surface = 'light',
 }: Props) {
   const dark = surface === 'dark'
-
-  // color palette — two surfaces
-  const c = dark
-    ? {
-        ear:    'rgba(255,255,255,0.78)',
-        head:   'white',
-        body:   'rgba(255,255,255,0.92)',
-        belly:  'rgba(255,255,255,0.15)',
-        tail:   'rgba(255,255,255,0.72)',
-        paw:    'rgba(255,255,255,0.6)',
-        iris:   '#312e81',
-        nose:   '#312e81',
-        nosedot:'rgba(255,255,255,0.45)',
-        smile:  '#312e81',
-        tongue: '#f43f5e',
-        tongue2:'#e11d48',
-        shine:  'rgba(0,0,0,0.06)',
-        shadow: 'drop-shadow(0 2px 8px rgba(255,255,255,0.15))',
-      }
-    : {
-        ear:    '#6d28d9',
-        head:   '#4338ca',
-        body:   '#4338ca',
-        belly:  'rgba(255,255,255,0.1)',
-        tail:   '#6d28d9',
-        paw:    '#5b21b6',
-        iris:   '#1e1b4b',
-        nose:   'white',
-        nosedot:'rgba(67,56,202,0.3)',
-        smile:  'white',
-        tongue: '#f43f5e',
-        tongue2:'#e11d48',
-        shine:  'rgba(255,255,255,0.2)',
-        shadow: 'drop-shadow(0 2px 8px rgba(67,56,202,0.25))',
-      }
+  const bg  = dark ? '#0f172a' : 'white'
+  const ink = dark ? 'white'   : '#111111'
+  const spot = dark ? 'white'  : '#111111'    // nose / iris fill
+  const glint = dark ? '#0f172a' : 'white'    // eye / nose shine
+  const shade = dark ? 'rgba(255,255,255,0.18)' : '#d1d5db'
+  const sw = 2.4   // main stroke
+  const sw2 = 1.6  // detail stroke
 
   const Icon = (
     <svg
@@ -64,116 +36,119 @@ export default function AppyDoerLogo({
       aria-label="AppyDoer"
       role="img"
       className="flex-shrink-0 select-none"
-      style={{ filter: c.shadow }}
+      style={{
+        filter: dark
+          ? 'drop-shadow(0 0 8px rgba(255,255,255,0.18))'
+          : 'drop-shadow(0 2px 6px rgba(0,0,0,0.22))',
+      }}
     >
       {!isStatic && (
         <style>{`
-          @keyframes ad-ear-l  { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(-11deg)} }
-          @keyframes ad-ear-r  { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(11deg)}  }
-          @keyframes ad-blink  { 0%,84%,100%{transform:scaleY(1)}  92%{transform:scaleY(0.07)}   }
-          @keyframes ad-tongue { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(1.5px)} }
-          @keyframes ad-tail   { 0%,100%{transform:rotate(-22deg)} 50%{transform:rotate(22deg)}  }
+          @keyframes ad-ear    { 0%,100%{transform:rotate(0deg)}    50%{transform:rotate(11deg)}  }
+          @keyframes ad-tail   { 0%,100%{transform:rotate(-24deg)}  50%{transform:rotate(24deg)}  }
+          @keyframes ad-blink  { 0%,83%,100%{transform:scaleY(1)}   91%{transform:scaleY(0.05)}   }
+          @keyframes ad-tongue { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(2px)} }
+          @keyframes ad-paw-a  { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-3px)} }
+          @keyframes ad-paw-b  { 0%,100%{transform:translateY(-3px)} 50%{transform:translateY(0px)} }
         `}</style>
       )}
 
-      {/* ── Tail — behind body, wags ── */}
+      {/* ─── TAIL  (left side, wags; drawn behind body) ─── */}
       <g style={isStatic
-        ? { transform: 'rotate(-12deg)', transformOrigin: '29.5px 27px' }
-        : { transformOrigin: '29.5px 27px', animation: 'ad-tail 1.1s ease-in-out infinite' }
+        ? { transform: 'rotate(-14deg)', transformOrigin: '4px 26px' }
+        : { transformOrigin: '4px 26px', animation: 'ad-tail 0.9s ease-in-out infinite' }
       }>
-        {/* Tail shaft */}
         <path
-          d="M29.5 27 C34 23, 39.5 20, 38.5 15 C37.5 11, 34 12, 33 15 C32 19, 33 25, 29.5 27 Z"
-          fill={c.tail}
+          d="M4 26 C1 20, 1 14, 5 11 C8 9, 11 11, 9 15 C7 19, 4 25, 4 26 Z"
+          fill={bg} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
         />
-        {/* Fluffy tip */}
-        <circle cx="36" cy="13.5" r="2.8" fill={c.tail} opacity=".7" />
+        {/* Fluffy tail tip */}
+        <circle cx="7" cy="12" r="2.8" fill={bg} stroke={ink} strokeWidth={sw - 0.4}/>
       </g>
 
-      {/* ── Left ear (behind head) ── */}
+      {/* ─── FLOPPY EAR  (hangs from back of head) ─── */}
       <g style={isStatic ? undefined : {
-        transformOrigin: '14px 4px',
-        animation: 'ad-ear-l 2.8s ease-in-out infinite',
+        transformOrigin: '22px 9px',
+        animation: 'ad-ear 2.6s ease-in-out infinite .3s',
       }}>
         <path
-          d="M14 3 C8 2, 2 9, 3 17 C4 23, 10 25, 14 21 C17 18, 17 10, 14 6 Z"
-          fill={c.ear}
+          d="M22 9 C18 5, 11 6, 10 13 C9 20, 14 26, 18 25 C21 24, 23 20, 22 14 Z"
+          fill={bg} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
         />
       </g>
 
-      {/* ── Right ear ── */}
-      <g style={isStatic ? undefined : {
-        transformOrigin: '26px 4px',
-        animation: 'ad-ear-r 2.8s ease-in-out infinite .6s',
-      }}>
-        <path
-          d="M26 3 C32 2, 38 9, 37 17 C36 23, 30 25, 26 21 C23 18, 23 10, 26 6 Z"
-          fill={c.ear}
-        />
+      {/* ─── SHADOW PAWS  (drawn before body so body sits over their tops) ─── */}
+      {/* Front shadow */}
+      <g style={isStatic ? undefined : { animation: 'ad-paw-b 0.65s ease-in-out infinite .325s' }}>
+        <ellipse cx="25" cy="37.5" rx="4" ry="1.8" fill={shade}/>
+      </g>
+      {/* Back shadow */}
+      <g style={isStatic ? undefined : { animation: 'ad-paw-a 0.65s ease-in-out infinite .325s' }}>
+        <ellipse cx="10" cy="37.5" rx="4" ry="1.8" fill={shade}/>
       </g>
 
-      {/* ── Body ── */}
-      <ellipse cx="20" cy="30.5" rx="10.5" ry="9" fill={c.body} />
-      {/* Belly */}
-      <ellipse cx="20" cy="29.5" rx="5.5" ry="5.5" fill={c.belly} />
-
-      {/* ── Front paws ── */}
-      <ellipse cx="13"   cy="39" rx="4.5" ry="1.8" fill={c.paw} />
-      <ellipse cx="27"   cy="39" rx="4.5" ry="1.8" fill={c.paw} />
-      {/* Paw toe bumps */}
-      <circle cx="10.5" cy="38" r="1.2" fill={c.paw} opacity=".7" />
-      <circle cx="13"   cy="37.5" r="1.2" fill={c.paw} opacity=".7" />
-      <circle cx="15.5" cy="38" r="1.2" fill={c.paw} opacity=".7" />
-      <circle cx="24.5" cy="38" r="1.2" fill={c.paw} opacity=".7" />
-      <circle cx="27"   cy="37.5" r="1.2" fill={c.paw} opacity=".7" />
-      <circle cx="29.5" cy="38" r="1.2" fill={c.paw} opacity=".7" />
-
-      {/* ── Head (covers ear bases) ── */}
-      <circle cx="20" cy="12" r="9.5" fill={c.head} />
-      {/* Shine highlight */}
+      {/* ─── BODY ─── */}
+      <ellipse cx="14.5" cy="27" rx="11.5" ry="9.5" fill={bg} stroke={ink} strokeWidth={sw}/>
+      {/* Chest line */}
       <path
-        d="M13 7 Q20 4 27 7"
-        stroke={c.shine} strokeWidth="1.3" strokeLinecap="round" fill="none"
+        d="M21 33 Q24 36 27 34.5"
+        stroke={ink} strokeWidth={sw2 - 0.4} strokeLinecap="round" fill="none" opacity=".45"
       />
 
-      {/* ── Left eye (blinks) ── */}
-      <g style={isStatic ? undefined : {
-        transformOrigin: '15.5px 10.5px',
-        animation: 'ad-blink 5s ease-in-out infinite 1s',
-      }}>
-        <circle cx="15.5" cy="10.5" r="2.9" fill="white" />
-        <circle cx="15.5" cy="10.5" r="1.6" fill={c.iris} />
-        <circle cx="16.4" cy="9.2"  r=".8"  fill="white" opacity=".9" />
+      {/* ─── FOREGROUND PAWS (drawn after body — emerge from below body) ─── */}
+      {/* Front */}
+      <g style={isStatic ? undefined : { animation: 'ad-paw-a 0.65s ease-in-out infinite' }}>
+        <ellipse cx="23" cy="37.5" rx="4.2" ry="1.9" fill={bg} stroke={ink} strokeWidth={sw2}/>
+        <line x1="20.5" y1="37.5" x2="21"   y2="36.2" stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
+        <line x1="23"   y1="37.5" x2="23"   y2="36"   stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
+        <line x1="25.5" y1="37.5" x2="25"   y2="36.2" stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
+      </g>
+      {/* Back */}
+      <g style={isStatic ? undefined : { animation: 'ad-paw-b 0.65s ease-in-out infinite' }}>
+        <ellipse cx="8" cy="37.5" rx="4.2" ry="1.9" fill={bg} stroke={ink} strokeWidth={sw2}/>
+        <line x1="5.5" y1="37.5" x2="6"   y2="36.2" stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
+        <line x1="8"   y1="37.5" x2="8"   y2="36"   stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
+        <line x1="10.5" y1="37.5" x2="10" y2="36.2" stroke={ink} strokeWidth=".9" strokeLinecap="round"/>
       </g>
 
-      {/* ── Right eye ── */}
+      {/* ─── HEAD ─── */}
+      <circle cx="27.5" cy="15" r="9" fill={bg} stroke={ink} strokeWidth={sw}/>
+
+      {/* ─── SNOUT / MUZZLE ─── */}
+      <ellipse cx="35.5" cy="19" rx="4.8" ry="3.4" fill={bg} stroke={ink} strokeWidth={sw2}/>
+
+      {/* ─── NOSE (black button) ─── */}
+      <ellipse cx="39" cy="17.5" rx="1.9" ry="1.6" fill={spot}/>
+      <ellipse cx="38.3" cy="16.8" rx=".65" ry=".5" fill={glint} opacity=".65"/>
+
+      {/* ─── EYE (blinks — front-facing, right side of head) ─── */}
       <g style={isStatic ? undefined : {
-        transformOrigin: '24.5px 10.5px',
-        animation: 'ad-blink 5s ease-in-out infinite 1.07s',
+        transformOrigin: '31px 12.5px',
+        animation: 'ad-blink 4.8s ease-in-out infinite 1s',
       }}>
-        <circle cx="24.5" cy="10.5" r="2.9" fill="white" />
-        <circle cx="24.5" cy="10.5" r="1.6" fill={c.iris} />
-        <circle cx="25.4" cy="9.2"  r=".8"  fill="white" opacity=".9" />
+        <circle cx="31"  cy="12.5" r="3.3" fill={bg}  stroke={ink} strokeWidth={sw2}/>
+        <circle cx="31.5" cy="12.5" r="1.8" fill={spot}/>
+        <circle cx="31.2" cy="11.3" r=".75" fill={glint} opacity=".9"/>
       </g>
 
-      {/* ── Nose ── */}
-      <ellipse cx="20"  cy="15"  rx="2.3" ry="1.6" fill={c.nose} />
-      <ellipse cx="18.9" cy="14.4" rx=".8" ry=".6" fill={c.nosedot} />
-
-      {/* ── Smile ── */}
+      {/* ─── EYEBROW (single bold arc) ─── */}
       <path
-        d="M16.5 16.5 Q20 20 23.5 16.5"
-        stroke={c.smile} strokeWidth="1.3" strokeLinecap="round" fill="none"
+        d="M29 9.5 Q31 8.3 33.5 9.5"
+        stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"
       />
 
-      {/* ── Tongue — sits below chin, over body neck ── */}
-      <g style={isStatic ? undefined : { animation: 'ad-tongue 2s ease-in-out infinite .9s' }}>
-        <ellipse cx="20" cy="22" rx="2.5" ry="2.4"  fill={c.tongue} />
-        <ellipse cx="20" cy="23.8" rx="2.5" ry=".95" fill={c.tongue2} />
-        <line
-          x1="20" y1="20.2" x2="20" y2="24.4"
-          stroke={c.tongue2} strokeWidth=".75" strokeLinecap="round"
-        />
+      {/* ─── MOUTH ─── */}
+      <path
+        d="M39 19.5 Q37 23.5 32.5 22"
+        stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"
+      />
+
+      {/* ─── TONGUE ─── */}
+      <g style={isStatic ? undefined : { animation: 'ad-tongue 1.9s ease-in-out infinite .5s' }}>
+        <ellipse cx="37" cy="24.5" rx="2.7" ry="2.4" fill="#f87171"/>
+        <ellipse cx="37" cy="26.4" rx="2.7" ry=".95" fill="#ef4444"/>
+        <line x1="37" y1="22.5" x2="37" y2="26.5"
+          stroke="#ef4444" strokeWidth=".8" strokeLinecap="round"/>
       </g>
     </svg>
   )
@@ -181,13 +156,13 @@ export default function AppyDoerLogo({
   if (variant === 'icon') return Icon
 
   return (
-    <div className={cn('flex items-center gap-2.5 select-none', className)}>
+    <div className={cn('flex items-center gap-3 select-none', className)}>
       {Icon}
       <span
-        className={cn('font-bold tracking-tight', dark ? 'text-white' : 'text-gray-900')}
-        style={{ fontSize: size * 0.43, lineHeight: 1 }}
+        className={cn('font-black tracking-widest', dark ? 'text-white' : 'text-gray-900')}
+        style={{ fontSize: size * 0.38, lineHeight: 1, letterSpacing: '0.1em' }}
       >
-        Appy<span className={dark ? 'text-indigo-300' : 'text-indigo-600'}>Doer</span>
+        APPY<span className={dark ? 'text-gray-500' : 'text-gray-500'}>DOER</span>
       </span>
     </div>
   )

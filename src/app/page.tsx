@@ -38,7 +38,7 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <AppyDoerLogo size={36} />
+            <AppyDoerLogo size={36} variant="icon" />
             <span className="font-bold text-slate-900 text-lg">Appy<span className="text-indigo-600">Doer</span></span>
           </div>
           <div className="flex items-center gap-5">

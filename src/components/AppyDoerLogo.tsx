@@ -1,11 +1,12 @@
 'use client'
 
 /**
- * AppyDoer puppy mascot — side-profile chalk sketch, premium feel.
- * Puppy faces RIGHT. Style: white lines on dark / black lines on light.
- * Animations: tail wag, ear sway, eye blink, walk cycle (2 diagonal leg pairs),
- *             hair wave, tongue bob, occasional sparkle glint.
- * Premium accent: indigo collar with star tag.
+ * AppyDoer puppy — front-facing chibi on a dark indigo badge.
+ * Matches puppy.PNG: wide floppy ears, big round eyes, round muzzle,
+ * chubby body, stubby paws, curly tail, hair tuft.
+ * Style: white chalk sketch inside a #1e1b4b rounded-square badge.
+ * Animations: ear sway (both), eye blink, hair wave, tail wag,
+ *             tongue bob, whole-puppy gentle bounce, premium glint.
  */
 
 import { cn } from '@/lib/utils'
@@ -26,263 +27,213 @@ export default function AppyDoerLogo({
   surface = 'light',
 }: Props) {
   const dark   = surface === 'dark'
-  const bg     = dark ? '#0f172a' : 'white'
-  const ink    = dark ? 'white'   : '#111111'
-  const t1     = dark ? '#991b1b' : '#f87171'  // tongue base
-  const t2     = dark ? '#7f1d1d' : '#ef4444'  // tongue underside
-  const accent = dark ? '#818cf8' : '#4f46e5'  // collar (brand indigo)
+  // Badge is always dark indigo — self-contained identity on any background
+  const badge  = '#1e1b4b'
+  const ink    = 'white'
+  const t1     = '#991b1b'   // tongue body
+  const t2     = '#7f1d1d'   // tongue groove
+  const col    = '#a5b4fc'   // collar (light indigo)
 
-  const sw  = 2.1   // primary strokes
-  const sw2 = 1.55  // secondary face details
-  const sw3 = 0.92  // fur texture / toe lines
+  const sw  = 1.9    // main strokes
+  const sw2 = 1.45   // face details
+  const sw3 = 0.85   // fur texture / toe lines
+
+  // Aspect ratio 40 : 46
+  const h = Math.round(size * 46 / 40)
 
   const Icon = (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 44 44"
+      height={h}
+      viewBox="0 0 40 46"
       fill="none"
-      overflow="visible"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="AppyDoer"
       role="img"
       className="flex-shrink-0 select-none"
       style={{
         filter: dark
-          ? 'drop-shadow(0 0 10px rgba(255,255,255,0.2))'
-          : 'drop-shadow(0 2px 10px rgba(0,0,0,0.22))',
+          ? 'drop-shadow(0 0 8px rgba(99,102,241,0.45))'
+          : 'drop-shadow(0 3px 10px rgba(30,27,75,0.35))',
       }}
     >
       {!isStatic && (
         <style>{`
-          @keyframes ad-tail  { 0%,100%{transform:rotate(-22deg)} 50%{transform:rotate(22deg)}  }
-          @keyframes ad-ear   { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(-9deg)}  }
-          @keyframes ad-blink { 0%,80%,100%{transform:scaleY(1)}  88%{transform:scaleY(0.06)}   }
-          @keyframes ad-hair  { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(7deg)}   }
-          @keyframes ad-tongue{ 0%,100%{transform:translateY(0px)} 50%{transform:translateY(2px)} }
-          @keyframes ad-walk  { 0%,100%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)}  }
-          @keyframes ad-glint {
-            0%,76%,100%{opacity:0;transform:scale(0)}
-            81%{opacity:1;transform:scale(1)}
+          @keyframes ad-ear-l  { 0%,100%{transform:rotate(0deg)}    50%{transform:rotate(-8deg)}  }
+          @keyframes ad-ear-r  { 0%,100%{transform:rotate(0deg)}    50%{transform:rotate(8deg)}   }
+          @keyframes ad-tail   { 0%,100%{transform:rotate(-18deg)}  50%{transform:rotate(18deg)}  }
+          @keyframes ad-blink  { 0%,82%,100%{transform:scaleY(1)}   90%{transform:scaleY(0.05)}   }
+          @keyframes ad-hair   { 0%,100%{transform:rotate(0deg)}    50%{transform:rotate(6deg)}   }
+          @keyframes ad-tongue { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(2px)} }
+          @keyframes ad-bounce { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-2px)} }
+          @keyframes ad-glint  {
+            0%,77%,100%{opacity:0;transform:scale(0)}
+            82%{opacity:1;transform:scale(1)}
             93%{opacity:0;transform:scale(0.2)}
           }
         `}</style>
       )}
 
-      {/* ════════════════════════════════════════════════════
-          Z-ORDER (back → front, puppy faces RIGHT):
-            tail → all 4 legs → body → floppy-ear → head →
-            far-ear → collar → snout → eye → face → hair → glint
-          ════════════════════════════════════════════════════ */}
+      {/* ── BADGE: fixed dark indigo rounded square ── */}
+      <rect x="0" y="0" width="40" height="46" rx="10" fill={badge}/>
 
-      {/* ── TAIL: curly loop, attaches at body rear, wags ── */}
-      <g
-        style={isStatic
-          ? { transform: 'rotate(-18deg)', transformOrigin: '5px 26px' }
-          : { transformOrigin: '5px 26px', animation: 'ad-tail 1.05s ease-in-out infinite' }}
-      >
-        <path
-          d="M5 26 C1 22, -1 17, 3 14 C7 11, 12 13, 12 18 C12 23, 8.5 26, 5 26 Z"
-          fill={bg} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
-        />
-        <path d="M10 14 C12 17.5, 11 22, 9 24"
-          stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none" opacity=".65"/>
-      </g>
+      {/* ── ALL PUPPY ELEMENTS bounce gently together ── */}
+      <g style={isStatic ? undefined : { animation: 'ad-bounce 2.5s ease-in-out infinite' }}>
 
-      {/* ── ALL 4 LEGS drawn BEFORE body (body masks their tops) ──
-          Walk gait: diagonal pairs (near-front + far-back) and (far-front + near-back)
-          move in opposite phase.
-          Phase A (0s)   : near-back  + far-front
-          Phase B (-0.65s): near-front + far-back        */}
+        {/* ── LEFT EAR (behind head, sways) ── */}
+        <g style={isStatic ? undefined : {
+          transformOrigin: '11px 11px',
+          animation: 'ad-ear-l 2.8s ease-in-out infinite',
+        }}>
+          <path
+            d="M11 11 C7 9, 3 13, 3 22 C3 29, 7 35, 11 35 C15 35, 16 30, 15 23 C14 17, 12 12, 11 11 Z"
+            fill={badge} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <line x1="6.5" y1="15" x2="8"   y2="20" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
+          <line x1="8.5" y1="14" x2="10"  y2="19" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
+          <line x1="6"   y1="21" x2="7.5" y2="26" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".48"/>
+          <line x1="8"   y1="27" x2="9"   y2="31" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".38"/>
+        </g>
 
-      {/* FAR BACK LEG — phase B, grayed (left/inner side) */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '9px 37px',
-          animation: 'ad-walk 1.3s ease-in-out infinite -0.65s',
-        }}
-      >
-        <rect x="6.5" y="33" width="5" height="10.5" rx="2.5"
-          fill={bg} stroke={ink} strokeWidth={sw3+0.2} opacity=".42"/>
-        <ellipse cx="9" cy="44.2" rx="3.8" ry="1.6"
-          fill={bg} stroke={ink} strokeWidth={sw3} opacity=".42"/>
-      </g>
+        {/* ── RIGHT EAR (sways opposite phase) ── */}
+        <g style={isStatic ? undefined : {
+          transformOrigin: '29px 11px',
+          animation: 'ad-ear-r 2.8s ease-in-out infinite .7s',
+        }}>
+          <path
+            d="M29 11 C33 9, 37 13, 37 22 C37 29, 33 35, 29 35 C25 35, 24 30, 25 23 C26 17, 28 12, 29 11 Z"
+            fill={badge} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <line x1="33.5" y1="15" x2="32"  y2="20" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
+          <line x1="31.5" y1="14" x2="30"  y2="19" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
+          <line x1="34"   y1="21" x2="32.5" y2="26" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".48"/>
+          <line x1="32"   y1="27" x2="31"   y2="31" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".38"/>
+        </g>
 
-      {/* NEAR BACK LEG — phase A */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '12.5px 37px',
-          animation: 'ad-walk 1.3s ease-in-out infinite',
-        }}
-      >
-        <rect x="10" y="33" width="5" height="10.5" rx="2.5"
-          fill={bg} stroke={ink} strokeWidth={sw2}/>
-        <ellipse cx="12.5" cy="44.2" rx="3.8" ry="1.6"
-          fill={bg} stroke={ink} strokeWidth={sw2}/>
-        <circle cx="10.3" cy="43.3" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-        <circle cx="12.5" cy="42.8" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-        <circle cx="14.7" cy="43.3" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-      </g>
+        {/* ── TAIL (curly loop, upper right of body, wags) ── */}
+        <g style={isStatic
+          ? { transform: 'rotate(-12deg)', transformOrigin: '29px 30px' }
+          : { transformOrigin: '29px 30px', animation: 'ad-tail 1.1s ease-in-out infinite' }
+        }>
+          <path
+            d="M29 30 C33 26, 38 27.5, 38 31.5 C38 35.5, 34 36.5, 30.5 35 C28.5 34, 28.5 32, 29 30 Z"
+            fill={badge} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <path d="M35 28 C37 31, 36.5 33.5, 35 35"
+            stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none" opacity=".62"/>
+        </g>
 
-      {/* FAR FRONT LEG — phase A, grayed */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '22px 37px',
-          animation: 'ad-walk 1.3s ease-in-out infinite',
-        }}
-      >
-        <rect x="19.5" y="33" width="5" height="10.5" rx="2.5"
-          fill={bg} stroke={ink} strokeWidth={sw3+0.2} opacity=".42"/>
-        <ellipse cx="22" cy="44.2" rx="3.8" ry="1.6"
-          fill={bg} stroke={ink} strokeWidth={sw3} opacity=".42"/>
-      </g>
+        {/* ── BODY ── */}
+        <ellipse cx="20" cy="34" rx="10" ry="8" fill={badge} stroke={ink} strokeWidth={sw}/>
+        <path d="M15.5 37.5 Q18 40.5 20 39"   stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none" opacity=".48"/>
+        <path d="M20 37.5 Q22 40.5 24.5 39"   stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none" opacity=".48"/>
 
-      {/* NEAR FRONT LEG — phase B */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '26px 37px',
-          animation: 'ad-walk 1.3s ease-in-out infinite -0.65s',
-        }}
-      >
-        <rect x="23.5" y="33" width="5" height="10.5" rx="2.5"
-          fill={bg} stroke={ink} strokeWidth={sw2}/>
-        <ellipse cx="26" cy="44.2" rx="3.8" ry="1.6"
-          fill={bg} stroke={ink} strokeWidth={sw2}/>
-        <circle cx="23.7" cy="43.3" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-        <circle cx="26"   cy="42.8" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-        <circle cx="28.3" cy="43.3" r="0.9" fill={bg} stroke={ink} strokeWidth={sw3}/>
-      </g>
+        {/* ── PAWS: back pair (smaller/behind), then front pair ── */}
+        <ellipse cx="16" cy="43.5" rx="4"   ry="2.7" fill={badge} stroke={ink} strokeWidth={sw3+0.1} opacity=".45"/>
+        <ellipse cx="24" cy="43.5" rx="4"   ry="2.7" fill={badge} stroke={ink} strokeWidth={sw3+0.1} opacity=".45"/>
+        {/* Front-left paw */}
+        <ellipse cx="13" cy="43" rx="4.5" ry="3"   fill={badge} stroke={ink} strokeWidth={sw2}/>
+        <circle cx="10.8" cy="41.8" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
+        <circle cx="13"   cy="41.3" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
+        <circle cx="15.2" cy="41.8" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
+        {/* Front-right paw */}
+        <ellipse cx="27" cy="43" rx="4.5" ry="3"   fill={badge} stroke={ink} strokeWidth={sw2}/>
+        <circle cx="24.8" cy="41.8" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
+        <circle cx="27"   cy="41.3" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
+        <circle cx="29.2" cy="41.8" r="1.05" fill={badge} stroke={ink} strokeWidth={sw3}/>
 
-      {/* ── BODY: oval, body covers leg tops ── */}
-      <ellipse cx="17" cy="30" rx="13" ry="10"
-        fill={bg} stroke={ink} strokeWidth={sw}/>
-      {/* Chest fur swirl */}
-      <path d="M22 35 Q25 38.5 27.5 36.5"
-        stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none" opacity=".48"/>
+        {/* ── HEAD (covers ear attachment bases) ── */}
+        <circle cx="20" cy="16.5" r="10" fill={badge} stroke={ink} strokeWidth={sw}/>
 
-      {/* ── FLOPPY EAR: long, droops in front of body, pivots at head ── */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '22px 12px',
-          animation: 'ad-ear 3.2s ease-in-out infinite .5s',
-        }}
-      >
-        <path
-          d="M22 12 C18 10, 13 14, 12 21 C11 28, 14 37, 19 37 C23 37, 25 32, 24 25 C23 19, 22 14, 22 12 Z"
-          fill={bg} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
-        />
-        <line x1="16" y1="17" x2="17.5" y2="22" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
-        <line x1="18" y1="16" x2="19.5" y2="21" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".58"/>
-        <line x1="15" y1="23" x2="16.5" y2="28" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".48"/>
-        <line x1="17.5" y1="29" x2="18.5" y2="34" stroke={ink} strokeWidth={sw3} strokeLinecap="round" opacity=".38"/>
-      </g>
+        {/* ── HAIR TUFT (waves gently) ── */}
+        <g style={isStatic ? undefined : {
+          transformOrigin: '20px 7px',
+          animation: 'ad-hair 3.2s ease-in-out infinite 1s',
+        }}>
+          <path d="M17 7.5 C16.5 5.5, 17.5 4, 19 5.5"    stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"/>
+          <path d="M20.5 7 C20 5, 21 3.5, 22 5.3"         stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"/>
+          <path d="M23 8 C23 6, 23.5 4.5, 24 6"           stroke={ink} strokeWidth={sw3+0.15} strokeLinecap="round" fill="none" opacity=".7"/>
+          <path d="M15 8.5 C14.5 7, 15 5.5, 16.5 6.5"     stroke={ink} strokeWidth={sw3+0.1}  strokeLinecap="round" fill="none" opacity=".58"/>
+        </g>
 
-      {/* ── HEAD: big chibi circle (in front of ear base) ── */}
-      <circle cx="29" cy="13" r="11"
-        fill={bg} stroke={ink} strokeWidth={sw}/>
+        {/* ── LEFT EYE (blinks) ── */}
+        <g style={isStatic ? undefined : {
+          transformOrigin: '14.5px 14px',
+          animation: 'ad-blink 5s ease-in-out infinite 1.2s',
+        }}>
+          <circle cx="14.5" cy="14" r="3.8" fill={badge} stroke={ink} strokeWidth={sw2}/>
+          <circle cx="14.5" cy="14" r="2.4" fill={badge} stroke={ink} strokeWidth={sw3+0.1}/>
+          <circle cx="14.5" cy="14.3" r="1.2" fill={ink}/>
+          <ellipse cx="13" cy="12.5" rx="1.1" ry="0.75"
+            fill={badge} stroke="none" transform="rotate(-30 13 12.5)"/>
+          <circle cx="15.5" cy="12.5" r="0.55" fill={badge}/>
+        </g>
 
-      {/* ── FAR EAR: small, partially visible on far side of head ── */}
-      <path
-        d="M31.5 3 C33.5 0.5, 37 1.5, 37.5 4.5 C38 8, 35.5 10.5, 33 9.5 C31 8.5, 30.5 5.5, 31.5 3 Z"
-        fill={bg} stroke={ink} strokeWidth={sw3+0.25} opacity=".58"/>
+        {/* ── RIGHT EYE ── */}
+        <g style={isStatic ? undefined : {
+          transformOrigin: '25.5px 14px',
+          animation: 'ad-blink 5s ease-in-out infinite 1.27s',
+        }}>
+          <circle cx="25.5" cy="14" r="3.8" fill={badge} stroke={ink} strokeWidth={sw2}/>
+          <circle cx="25.5" cy="14" r="2.4" fill={badge} stroke={ink} strokeWidth={sw3+0.1}/>
+          <circle cx="25.5" cy="14.3" r="1.2" fill={ink}/>
+          <ellipse cx="24" cy="12.5" rx="1.1" ry="0.75"
+            fill={badge} stroke="none" transform="rotate(-30 24 12.5)"/>
+          <circle cx="26.5" cy="12.5" r="0.55" fill={badge}/>
+        </g>
 
-      {/* ── COLLAR: indigo brand accent with star tag ── */}
-      <path d="M20 22 C23 25, 28 26, 33 24.5"
-        stroke={accent} strokeWidth="2.4" strokeLinecap="round" fill="none"/>
-      {/* Tag circle */}
-      <circle cx="26.5" cy="25.8" r="1.75" fill={accent} stroke={bg} strokeWidth=".8"/>
-      {/* 4-pointed star on tag */}
-      <path
-        d="M26.5 24.5 L26.82 25.48 L27.8 25.8 L26.82 26.12 L26.5 27.1 L26.18 26.12 L25.2 25.8 L26.18 25.48 Z"
-        fill={bg} opacity=".82"/>
+        {/* ── MUZZLE / SNOUT ── */}
+        <ellipse cx="20" cy="22" rx="6" ry="5" fill={badge} stroke={ink} strokeWidth={sw2}/>
+        <path d="M15 19 Q20 18 25 19"
+          stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none"/>
 
-      {/* ── SNOUT / MUZZLE: protrudes right from lower head ── */}
-      <ellipse cx="40.5" cy="19" rx="6.2" ry="4.6"
-        fill={bg} stroke={ink} strokeWidth={sw2}/>
-      {/* Muzzle crease */}
-      <path d="M35.2 16.5 Q39 15.8 44.5 16.8"
-        stroke={ink} strokeWidth={sw3} strokeLinecap="round" fill="none"/>
+        {/* ── NOSE ── */}
+        <ellipse cx="20" cy="18.5" rx="2.2" ry="1.65" fill={ink}/>
+        <ellipse cx="19.3" cy="17.75" rx="0.65" ry="0.5" fill={badge} opacity=".5"/>
 
-      {/* ── NOSE ── */}
-      <ellipse cx="46.1" cy="16.8" rx="2.25" ry="1.7" fill={ink}/>
-      <ellipse cx="45.3" cy="16"   rx="0.72" ry="0.52" fill={bg} opacity=".52"/>
-
-      {/* ── SMILE (side view) ── */}
-      <path d="M41 23.5 Q44 26 47 23.5"
-        stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"/>
-
-      {/* ── TONGUE: bobs gently ── */}
-      <g style={isStatic ? undefined : { animation: 'ad-tongue 2.2s ease-in-out infinite .9s' }}>
-        <ellipse cx="45.5" cy="27.5" rx="2.7" ry="2.6" fill={t1}/>
-        <ellipse cx="45.5" cy="29.6" rx="2.7" ry="1.1" fill={t2}/>
-        <line x1="45.5" y1="25.2" x2="45.5" y2="30.2"
-          stroke={t2} strokeWidth=".9" strokeLinecap="round"/>
-      </g>
-
-      {/* ── EYE: large cartoon eye with iris + sparkle reflections ── */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '35px 10px',
-          animation: 'ad-blink 5.5s ease-in-out infinite 1.8s',
-        }}
-      >
-        {/* Sclera */}
-        <circle cx="35" cy="10" r="4.5" fill={bg} stroke={ink} strokeWidth={sw2}/>
-        {/* Iris ring */}
-        <circle cx="35" cy="10" r="2.8" fill={bg} stroke={ink} strokeWidth={sw3+0.18}/>
-        {/* Pupil */}
-        <circle cx="35" cy="10.3" r="1.4" fill={ink}/>
-        {/* Oval sparkle (negative space = eye reflection) */}
-        <ellipse cx="33.3" cy="8.4" rx="1.15" ry="0.78"
-          fill={bg} stroke="none" transform="rotate(-30 33.3 8.4)"/>
-        {/* Shine dot */}
-        <circle cx="36.3" cy="8.5" r="0.65" fill={bg}/>
-      </g>
-
-      {/* ── EYEBROW: subtle expression arc ── */}
-      <path d="M31.5 6.5 Q35 5.2 38.5 6.5"
-        stroke={ink} strokeWidth={sw3+0.1} strokeLinecap="round" fill="none" opacity=".72"/>
-
-      {/* ── HAIR TUFT: 4 strands, waves gently ── */}
-      <g
-        style={isStatic ? undefined : {
-          transformOrigin: '27px 4px',
-          animation: 'ad-hair 3.5s ease-in-out infinite 1.1s',
-        }}
-      >
-        <path d="M23.5 4.5 C22.5 2.5, 23.5 0.5, 25.5 2.5"
+        {/* ── SMILE ── */}
+        <path d="M15.5 24 Q20 27 24.5 24"
           stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"/>
-        <path d="M27 4 C26.5 2, 27.5 0, 28.5 2.2"
-          stroke={ink} strokeWidth={sw2} strokeLinecap="round" fill="none"/>
-        <path d="M30 5 C30 3, 31 1.5, 31.5 3.2"
-          stroke={ink} strokeWidth={sw3+0.2} strokeLinecap="round" fill="none" opacity=".75"/>
-        <path d="M21.5 5.5 C21 4, 21.5 2.5, 23 3.5"
-          stroke={ink} strokeWidth={sw3+0.1} strokeLinecap="round" fill="none" opacity=".58"/>
-      </g>
 
-      {/* ── PREMIUM SPARKLE GLINT: 4-pointed star near ear, occasional ── */}
-      <g
-        style={isStatic
+        {/* ── TONGUE (bobs) ── */}
+        <g style={isStatic ? undefined : { animation: 'ad-tongue 2.2s ease-in-out infinite .8s' }}>
+          <ellipse cx="20" cy="28" rx="2.6" ry="2.4" fill={t1}/>
+          <ellipse cx="20" cy="30" rx="2.6" ry="0.9" fill={t2}/>
+          <line x1="20" y1="25.8" x2="20" y2="30.5"
+            stroke={t2} strokeWidth=".9" strokeLinecap="round"/>
+        </g>
+
+        {/* ── COLLAR (light indigo accent) ── */}
+        <path d="M12.5 27 Q20 29.8 27.5 27"
+          stroke={col} strokeWidth="2.3" strokeLinecap="round" fill="none"/>
+        <circle cx="20" cy="29.8" r="1.6" fill={col}/>
+        {/* 4-pointed star tag */}
+        <path
+          d="M20 28.5 L20.32 29.48 L21.3 29.8 L20.32 30.12 L20 31.1 L19.68 30.12 L18.7 29.8 L19.68 29.48 Z"
+          fill={badge} opacity=".82"/>
+
+        {/* ── PREMIUM SPARKLE GLINT ── */}
+        <g style={isStatic
           ? { opacity: 0 }
-          : { transformOrigin: '38px 5px', animation: 'ad-glint 8s ease-in-out infinite 2.3s', opacity: 0 }}
-      >
-        <path
-          d="M38 3 L38.55 4.82 L40.5 5 L38.55 5.18 L38 7 L37.45 5.18 L35.5 5 L37.45 4.82 Z"
-          fill={ink} opacity=".9"/>
+          : { transformOrigin: '30px 8px', animation: 'ad-glint 8s ease-in-out infinite 2.5s', opacity: 0 }
+        }>
+          <path d="M30 6 L30.5 7.8 L32.2 8 L30.5 8.2 L30 10 L29.5 8.2 L27.8 8 L29.5 7.8 Z"
+            fill={ink} opacity=".9"/>
+        </g>
       </g>
     </svg>
   )
 
   if (variant === 'icon') return Icon
 
+  // Full variant: badge icon + wordmark
+  const ts = Math.round(size * 0.36)
   return (
-    <div className={cn('flex items-center gap-3 select-none', className)}>
+    <div className={cn('flex items-center gap-2.5 select-none', className)}>
       {Icon}
-      <span
-        className={cn('font-black tracking-widest', dark ? 'text-white' : 'text-gray-900')}
-        style={{ fontSize: size * 0.37, lineHeight: 1, letterSpacing: '0.1em' }}
-      >
-        APPY<span className={dark ? 'text-slate-500' : 'text-slate-400'}>DOER</span>
+      <span style={{ fontSize: ts, lineHeight: 1, letterSpacing: '0.09em', fontWeight: 900 }}>
+        <span style={{ color: dark ? 'white' : '#111827' }}>APPY</span>
+        <span style={{ color: dark ? '#818cf8' : '#4f46e5' }}>DOER</span>
       </span>
     </div>
   )

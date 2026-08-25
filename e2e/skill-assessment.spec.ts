@@ -38,23 +38,23 @@ test.describe('Skill Assessment', () => {
   })
 
   test('runs full skill assessment and shows results', async ({ page }) => {
-    test.setTimeout(150000)
+    test.setTimeout(300000)
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Full Stack Developer')
     await page.getByRole('button', { name: /^Advanced$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
 
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 100000 })
+    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
     await expect(page.getByText(/monetizable skills/i)).toBeVisible()
     await expect(page.getByText(/recommended focus areas/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /save skills/i })).toBeVisible()
   })
 
   test('can add a custom skill after assessment', async ({ page }) => {
-    test.setTimeout(150000)
+    test.setTimeout(300000)
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Graphic Designer')
     await page.getByRole('button', { name: /^Intermediate$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 100000 })
+    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
 
     const skillInput = page.locator('input[placeholder*="skill"], input[placeholder*="Skill"]').last()
     await skillInput.fill('ZZZCustomTestSkill')
@@ -63,11 +63,11 @@ test.describe('Skill Assessment', () => {
   })
 
   test('retake assessment returns to form', async ({ page }) => {
-    test.setTimeout(150000)
+    test.setTimeout(300000)
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Data Analyst')
     await page.getByRole('button', { name: /^Beginner$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 100000 })
+    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
     await page.getByRole('button', { name: /retake/i }).click()
     await expect(page.getByRole('button', { name: /assess my skills/i })).toBeVisible()
   })

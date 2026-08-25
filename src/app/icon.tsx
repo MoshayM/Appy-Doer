@@ -11,7 +11,7 @@ export default function Icon() {
       style={{
         width: 32,
         height: 32,
-        background: '#1e1b4b',
+        background: '#0d0d0d',
         borderRadius: 8,
         display: 'flex',
         alignItems: 'center',
@@ -28,7 +28,7 @@ export default function Icon() {
         height: 18,
         borderRadius: '50% 50% 50% 50% / 40% 40% 60% 60%',
         border: '1.5px solid white',
-        background: '#1e1b4b',
+        background: '#0d0d0d',
         transform: 'rotate(-12deg)',
         transformOrigin: 'top center',
       }}/>
@@ -41,7 +41,7 @@ export default function Icon() {
         height: 18,
         borderRadius: '50% 50% 50% 50% / 40% 40% 60% 60%',
         border: '1.5px solid white',
-        background: '#1e1b4b',
+        background: '#0d0d0d',
         transform: 'rotate(12deg)',
         transformOrigin: 'top center',
       }}/>
@@ -54,7 +54,7 @@ export default function Icon() {
         height: 20,
         borderRadius: '50%',
         border: '1.8px solid white',
-        background: '#1e1b4b',
+        background: '#0d0d0d',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -65,7 +65,7 @@ export default function Icon() {
           {/* Left eye */}
           <div style={{
             width: 6, height: 6, borderRadius: '50%',
-            border: '1.2px solid white', background: '#1e1b4b',
+            border: '1.2px solid white', background: '#0d0d0d',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <div style={{ width: 2.4, height: 2.4, borderRadius: '50%', background: 'white' }}/>
@@ -73,7 +73,7 @@ export default function Icon() {
           {/* Right eye */}
           <div style={{
             width: 6, height: 6, borderRadius: '50%',
-            border: '1.2px solid white', background: '#1e1b4b',
+            border: '1.2px solid white', background: '#0d0d0d',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <div style={{ width: 2.4, height: 2.4, borderRadius: '50%', background: 'white' }}/>
@@ -101,7 +101,7 @@ export default function Icon() {
         height: 10,
         borderRadius: '50%',
         border: '1.5px solid white',
-        background: '#1e1b4b',
+        background: '#0d0d0d',
       }}/>
       {/* Collar dot */}
       <div style={{

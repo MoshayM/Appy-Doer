@@ -41,9 +41,15 @@ test.describe('Opportunity Discovery', () => {
     // Second click on the confirm button inside the form — this triggers the AI discovery
     await page.getByRole('button', { name: /discover opportunities/i }).first().click()
 
-    // Wait for AI results (discovery takes 60–180 s)
-    await expect(
-      page.locator('text=Monthly Potential').or(page.locator('text=Difficulty')).first()
-    ).toBeVisible({ timeout: 240000 })
+    // Wait for results OR the error box (API error detected in seconds, not 240s)
+    const results  = page.locator('text=Monthly Potential').or(page.locator('text=Difficulty')).first()
+    const errorBox = page.locator('p.text-red-700, .text-red-700').first()
+    await expect(results.or(errorBox).first()).toBeVisible({ timeout: 240000 })
+
+    // Fail clearly if it's an error — don't just time out silently
+    await expect(results).toBeVisible({
+      timeout: 3000,
+      message: 'Opportunity discovery did not return results — check ANTHROPIC_API_KEY in .env.local (current key may be disabled)',
+    })
   })
 })

@@ -74,8 +74,17 @@ test.describe('Workspace — Work Support Center', () => {
     await page.goto('/dashboard/workspace')
     await page.locator('text=E2E Test Task: Write project proposal').first().click()
 
-    // ── Wait for AI elaboration (Claude can take 3–8 min) ─────────────────────
-    await expect(page.locator('button', { hasText: 'Overview' })).toBeVisible({ timeout: 480000 })
+    // ── Wait for elaboration to complete OR fail ──────────────────────────────
+    // On API error (disabled key) the error panel appears in seconds; on slow AI up to 8 min.
+    const tabsVisible = page.locator('button').filter({ hasText: 'Overview' })
+    const errorPanel  = page.locator('button').filter({ hasText: /try again/i })
+    await expect(tabsVisible.or(errorPanel).first()).toBeVisible({ timeout: 480000 })
+
+    // Fail clearly if we got the error state — don't just silently time out
+    await expect(tabsVisible).toBeVisible({
+      timeout: 3000,
+      message: 'AI elaboration failed — check ANTHROPIC_API_KEY in .env.local (current key may be disabled)',
+    })
 
     // ── Overview / Roadmap / Suggestions tabs visible ─────────────────────────
     await expect(page.locator('button', { hasText: 'Roadmap' })).toBeVisible()

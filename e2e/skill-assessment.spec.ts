@@ -43,7 +43,20 @@ test.describe('Skill Assessment', () => {
     await page.getByRole('button', { name: /^Advanced$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
 
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
+    // Wait for loading to start so we can distinguish "button reappeared on error" from "button not yet hidden"
+    await expect(page.getByRole('button', { name: /assess my skills/i })).not.toBeVisible({ timeout: 15000 })
+
+    // Wait for SUCCESS (readiness score) or FAILURE (button reappears after API error).
+    // On API error this resolves in seconds; on slow AI it waits up to 180s.
+    const successText = page.getByText(/readiness score/i)
+    const errorButton = page.getByRole('button', { name: /assess my skills/i })
+    await expect(successText.or(errorButton).first()).toBeVisible({ timeout: 180000 })
+
+    // Assert success — if the API key is disabled this fails immediately with a clear message
+    await expect(successText).toBeVisible({
+      timeout: 3000,
+      message: 'Skill assessment did not return results — check ANTHROPIC_API_KEY in .env.local (current key may be disabled)',
+    })
     await expect(page.getByText(/monetizable skills/i)).toBeVisible()
     await expect(page.getByText(/recommended focus areas/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /save skills/i })).toBeVisible()
@@ -54,7 +67,17 @@ test.describe('Skill Assessment', () => {
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Graphic Designer')
     await page.getByRole('button', { name: /^Intermediate$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
+
+    await expect(page.getByRole('button', { name: /assess my skills/i })).not.toBeVisible({ timeout: 15000 })
+
+    const successText = page.getByText(/readiness score/i)
+    const errorButton = page.getByRole('button', { name: /assess my skills/i })
+    await expect(successText.or(errorButton).first()).toBeVisible({ timeout: 180000 })
+
+    await expect(successText).toBeVisible({
+      timeout: 3000,
+      message: 'Skill assessment did not return results — check ANTHROPIC_API_KEY in .env.local (current key may be disabled)',
+    })
 
     const skillInput = page.locator('input[placeholder*="skill"], input[placeholder*="Skill"]').last()
     await skillInput.fill('ZZZCustomTestSkill')
@@ -67,7 +90,17 @@ test.describe('Skill Assessment', () => {
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Data Analyst')
     await page.getByRole('button', { name: /^Beginner$/i }).click()
     await page.getByRole('button', { name: /assess my skills/i }).click()
-    await expect(page.getByText(/readiness score/i)).toBeVisible({ timeout: 180000 })
+
+    await expect(page.getByRole('button', { name: /assess my skills/i })).not.toBeVisible({ timeout: 15000 })
+
+    const successText = page.getByText(/readiness score/i)
+    const errorButton = page.getByRole('button', { name: /assess my skills/i })
+    await expect(successText.or(errorButton).first()).toBeVisible({ timeout: 180000 })
+
+    await expect(successText).toBeVisible({
+      timeout: 3000,
+      message: 'Skill assessment did not return results — check ANTHROPIC_API_KEY in .env.local (current key may be disabled)',
+    })
     await page.getByRole('button', { name: /retake/i }).click()
     await expect(page.getByRole('button', { name: /assess my skills/i })).toBeVisible()
   })

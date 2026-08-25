@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import AppyDoerLogo from '@/components/AppyDoerLogo'
 
 export default function LandingPage() {
   const features = [
@@ -37,21 +38,7 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{filter:'drop-shadow(0 1px 4px rgba(67,56,202,0.22))'}}>
-              <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="#6d28d9"/>
-              <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="#6d28d9"/>
-              <circle cx="20" cy="21" r="12" fill="#4338ca"/>
-              <circle cx="15"   cy="19.5" r="3.2" fill="white"/>
-              <circle cx="15"   cy="19.5" r="1.7" fill="#1e1b4b"/>
-              <circle cx="15.9" cy="18.2" r=".85"  fill="white" opacity=".9"/>
-              <circle cx="25"   cy="19.5" r="3.2" fill="white"/>
-              <circle cx="25"   cy="19.5" r="1.7" fill="#1e1b4b"/>
-              <circle cx="25.9" cy="18.2" r=".85"  fill="white" opacity=".9"/>
-              <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="white"/>
-              <path d="M16 27.5 Q20 32 24 27.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-              <ellipse cx="20" cy="32"   rx="2.8" ry="2.6" fill="#f43f5e"/>
-              <ellipse cx="20" cy="33.8" rx="2.8" ry="1"   fill="#e11d48"/>
-            </svg>
+            <AppyDoerLogo size={36} />
             <span className="font-bold text-slate-900 text-lg">Appy<span className="text-indigo-600">Doer</span></span>
           </div>
           <div className="flex items-center gap-5">
@@ -204,19 +191,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center sm:items-start gap-1">
             <div className="flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="rgba(255,255,255,0.75)"/>
-                <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="rgba(255,255,255,0.75)"/>
-                <circle cx="20" cy="21" r="12" fill="white"/>
-                <circle cx="15"   cy="19.5" r="3"   fill="#312e81"/>
-                <circle cx="16.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
-                <circle cx="25"   cy="19.5" r="3"   fill="#312e81"/>
-                <circle cx="26.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
-                <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="#312e81"/>
-                <path d="M16 27.5 Q20 32 24 27.5" stroke="#312e81" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                <ellipse cx="20" cy="32"   rx="2.8" ry="2.6" fill="#f43f5e"/>
-                <ellipse cx="20" cy="33.8" rx="2.8" ry="1"   fill="#e11d48"/>
-              </svg>
+              <AppyDoerLogo size={28} surface="dark" variant="icon" />
               <span className="font-bold text-white text-base">Appy<span className="text-indigo-400">Doer</span></span>
             </div>
             <p className="text-slate-500 text-xs">Your AI-Powered Workforce Operating System</p>

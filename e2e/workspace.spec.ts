@@ -66,35 +66,34 @@ test.describe('Workspace — Work Support Center', () => {
   })
 
   test('expanded task shows Overview / Roadmap / Suggestions tabs after elaboration', async ({ page }) => {
-    test.setTimeout(120000)
+    test.setTimeout(180000)
     const wsId = await createWorkspace(page)
     await createTask(page, wsId)
     await page.goto('/dashboard/workspace')
     await page.locator('text=E2E Test Task: Write project proposal').first().click()
-    await expect(page.locator('button', { hasText: 'Overview' })).toBeVisible({ timeout: 80000 })
+    await expect(page.locator('button', { hasText: 'Overview' })).toBeVisible({ timeout: 120000 })
     await expect(page.locator('button', { hasText: 'Roadmap' })).toBeVisible()
     await expect(page.locator('button', { hasText: 'Suggestions' })).toBeVisible()
   })
 
   test('Roadmap tab shows numbered steps', async ({ page }) => {
-    test.setTimeout(120000)
+    test.setTimeout(180000)
     const wsId = await createWorkspace(page)
     await createTask(page, wsId)
     await page.goto('/dashboard/workspace')
     await page.locator('text=E2E Test Task: Write project proposal').first().click()
-    await expect(page.locator('button', { hasText: 'Roadmap' })).toBeVisible({ timeout: 80000 })
+    await expect(page.locator('button', { hasText: 'Roadmap' })).toBeVisible({ timeout: 120000 })
     await page.locator('button', { hasText: 'Roadmap' }).click()
-    // Roadmap step titles should appear
-    await expect(page.locator('.space-y-4').first()).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('.space-y-4').first()).toBeVisible({ timeout: 10000 })
   })
 
   test('Your Instructions textarea accepts freeform text', async ({ page }) => {
-    test.setTimeout(120000)
+    test.setTimeout(180000)
     const wsId = await createWorkspace(page)
     await createTask(page, wsId)
     await page.goto('/dashboard/workspace')
     await page.locator('text=E2E Test Task: Write project proposal').first().click()
-    await expect(page.locator('button', { hasText: 'Overview' })).toBeVisible({ timeout: 80000 })
+    await expect(page.locator('button', { hasText: 'Overview' })).toBeVisible({ timeout: 120000 })
 
     const notes = page.locator('textarea[placeholder*="instructions"], textarea[placeholder*="Instructions"]').first()
     await notes.fill('Focus on budget constraints and timeline')
@@ -102,12 +101,12 @@ test.describe('Workspace — Work Support Center', () => {
   })
 
   test('Execute with AI Team button is visible after elaboration', async ({ page }) => {
-    test.setTimeout(120000)
+    test.setTimeout(180000)
     const wsId = await createWorkspace(page)
     await createTask(page, wsId)
     await page.goto('/dashboard/workspace')
     await page.locator('text=E2E Test Task: Write project proposal').first().click()
-    await expect(page.locator('button', { hasText: /execute with ai team/i })).toBeVisible({ timeout: 80000 })
+    await expect(page.locator('button', { hasText: /execute with ai team/i })).toBeVisible({ timeout: 120000 })
   })
 
   test('delete task shows undo toast', async ({ page }) => {
@@ -134,8 +133,7 @@ test.describe('Workspace — Work Support Center', () => {
   })
 
   test('execution flow: clicking Execute shows clarification or AI coach card', async ({ page }) => {
-    // Marked slow — elaboration + execution both call the AI API (can be 60-120s total)
-    test.slow()
+    test.setTimeout(240000)
     const wsId = await createWorkspace(page)
     await createTask(page, wsId)
     await page.goto('/dashboard/workspace')

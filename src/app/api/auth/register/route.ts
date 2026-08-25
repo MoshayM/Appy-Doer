@@ -12,6 +12,9 @@ export async function POST(req: NextRequest) {
     if (!email || !password) {
       return NextResponse.json({ error: { code: 'INVALID_INPUT', message: 'Email and password required' } }, { status: 400 })
     }
+    if (password.length < 8) {
+      return NextResponse.json({ error: { code: 'WEAK_PASSWORD', message: 'Password must be at least 8 characters' } }, { status: 400 })
+    }
 
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {

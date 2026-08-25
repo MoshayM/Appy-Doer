@@ -6,20 +6,21 @@ test.describe('Skill Assessment', () => {
   })
 
   test('page loads with profession input and expertise buttons', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /skill assessment/i })).toBeVisible()
+    // Extended timeout for Neon DB cold-start on first load
+    await expect(page.getByRole('heading', { name: /skill assessment/i })).toBeVisible({ timeout: 20000 })
     await expect(
       page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first()
-    ).toBeVisible()
+    ).toBeVisible({ timeout: 20000 })
     for (const level of ['Beginner', 'Intermediate', 'Advanced', 'Expert']) {
-      await expect(page.getByRole('button', { name: new RegExp(`^${level}$`, 'i') })).toBeVisible()
+      await expect(page.getByRole('button', { name: new RegExp(`^${level}$`, 'i') })).toBeVisible({ timeout: 10000 })
     }
   })
 
   test('assess button disabled until profession is filled', async ({ page }) => {
     const submitBtn = page.getByRole('button', { name: /assess my skills/i })
-    await expect(submitBtn).toBeDisabled()
+    await expect(submitBtn).toBeDisabled({ timeout: 20000 })
     await page.locator('input[placeholder*="engineer"], input[placeholder*="Engineer"], input[placeholder*="profession"]').first().fill('Backend Developer')
-    await expect(submitBtn).toBeEnabled()
+    await expect(submitBtn).toBeEnabled({ timeout: 5000 })
   })
 
   test('expertise level selection changes active button style', async ({ page }) => {
@@ -30,7 +31,7 @@ test.describe('Skill Assessment', () => {
 
   test('intermediate is selected by default', async ({ page }) => {
     const interBtn = page.getByRole('button', { name: /^Intermediate$/i })
-    await expect(interBtn).toHaveClass(/bg-indigo-600|bg-gray-900/)
+    await expect(interBtn).toHaveClass(/bg-indigo-600|bg-gray-900/, { timeout: 20000 })
   })
 
   test('runs full skill assessment and shows results', async ({ page }) => {

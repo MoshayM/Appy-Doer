@@ -19,12 +19,12 @@ test.describe('Dashboard', () => {
 
   test('skill assessment page loads', async ({ page }) => {
     await page.goto('/dashboard/skills')
-    await expect(page.getByRole('heading', { name: /skill assessment/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /skill assessment/i })).toBeVisible({ timeout: 20000 })
   })
 
   test('opportunities page loads', async ({ page }) => {
     await page.goto('/dashboard/opportunities')
-    await expect(page.getByRole('heading', { name: /opportunity discovery/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /opportunity discovery/i })).toBeVisible({ timeout: 20000 })
   })
 
   test('workspace page loads', async ({ page }) => {

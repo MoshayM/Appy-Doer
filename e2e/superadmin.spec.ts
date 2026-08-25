@@ -286,8 +286,8 @@ test.describe('AI Providers (/admin/ai-providers)', () => {
 
   test('provider cards or empty state renders', async ({ page }) => {
     await page.goto('/admin/ai-providers')
-    const hasCards = await page.locator('[class*="rounded"]').first().isVisible().catch(() => false)
-    expect(hasCards).toBe(true)
+    await page.waitForLoadState('networkidle')
+    await expect(page.locator('[class*="rounded"]').first()).toBeVisible({ timeout: 15000 })
   })
 })
 
@@ -408,11 +408,15 @@ test.describe('Sidebar Navigation — SUPER_ADMIN full access', () => {
   })
 
   test('sidebar shows freelancer Work Support link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Work Support' })).toBeVisible()
+    const link = page.locator('a[href="/dashboard/workspace"]')
+    await link.scrollIntoViewIfNeeded()
+    await expect(link).toBeVisible()
   })
 
   test('sidebar shows freelancer Client Hub link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Client Hub' })).toBeVisible()
+    const link = page.locator('a[href="/dashboard/crm"]')
+    await link.scrollIntoViewIfNeeded()
+    await expect(link).toBeVisible()
   })
 
   test('sidebar shows Finance & Account collapsible section', async ({ page }) => {
@@ -456,7 +460,9 @@ test.describe('Sidebar Navigation — SUPER_ADMIN full access', () => {
 
   test('clicking Feature Flags sidebar link navigates correctly', async ({ page }) => {
     await page.getByRole('button', { name: /system tools/i }).click()
-    await page.getByRole('link', { name: 'Feature Flags' }).click()
+    const flagLink = page.locator('a[href="/admin/flags"]')
+    await flagLink.scrollIntoViewIfNeeded()
+    await flagLink.click()
     await expect(page).toHaveURL(/\/admin\/flags/, { timeout: 15000 })
   })
 

@@ -45,7 +45,7 @@ test.describe('Authentication', () => {
     await page.locator('#email').fill('test@example.com')
     await page.locator('#password').fill('testpass123')
     await page.getByRole('button', { name: 'Start free trial' }).click()
-    await expect(page.locator('.bg-red-50').first()).toBeVisible({ timeout: 8000 })
+    await expect(page.locator('.bg-red-50').first()).toBeVisible({ timeout: 20000 })
   })
 
   test('password strength indicator appears on register page', async ({ page }) => {

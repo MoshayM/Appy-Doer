@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const size = { width: 32, height: 32 }
 export const contentType = 'image/png'
+export const dynamic = 'force-dynamic'   // prevent static prerender — @vercel/og needs runtime context
 
 // Favicon: gray chibi puppy face on a cyan rounded badge.
 // Satori (next/og) only supports flex/div — no SVG paths.

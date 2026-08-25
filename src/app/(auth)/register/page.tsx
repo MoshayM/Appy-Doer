@@ -56,8 +56,20 @@ function LeftPanel() {
       <NeuralBackground />
 
       <div className="relative flex items-center gap-3">
-        <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center font-bold text-lg">W</div>
-        <span className="font-semibold text-lg tracking-tight">AppyDoer</span>
+        <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="rgba(255,255,255,0.75)"/>
+          <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="rgba(255,255,255,0.75)"/>
+          <circle cx="20" cy="21" r="12" fill="white"/>
+          <circle cx="15"   cy="19.5" r="3"   fill="#312e81"/>
+          <circle cx="16.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
+          <circle cx="25"   cy="19.5" r="3"   fill="#312e81"/>
+          <circle cx="26.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
+          <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="#312e81"/>
+          <path d="M16 27.5 Q20 32 24 27.5" stroke="#312e81" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <ellipse cx="20" cy="32"   rx="2.8" ry="2.6" fill="#f43f5e"/>
+          <ellipse cx="20" cy="33.8" rx="2.8" ry="1"   fill="#e11d48"/>
+        </svg>
+        <span className="font-semibold text-lg tracking-tight">Appy<span className="text-indigo-300">Doer</span></span>
       </div>
 
       <div className="relative space-y-8">
@@ -193,22 +205,18 @@ export default function RegisterPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <defs>
-                <linearGradient id="rm-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#4338ca"/><stop offset="100%" stopColor="#6d28d9"/>
-                </linearGradient>
-              </defs>
-              <rect width="40" height="40" rx="10" fill="url(#rm-bg)"/>
-              <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="white" opacity=".86"/>
-              <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="white" opacity=".86"/>
-              <circle cx="20" cy="21" r="12" fill="white"/>
-              <circle cx="15"   cy="19.5" r="3"   fill="#312e81"/>
-              <circle cx="16.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
-              <circle cx="25"   cy="19.5" r="3"   fill="#312e81"/>
-              <circle cx="26.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
-              <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="#312e81"/>
-              <path d="M16 27.5 Q20 32 24 27.5" stroke="#312e81" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{filter:'drop-shadow(0 1px 4px rgba(67,56,202,0.22))'}}>
+              <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="#6d28d9"/>
+              <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="#6d28d9"/>
+              <circle cx="20" cy="21" r="12" fill="#4338ca"/>
+              <circle cx="15"   cy="19.5" r="3.2" fill="white"/>
+              <circle cx="15"   cy="19.5" r="1.7" fill="#1e1b4b"/>
+              <circle cx="15.9" cy="18.2" r=".85"  fill="white" opacity=".9"/>
+              <circle cx="25"   cy="19.5" r="3.2" fill="white"/>
+              <circle cx="25"   cy="19.5" r="1.7" fill="#1e1b4b"/>
+              <circle cx="25.9" cy="18.2" r=".85"  fill="white" opacity=".9"/>
+              <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="white"/>
+              <path d="M16 27.5 Q20 32 24 27.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
               <ellipse cx="20" cy="32"   rx="2.8" ry="2.6" fill="#f43f5e"/>
               <ellipse cx="20" cy="33.8" rx="2.8" ry="1"   fill="#e11d48"/>
             </svg>

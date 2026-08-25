@@ -43,6 +43,8 @@ Every agent returns `{ data: <agent JSON schema>, usage: { inputTokens, outputTo
 | Client Acquisition | MVP | 3,000 | Outreach, follow-ups, proposals |
 | **Relationship Success** | MVP | 3,000 | Follow-ups, nurture, upsell/cross-sell/repeat |
 | **Work Support** | MVP | 6,000 | Requirement analysis → solution/content/docs/estimate |
+| **Client Discovery** | MVP | 3,000 | Prospect research, company analysis, fit scoring |
+| **Reply Intelligence** | MVP | 1,500 | Email intent analysis, reply suggestion, communication tips |
 | Digital Product Builder | Phase 2 | 5,000 | Product ideation, validation, launch planning |
 | **Virtual Employee Team** | Phase 3 | 8,000 (per run, across roles) | Multi-role delivery orchestration |
 | SaaS Opportunity | Phase 3 | 6,000 | SaaS planning, MVP definition, monetization |
@@ -240,7 +242,48 @@ The AI co-worker that helps the user deliver actual client work.
 }
 ```
 
-## 10. Digital Product Builder Agent (Phase 2)
+## 10. Client Discovery Agent (MVP)
+
+Finds and researches potential client prospects.
+**Reads:** user profile + skill assessment + offer. **Writes:** prospect list with fit scores.
+
+```jsonc
+{
+  "prospects": [{
+    "companyName": "string",
+    "website": "string",
+    "industry": "string",
+    "fitScore": 0,
+    "buyingSignals": ["string"],
+    "contactEmail": "string",
+    "contactName": "string",
+    "notes": "string"
+  }],
+  "totalFound": 0,
+  "recommendedFirst": "string"
+}
+```
+
+## 11. Reply Intelligence Agent (MVP)
+
+Analyzes inbound email threads and suggests the ideal reply.
+**Reads:** EmailThread + message history + user context + offer. **Writes:** reply suggestion to WorkSession; CRM stage auto-updates on REPLIED threads.
+
+```jsonc
+{
+  "intent": "string",
+  "urgency": "CRITICAL|HIGH|MEDIUM|LOW",
+  "summary": "string",
+  "suggestedReply": "string",
+  "communicationTips": ["string"],
+  "suggestedAttachments": ["string"],
+  "nextStep": "string",
+  "keyInsight": "string",
+  "crmStageUpdate": "CONTACTED|INTERESTED|PROPOSAL_SENT|GOT_REPLY|WON|LOST|null"
+}
+```
+
+## 12. Digital Product Builder Agent (Phase 2)
 
 ```jsonc
 {
@@ -252,7 +295,7 @@ The AI co-worker that helps the user deliver actual client work.
 }
 ```
 
-## 11. Virtual Employee Team Agent (Phase 3)
+## 13. Virtual Employee Team Agent (Phase 3)
 
 A **bounded** multi-role orchestration (architecture.md §11): Requirement → Analysis → Task Breakdown → Multi-Agent Collaboration → QA Review → Delivery. The `TeamOrchestrator` fans out to role agents (each a standard, JSON-validated `AgentRunner` call with a role persona), in parallel where independent, then a single QA pass and a coordinator merge. No autonomous self-direction.
 
@@ -275,7 +318,7 @@ Roles: `PROJECT_MANAGER, BUSINESS_ANALYST, TECHNICAL_SPECIALIST, QUALITY_ASSURAN
 }
 ```
 
-## 12. SaaS Opportunity Agent (Phase 3)
+## 14. SaaS Opportunity Agent (Phase 3)
 
 ```jsonc
 {
@@ -287,7 +330,7 @@ Roles: `PROJECT_MANAGER, BUSINESS_ANALYST, TECHNICAL_SPECIALIST, QUALITY_ASSURAN
 }
 ```
 
-## 13. Revenue Growth Agent (Phase 4)
+## 15. Revenue Growth Agent (Phase 4)
 
 ```jsonc
 {
@@ -299,7 +342,7 @@ Roles: `PROJECT_MANAGER, BUSINESS_ANALYST, TECHNICAL_SPECIALIST, QUALITY_ASSURAN
 }
 ```
 
-## 14. Business Scaling Agent (Phase 4)
+## 16. Business Scaling Agent (Phase 4)
 
 ```jsonc
 {
@@ -328,6 +371,8 @@ Roles: `PROJECT_MANAGER, BUSINESS_ANALYST, TECHNICAL_SPECIALIST, QUALITY_ASSURAN
 | Client Acquisition | view | ✅ | ✅ |
 | Relationship Success | view | ✅ | ✅ |
 | Work Support | view | ✅ | ✅ |
+| Client Discovery | view | ✅ | ✅ |
+| Reply Intelligence | view | ✅ | ✅ |
 | Digital Product Builder | ❌ | ❌ | ✅ (Phase 2) |
 | Virtual Employee Team | ❌ | ❌ | ✅ (Phase 3) |
 | SaaS Opportunity | ❌ | ❌ | ✅ (Phase 3) |
@@ -341,3 +386,4 @@ Super Admin: all agents, all phases, always. Premium auto-gets each phase's agen
 ## Decision Log
 - 2026-05-30 — Agent schemas authored from doc descriptions; `indiaContext` block added to Opportunity Discovery.
 - 2026-06-17 — **AI WorkBuddy** expansion. Added Profile Intelligence, Client Intelligence, Relationship Success (renamed from CRM Support), Work Support, Virtual Employee Team, Revenue Growth, and Business Scaling agents with strict-JSON schemas + token budgets. Placed Profile/Client/Relationship/Work agents in MVP; Virtual Employee Team in Phase 3 (most complex — bounded orchestration honoring CLAUDE.md §3.1); split the former Business Growth into Revenue Growth + Business Scaling (Phase 4). Existing 5 income-chain agents preserved.
+- 2026-06-21 — Added Client Discovery Agent (#10) and Reply Intelligence Agent (#11) for the Gmail Outreach Platform MVP. Renumbered subsequent agents: Digital Product Builder (#12), Virtual Employee Team (#13), SaaS Opportunity (#14), Revenue Growth (#15), Business Scaling (#16). Total agents: 16. Reply Intelligence runs on Groq instant tier (speed-critical, short output). Both agents added to the access table (view for Free, ✅ for Trial/Pro/Premium).

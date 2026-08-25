@@ -26,8 +26,10 @@ Exact technology stack for **AI WorkBuddy**. Versions are minimums; pin them in 
 | **Next.js Route Handlers** | API layer | Single-app architecture for MVP |
 | **PostgreSQL** (v15+) | Primary database | Hosted on Supabase |
 | **Prisma ORM** (v5+) | DB access | Only data-access path; see `database.md` |
-| **Supabase Auth** | Authentication | Email OTP + password; sessions |
-| **Scheduler** (Vercel Cron and/or `pg_cron`) | Time-driven jobs | Trial countdown reminders, offer expiry + FOMO nudges, relationship/renewal/birthday reminders, weekly digest |
+| **Custom JWT Auth (jose + bcryptjs)** | Authentication | JWT tokens; email+password + Google OAuth2; Supabase Auth not used |
+| **Google APIs (googleapis, google-auth-library)** | Gmail OAuth2 + sync | OAuth2 flow (connect Gmail), 2-minute cron sync of email threads; scopes: gmail.modify + labels |
+| **Groq API** | Fast AI tier | Llama 3.3-70B (fast) + Llama 3.1-8B (instant); cost-optimized for high-frequency structured outputs |
+| **Scheduler** (Vercel Cron and/or `pg_cron`) | Time-driven jobs | Trial countdown reminders, offer expiry + FOMO nudges, relationship/renewal/birthday reminders, weekly digest, Gmail sync (2-min cron) |
 
 ---
 
@@ -37,6 +39,7 @@ Exact technology stack for **AI WorkBuddy**. Versions are minimums; pin them in 
 |------|---------|-------|
 | **Anthropic API** | Primary model | `claude-sonnet-4-6`; structured JSON outputs |
 | **OpenAI API** | Secondary/fallback | Configurable GPT model |
+| **Groq API** | Fast/Instant tier | `llama-3.3-70b-versatile` (fast: SKILL_ASSESSMENT, OPPORTUNITY_DISCOVERY, OFFER_BUILDER, RELATIONSHIP_SUCCESS) · `llama-3.1-8b-instant` (instant: REPLY_INTELLIGENCE) |
 | **Custom orchestration** | State machine + shared memory + **bounded multi-agent (Virtual Employee Team)** | NO LangChain, NO autonomous loops; see `architecture.md` and `agent.md` |
 
 - Model IDs, per-agent token budgets, system prompts, **and virtual-employee role personas** are **DB-backed config**, editable by Super Admin. Never hardcode.
@@ -77,8 +80,9 @@ Exact technology stack for **AI WorkBuddy**. Versions are minimums; pin them in 
 | Service | Purpose |
 |---------|---------|
 | **Vercel** | Hosting + serverless functions + **Cron** for the Next.js app |
-| **Supabase** | Postgres + Auth + object storage + `pg_cron` (alt scheduler) |
+| **Supabase** | Postgres + object storage + `pg_cron` (alt scheduler) |
 | **Supabase Storage / S3-compatible** | Portfolio assets, generated profile sites' assets, **resume/proposal/presentation PDFs**, exports |
+| **SSE (Server-Sent Events)** | Real-time notifications | `/api/sse/notifications` endpoint; powers the notification bell (new Gmail replies, lead stage changes, reminders) |
 | **Analytics layer** | Product + revenue + conversion analytics (PostHog or equivalent) |
 | **Redis (optional, recommended)** | Offer-engine scoring cache, rate limiting, scheduled-job locks |
 
@@ -132,6 +136,16 @@ AWS_SES_SECRET_KEY=
 CRON_SECRET=
 REDIS_URL=
 
+# Google OAuth / Gmail
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Auth
+JWT_SECRET=
+
+# AI (fast tier)
+GROQ_API_KEY=
+
 # App
 NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_PROFILE_BASE_URL=     # base for published profile sites, e.g. https://workbuddy.app/p
@@ -143,3 +157,4 @@ APP_TIMEZONE=Asia/Kolkata
 ## Decision Log
 - 2026-05-30 — Stack compiled from PRD docs 1–5. `claude-sonnet-4-6` selected as primary model (current Sonnet, $3/$15 per M tokens, strong structured-output + coding performance).
 - 2026-06-17 — Rebranded to **AI WorkBuddy**. Added: scheduler (Vercel Cron / pg_cron) for trial countdown, offer/FOMO and relationship reminders; `NotificationService` (in-app + email, push optional); published-profile-site rendering + resume/proposal PDF storage; annual (Premium) + discounted-offer checkout via the payment abstraction; optional Redis for offer scoring/rate limiting/job locks. Added `CRON_SECRET`, `REDIS_URL`, `NEXT_PUBLIC_PROFILE_BASE_URL` env vars.
+- 2026-06-21 — Added Gmail API (googleapis/google-auth-library), Groq API (fast+instant tiers), custom JWT auth replacing Supabase Auth, SSE for real-time notifications. Added `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`, `GROQ_API_KEY` env vars. Removed Supabase Auth from infra table (custom JWT used instead; Supabase still used for Postgres + storage).

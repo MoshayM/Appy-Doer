@@ -162,6 +162,44 @@ On limit hit / Free lock: `409 { error: { code: "USAGE_LIMIT", upgradeTrigger: "
 
 ---
 
+## Gmail & Email Outreach
+
+| Method | Route | Body | Notes |
+|--------|-------|------|-------|
+| POST | `/api/gmail/sync` | — | Syncs latest Gmail threads for all GMAIL-connected accounts (also runs on 2-min cron) |
+| GET  | `/api/email/threads` | — | List email threads with status and last-reply timestamp |
+| GET  | `/api/email/threads/:id` | — | Thread detail + all messages |
+| PUT  | `/api/email/threads/:id` | `{ status }` | Update thread status manually |
+| POST | `/api/email/threads/:id/reply` | `{ body, attachments? }` | Send reply via Gmail API + create EmailMessage |
+| POST | `/api/email/threads/:id/ai-suggest` | — | Run Reply Intelligence agent → suggested reply |
+| GET  | `/api/email/tracks` | — | Email tracking records (opens, clicks, replies) |
+
+---
+
+## Connected Accounts
+
+| Method | Route | Notes |
+|--------|-------|-------|
+| GET  | `/api/auth/connect/status` | List all connected platforms for the current user |
+| POST | `/api/auth/connect/:platform` | Initiate OAuth for LINKEDIN / GITHUB / GMAIL / FIVERR / UPWORK |
+| GET  | `/api/auth/callback/:platform` | OAuth callback handler (stores ConnectedAccount) |
+| POST | `/api/connections/manual-entry` | Manually add a connection (MANUAL platform type) |
+| POST | `/api/connections/import-url` | Import from URL (e.g. LinkedIn profile URL) |
+| POST | `/api/connections/upload-file` | Upload CSV of connections |
+
+---
+
+## Support Tickets
+
+| Method | Route | Body | Notes |
+|--------|-------|------|-------|
+| GET/POST | `/api/tickets` | `{ title, description, priority? }` | List / create support tickets |
+| GET/PUT  | `/api/tickets/:id` | `{ status? }` | Ticket detail / status update |
+| POST | `/api/tickets/:id/messages` | `{ body }` | Add message to thread |
+| POST | `/api/tickets/attachments` | (multipart) | Upload attachment |
+
+---
+
 ## Billing
 
 | Method | Route | Body | Notes |
@@ -207,3 +245,4 @@ All require `SUPER_ADMIN`, or `ADMIN` with the matching preset. Super Admin bypa
 ## Decision Log
 - 2026-05-30 — API surface derived from docs 1–5. Added `/api/state` and `/api/leads/reminders`.
 - 2026-06-17 — **AI WorkBuddy** expansion. Added Profile Intelligence (`/api/profile/intelligence|generate|publish`, public `/api/p/:slug`), Client Intelligence (`/api/client/intelligence|temperature`, `/api/clients`), Relationship Success (`/api/relationship*`), Work Support + Virtual Team (`/api/workspace*`, `/api/work-support`, `/api/virtual-team*`), offer engine (`/api/offers/personalized`, `/api/subscription/recommendations`), notifications + scheduler (`/api/notifications*`, `/api/cron/run`), revenue-growth/business-scaling agent routes, and admin offer/analytics routes. Register now auto-starts the trial; subscribe accepts `interval` (annual) + `offerId` (discount). Existing routes preserved.
+- 2026-06-21 — Added Gmail & Email Outreach routes (`/api/gmail/sync`, `/api/email/threads/*`, `/api/email/tracks`), Connected Accounts routes (`/api/auth/connect/*`, `/api/connections/*`), and Support Tickets routes (`/api/tickets/*`). Also added Google OAuth callback handling and SSE notifications endpoint (`/api/sse/notifications`).

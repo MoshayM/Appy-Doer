@@ -253,7 +253,37 @@ Client Requirement
 
 ---
 
-## 12. First Income Celebration system
+## 12. Gmail Outreach Platform
+
+Added 2026-06-21. Gmail integration runs as a **bounded service** (not an agent loop) alongside the existing state machine.
+
+### OAuth & Connection
+- User connects Gmail via Google OAuth2 (scopes: `gmail.modify`, `gmail.labels`) in the Connections page.
+- `ConnectedAccount` stores encrypted `accessToken` + `refreshToken`.
+- Connection status exposed via `/api/auth/connect/status`.
+
+### Sync Loop (non-autonomous)
+- A 2-minute Vercel Cron job calls `/api/gmail/sync` → `GmailSyncService.syncForUser()`.
+- The service fetches new threads/messages from the Gmail API and upserts them into `EmailThread` / `EmailMessage`.
+- On each new inbound message in a tracked thread: fires an SSE event on the notification channel → `NotificationBell` updates in real time.
+
+### Reply Intelligence (bounded agent)
+- `REPLY_INTELLIGENCE` is a standard `AgentRunner` call (not autonomous).
+- Input: thread message history + user context. Output: `{ intent, urgency, suggestedReply, communicationTips, ... }` — validated against the agent schema before rendering.
+- Runs on Groq `llama-3.1-8b-instant` for low-latency response.
+- CRM stage auto-update: if `crmStageUpdate` is non-null, the linked `Lead.stage` is moved to `GOT_REPLY` (or higher if specified).
+
+### Auth
+- Custom JWT auth replaces Supabase Auth. `jose` signs/verifies tokens; `bcryptjs` hashes passwords. Google OAuth2 is used for both user login AND Gmail API access (separate scopes stored in `ConnectedAccount`).
+
+### SSE Notification Channel
+- `/api/sse/notifications` — long-lived HTTP connection per authenticated user.
+- Events emitted: `new_reply` (Gmail), `trial_reminder`, `relationship_action`, `offer_ready`, `milestone`.
+- `NotificationBell` component subscribes and shows a badge + dropdown.
+
+---
+
+## 13. First Income Celebration system
 
 Triggered when a CRM lead transitions to `WON` for the first time for that user:
 
@@ -269,3 +299,4 @@ This event is the platform's core KPI moment — instrument it heavily.
 ## Decision Log
 - 2026-05-30 — Architecture compiled from docs 1–5. Optimistic-locking conflict strategy and pre-call state-save chosen for the orchestration runner.
 - 2026-06-17 — **AI WorkBuddy** rebrand + expansion merged. Extended the state graph with Profile Intelligence, Client Intelligence, Work Support, Relationship Success and the Virtual Employee Team. Added project-scoped shared memory (`ProjectContext`) with the same optimistic-locking discipline. Added the **Premium Offer Engine** (§9), trial countdown logic (§8), Profile/Client Intelligence services (§10), and the **bounded** Virtual Employee Team orchestration (§11) — explicitly reconciled with non-negotiable rule §3.1 (no autonomous loops). Reworked the usage-limit table for Trial/Free-locked plans.
+- 2026-06-21 — Added §12 Gmail Outreach Platform (OAuth, GmailSyncService, Reply Intelligence bounded agent, SSE notification channel). Auth changed to custom JWT (jose + bcryptjs); Supabase Auth no longer used. First Income Celebration renumbered §13.

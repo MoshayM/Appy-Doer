@@ -21,6 +21,8 @@ enum AgentType {
   SKILL_ASSESSMENT  OPPORTUNITY_DISCOVERY  OFFER_BUILDER  PORTFOLIO_BUILDER
   PROFILE_INTELLIGENCE  CLIENT_INTELLIGENCE  CLIENT_ACQUISITION
   RELATIONSHIP_SUCCESS  WORK_SUPPORT
+  CLIENT_DISCOVERY                 // MVP — prospect research
+  REPLY_INTELLIGENCE               // MVP — email reply suggestions
   // Later phases
   DIGITAL_PRODUCT_BUILDER          // Phase 2
   VIRTUAL_EMPLOYEE_TEAM            // Phase 3
@@ -28,10 +30,17 @@ enum AgentType {
   REVENUE_GROWTH  BUSINESS_SCALING // Phase 4 (split from the former BUSINESS_GROWTH)
 }
 
-enum LeadStage   { LEAD_IDENTIFIED  CONTACTED  INTERESTED  PROPOSAL_SENT  WON  LOST }
+enum LeadStage   { LEAD_IDENTIFIED  CONTACTED  INTERESTED  PROPOSAL_SENT  GOT_REPLY  WON  LOST }
+// GOT_REPLY added — auto-set when Reply Intelligence detects a reply and thread status = REPLIED
+
 enum PaymentGateway { RAZORPAY  CASHFREE  STRIPE  PAYPAL }
 enum EmailProvider  { RESEND  SENDGRID  SES }
 enum OpportunityCategory { SERVICE  DIGITAL_PRODUCT  SAAS  CONTENT }
+
+enum EmailThreadStatus { SENT  OPENED  REPLIED  INTERESTED  NEGOTIATING  WON  LOST }
+enum ConnectedPlatform { LINKEDIN  GITHUB  GMAIL  YOUTUBE  FIVERR  UPWORK  NAUKRI_TEXT  RESUME  MANUAL }
+enum TicketStatus   { OPEN  IN_PROGRESS  RESOLVED  CLOSED }
+enum TicketPriority { LOW  MEDIUM  HIGH  URGENT }
 
 // --- Expansion enums (AI Workforce features) ---
 enum ClientTemperature       { COLD  WARM  HOT }
@@ -519,6 +528,133 @@ model ActivityLog {
 - `ProjectWorkspace.sharedContext` + `contextVersion` implement project-scoped shared memory with the same optimistic-locking discipline as `UserContext`.
 - Phase gating: a customer can access a feature only if its `phase` ≤ the platform's currently enabled phase, except Premium auto-grant and Admin/Super-Admin bypass.
 
+---
+
+## Gmail Outreach & Communication models
+
+```prisma
+model ConnectedAccount {
+  id           String            @id @default(cuid())
+  userId       String
+  user         User              @relation(fields: [userId], references: [id])
+  platform     ConnectedPlatform
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  metadata     Json?
+  connectedAt  DateTime          @default(now())
+
+  emailThreads EmailThread[]
+}
+
+model EmailThread {
+  id                 String            @id @default(cuid())
+  userId             String
+  user               User              @relation(fields: [userId], references: [id])
+  connectedAccountId String?
+  connectedAccount   ConnectedAccount? @relation(fields: [connectedAccountId], references: [id])
+  leadId             String?
+  lead               Lead?             @relation(fields: [leadId], references: [id])
+  gmailThreadId      String?           @unique
+  subject            String
+  recipientEmail     String
+  status             EmailThreadStatus @default(SENT)
+  sentAt             DateTime          @default(now())
+  lastReplyAt        DateTime?
+  messages           EmailMessage[]
+  emailTracks        EmailTrack[]
+}
+
+model EmailMessage {
+  id           String      @id @default(cuid())
+  threadId     String
+  thread       EmailThread @relation(fields: [threadId], references: [id])
+  gmailMsgId   String?     @unique
+  from         String
+  body         String
+  isOutbound   Boolean     @default(true)
+  sentAt       DateTime    @default(now())
+}
+
+model EmailTrack {
+  id         String      @id @default(cuid())
+  threadId   String
+  thread     EmailThread @relation(fields: [threadId], references: [id])
+  openedAt   DateTime?
+  repliedAt  DateTime?
+  clickedAt  DateTime?
+  createdAt  DateTime    @default(now())
+}
+```
+
+---
+
+## Support Tickets models
+
+```prisma
+model SupportTicket {
+  id          String             @id @default(cuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id])
+  title       String
+  description String
+  status      TicketStatus       @default(OPEN)
+  priority    TicketPriority     @default(MEDIUM)
+  messages    TicketMessage[]
+  attachments TicketAttachment[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model TicketMessage {
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id])
+  fromAdmin Boolean       @default(false)
+  body      String
+  createdAt DateTime      @default(now())
+}
+
+model TicketAttachment {
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id])
+  url       String
+  filename  String
+  createdAt DateTime      @default(now())
+}
+```
+
+---
+
+## Income tracking models
+
+```prisma
+model ProjectIncome {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  leadId      String?
+  description String
+  amountINR   Int
+  receivedAt  DateTime @default(now())
+  invoiceRef  String?
+}
+
+model PlatformCommission {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  projectId    String?
+  amountINR    Int
+  ratePercent  Float
+  calculatedAt DateTime @default(now())
+}
+```
+
+---
+
 ## Decision Log
 - 2026-05-30 — Schema derived from docs 1–5. Added `version`, `DailyUsage` IST keying, `isFirstIncome`, and `AgentConfig` runtime config.
 - 2026-06-17 — **AI WorkBuddy** expansion. Added enums `ClientTemperature, ProfileType, OfferType, WorkStatus, EmployeeRole, RelationshipStage, CommunicationPreference`; added `TRIAL` to `Plan` (default for new users) and reworked `AgentType` (added Profile Intelligence, Client Intelligence, Relationship Success, Work Support, Virtual Employee Team, Revenue Growth, Business Scaling; split the former `BUSINESS_GROWTH`). Added models `ProfessionalProfile, ProfileVersion, ClientProfile, ClientInsight, ClientRelationship, ProjectWorkspace, ProjectTask, WorkSession, VirtualEmployee, VirtualEmployeeTask, OfferCampaign, SubscriptionOffer, NotificationCampaign`. Extended `Subscription` for annual + offer-discounted pricing, `UserContext` with `engagementScore`/`profileCompletion`, and `User` with `lastActiveAt`. All additive; existing models preserved.
+- 2026-06-21 — Added `ConnectedAccount`, `EmailThread`, `EmailMessage`, `EmailTrack` (Gmail sync), `SupportTicket`, `TicketMessage`, `TicketAttachment`, `ProjectIncome`, `PlatformCommission` models. Added enums: `EmailThreadStatus`, `ConnectedPlatform`, `TicketStatus`, `TicketPriority`. Extended `AgentType` with `CLIENT_DISCOVERY` + `REPLY_INTELLIGENCE`. Added `GOT_REPLY` to `LeadStage` (7 stages total). All additive; existing models preserved.

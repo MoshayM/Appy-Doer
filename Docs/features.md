@@ -63,7 +63,12 @@ Goal: a user earns their first online income.
 - Client Acquisition Agent (Outreach + Proposal sub-modes)
 - **Relationship Success Center** (follow-ups, nurture, renewal/birthday/check-in reminders, upsell/cross-sell/repeat-work detection)
 - **Work Support Center** (AI co-worker: requirement analysis, planning, content/docs/research, cost estimation)
-- CRM pipeline (6 stages: Lead Identified → Contacted → Interested → Proposal Sent → Won → Lost)
+- CRM pipeline (7 stages: Lead Identified → Contacted → Interested → Proposal Sent → Got Reply → Won → Lost)
+- **Gmail Outreach Platform** (OAuth-linked send/receive; thread tracking — sent/opened/replied; CRM auto-stage on reply; SSE notification bell)
+- **Support Tickets system** (in-app ticket creation, status tracking, team response)
+- **Platform Connections** (LinkedIn, GitHub, Gmail, Upwork, Fiverr — OAuth-linked accounts)
+- **REPLY_INTELLIGENCE Agent** (AI-suggests ideal reply for inbound emails — tone, content, next steps)
+- **CLIENT_DISCOVERY Agent** (prospect research and identification, works in Client Outreach discover tab)
 - Income Dashboard
 - Community Success Stories (Admin-moderated)
 - **Smart Upgrade Engine** (personalized offers, dynamic discounts, FOMO notifications)
@@ -106,9 +111,9 @@ Goal: a user earns their first online income.
 
 ## CRM & Relationship (MVP scope)
 
-**In scope:** 6-stage pipeline; lead data (name, company, contact, service, notes, status); Client Intelligence enrichment + temperature; AI-generated outreach / follow-ups / proposals / discovery-call questions; **Relationship Success** follow-up/nurture/renewal/birthday/check-in reminders and upsell/cross-sell/repeat-work detection.
+**In scope:** 7-stage pipeline (Lead Identified → Contacted → Interested → Proposal Sent → Got Reply → Won → Lost); lead data (name, company, contact, service, notes, status); Client Intelligence enrichment + temperature; AI-generated outreach / follow-ups / proposals / discovery-call questions; **Relationship Success** follow-up/nurture/renewal/birthday/check-in reminders and upsell/cross-sell/repeat-work detection; Gmail-linked thread tracking with REPLY_INTELLIGENCE; CRM stage auto-update on reply detection.
 
-**Explicitly out of MVP:** LinkedIn integration, Gmail integration, email automation, social automation, lead scraping. (Deferred.)
+**Explicitly out of MVP:** LinkedIn integration (data import), social automation, lead scraping, automated cold email sequences.
 
 ---
 
@@ -133,7 +138,7 @@ Full 8-stage gamification UI is **deferred to Phase 2**. MVP ships **milestone n
 
 ## Super Admin features (full, unrestricted)
 
-User management · full agent access (all 14 agent types incl. virtual-employee roles; production/premium/beta/experimental/internal) · AI Control Center (models, prompts, workflows, token budgets, memory, cost) · **Offer Engine management** (campaigns, targeting rules, discount bands, pause) · revenue management (analytics, refunds, churn, financial reports) · payment management (all gateways, transactions, refunds, chargebacks) · email/notification management (providers, delivery/bounce, campaigns) · CRM + relationship analytics · feature management (flags, beta, A/B) · product/content management · system monitoring · reports/exports (PDF/Excel/CSV).
+User management · full agent access (all 11 MVP agent types + later phases incl. virtual-employee roles; production/premium/beta/experimental/internal) · AI Control Center (models, prompts, workflows, token budgets, memory, cost) · **Offer Engine management** (campaigns, targeting rules, discount bands, pause) · revenue management (analytics, refunds, churn, financial reports) · payment management (all gateways, transactions, refunds, chargebacks) · email/notification management (providers, delivery/bounce, campaigns) · CRM + relationship analytics · feature management (flags, beta, A/B) · product/content management · system monitoring · reports/exports (PDF/Excel/CSV).
 
 **Auto-grant:** every new feature, dashboard, agent, or capability is automatically available to Super Admin with no manual setup, and to Premium users if it is customer-facing.
 
@@ -151,3 +156,4 @@ Primary KPI: **number of users who earned their first online income**. Every fea
 ## Decision Log
 - 2026-05-30 — Features compiled from docs 1–5. Gamification scoped to milestone-notifications-only for MVP; retention layer added as recommended default.
 - 2026-06-17 — **AI WorkBuddy** expansion. Replaced unlimited Free with a 7-day trial + locked post-trial Free state; set Pro=monthly / Premium=annual pricing (reversible defaults); added the Smart Upgrade Engine and seven new modules; added Profile Intelligence, Client Intelligence, Relationship Success, and Work Support to the MVP; placed Virtual Employee Team Workspace in Phase 3 and Business Growth Assistant (Revenue Growth + Scaling) in Phase 4; expanded the analytics list. Existing phase structure and the primary KPI preserved.
+- 2026-06-21 — Added full Gmail Outreach Platform to MVP: EmailThread/EmailMessage models, Gmail sync cron (2-min), REPLY_INTELLIGENCE agent, CLIENT_DISCOVERY agent, SSE notification bell, ConnectedAccount model, Support Tickets system. CRM extended to 7 stages with GOT_REPLY. Updated 'explicitly out of MVP' section to remove Gmail (now in MVP). Super Admin agent count updated to reflect 11 MVP agents (total across all phases).

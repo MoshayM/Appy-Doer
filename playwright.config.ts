@@ -51,10 +51,10 @@ export default defineConfig({
   // (referenced directly via the path constants above in this config)
 
   webServer: {
-    command:             'node_modules/.bin/next dev -p 3000',
+    command:             'npx next dev -p 3000',
     url:                 'http://localhost:3000',
     reuseExistingServer: true,
-    timeout:             90000,
+    timeout:             120000,
   },
 })
 

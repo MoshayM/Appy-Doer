@@ -29,12 +29,12 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   icons: {
     icon:             [
-      { url: '/icons/icon-32.png',  sizes: '32x32',   type: 'image/png' },
+      { url: '/icons/icon.svg',     type: 'image/svg+xml' },   // modern browsers — crisp at all sizes
       { url: '/icons/icon-96.png',  sizes: '96x96',   type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
     apple:            '/apple-touch-icon.png',
-    shortcut:         '/icons/icon-96.png',
+    shortcut:         '/icons/icon.svg',
   },
   appleWebApp: {
     capable:         true,

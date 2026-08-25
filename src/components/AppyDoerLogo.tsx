@@ -1,17 +1,17 @@
 'use client'
 
 /**
- * AppyDoer logo — gray chibi puppy matching puppy.PNG.
- * Standing pose, looking left (3/4 view).
+ * AppyDoer logo — gray chibi puppy, matching puppy.PNG proportions.
+ * Faces RIGHT toward the app name.
  * Transparent background. Full gray palette.
  *
- * Fixed from "elephant" look:
- *  - Ears now droop DOWN (not spread wide like elephant flaps)
- *  - Big chibi head, smaller body beneath
- *  - Proper 4-leg standing pose
- *  - Narrow ear overhang (~22px each side vs 70px before)
+ * Key design decisions (to avoid duck/elephant look):
+ *  - Muzzle is SMALL + CIRCULAR (rx=19, ry=17), not wide like a duck bill
+ *  - Ears droop DOWN, only ~21 units beyond head edge (not elephant-wide)
+ *  - Head large chibi (r=44), body smaller (rx=50, ry=34)
+ *  - All built facing LEFT, then flipped RIGHT via SVG scale(-1,1) transform
  *
- * 3 gentle premium animations: tail wag · ear sway · eye blink
+ * Animations: tail wag · ear sway · eye blink (others static)
  */
 
 import { cn } from '@/lib/utils'
@@ -33,22 +33,22 @@ export default function AppyDoerLogo({
 }: Props) {
   const dark = surface === 'dark'
 
-  /* Gray palette — all elements, no background */
-  const body  = '#d1d5db'   // light gray
-  const ink   = '#4b5563'   // dark outline
-  const irisC = '#9ca3af'   // iris / collar
-  const eyeW  = '#f3f4f6'   // sclera / reflections
-  const dark_ = '#1f2937'   // pupil / nose
-  const sw    = 2.5
+  /* Gray palette */
+  const body   = '#d1d5db'   // main fill
+  const ink    = '#4b5563'   // outline
+  const irisC  = '#9ca3af'   // iris / collar
+  const eyeW   = '#f3f4f6'   // sclera / reflection
+  const dark_  = '#1f2937'   // nose / pupil
+  const muzzleF= '#e9eaec'   // muzzle slightly lighter
+  const sw     = 2.5
 
-  /* ViewBox 0 0 200 210 → slight portrait ratio matching puppy.PNG */
-  const h = Math.round(size * 210 / 200)
+  const h = Math.round(size * 208 / 200)
 
   const Icon = (
     <svg
       width={size}
       height={h}
-      viewBox="0 0 200 210"
+      viewBox="0 0 200 208"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="AppyDoer"
@@ -57,12 +57,10 @@ export default function AppyDoerLogo({
     >
       {!isStatic && (
         <style>{`
-          /* Tail — main wag, clearly visible */
           @keyframes ad-tail {
             0%,100% { transform: rotate(-13deg); }
             50%      { transform: rotate(13deg);  }
           }
-          /* Ears — very gentle, opposite phase */
           @keyframes ad-ear-l {
             0%,100% { transform: rotate(-4deg); }
             50%      { transform: rotate(4deg);  }
@@ -71,7 +69,6 @@ export default function AppyDoerLogo({
             0%,100% { transform: rotate(4deg);  }
             50%      { transform: rotate(-4deg); }
           }
-          /* Eyes — rare blink, premium feel (once per ~7s) */
           @keyframes ad-blink {
             0%,85%,96%,100% { transform: scaleY(1);    }
             90%              { transform: scaleY(0.06); }
@@ -80,160 +77,158 @@ export default function AppyDoerLogo({
         `}</style>
       )}
 
-      {/* ═══════════════════════════════════════
-          Z-ORDER: ears → body → back-legs →
-                   tail → front-legs → head → face
-          ═══════════════════════════════════════ */}
+      {/*
+        Everything is drawn facing LEFT then flipped RIGHT via this transform.
+        The flip mirrors about x=100, so the puppy naturally faces toward
+        the "APPYDOER" text that appears to the right of the icon.
+        CSS animation transform-origins work correctly in the flipped space.
+      */}
+      <g transform="scale(-1 1) translate(-200 0)">
 
-      {/* ── LEFT EAR
-          Hangs DOWN beside head (NOT wide — narrow drooping flap).
-          Widest point extends only ~22px left of head edge.
-          Attachment: (58,46). Tip reaches y≈116. ── */}
-      <g style={isStatic
-        ? undefined
-        : { transformOrigin: '58px 46px', animation: 'ad-ear-l 3.6s ease-in-out infinite' }
-      }>
-        <path
-          d="M58 46
-             C50 36, 28 44, 26 66
-             C24 88, 34 112, 54 116
-             C66 120, 72 106, 68 90
-             C64 76, 61 60, 58 46 Z"
-          fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
-        />
-        {/* Fur lines inside ear */}
-        <path d="M34 56 Q36 74 34 94"  stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".44"/>
-        <path d="M42 52 Q44 70 43 88"  stroke={ink} strokeWidth="0.95" strokeLinecap="round" fill="none" opacity=".40"/>
-        <path d="M50 50 Q52 66 51 82"  stroke={ink} strokeWidth="0.9"  strokeLinecap="round" fill="none" opacity=".35"/>
-      </g>
+        {/* ── LEFT EAR — droops DOWN beside head, ~21px beyond head edge ── */}
+        <g style={isStatic
+          ? undefined
+          : { transformOrigin: '60px 44px', animation: 'ad-ear-l 3.6s ease-in-out infinite' }
+        }>
+          <path
+            d="M60 44
+               C50 32, 27 40, 25 64
+               C23 86, 33 110, 52 116
+               C65 120, 70 107, 66 90
+               C62 75, 61 58, 60 44 Z"
+            fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <path d="M34 56 Q36 74 34 96"  stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".40"/>
+          <path d="M42 52 Q44 70 43 89"  stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".36"/>
+          <path d="M50 50 Q52 66 51 83"  stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".32"/>
+        </g>
 
-      {/* ── RIGHT EAR (slightly narrower — far side in 3/4 view) ── */}
-      <g style={isStatic
-        ? undefined
-        : { transformOrigin: '122px 46px', animation: 'ad-ear-r 4.2s ease-in-out infinite', animationDelay: '-1.1s' }
-      }>
-        <path
-          d="M122 46
-             C130 36, 152 44, 154 66
-             C156 88, 146 112, 126 116
-             C114 120, 108 106, 112 90
-             C116 76, 119 60, 122 46 Z"
-          fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
-        />
-        <path d="M144 56 Q142 74 144 94" stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".44"/>
-        <path d="M136 52 Q134 70 135 88" stroke={ink} strokeWidth="0.95" strokeLinecap="round" fill="none" opacity=".40"/>
-        <path d="M128 50 Q126 66 127 82" stroke={ink} strokeWidth="0.9"  strokeLinecap="round" fill="none" opacity=".35"/>
-      </g>
+        {/* ── RIGHT EAR ── */}
+        <g style={isStatic
+          ? undefined
+          : { transformOrigin: '120px 44px', animation: 'ad-ear-r 4.2s ease-in-out infinite', animationDelay: '-1.1s' }
+        }>
+          <path
+            d="M120 44
+               C130 32, 153 40, 155 64
+               C157 86, 147 110, 128 116
+               C115 120, 110 107, 114 90
+               C118 75, 119 58, 120 44 Z"
+            fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <path d="M146 56 Q144 74 146 96" stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".40"/>
+          <path d="M138 52 Q136 70 137 89" stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".36"/>
+          <path d="M130 50 Q128 66 129 83" stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".32"/>
+        </g>
 
-      {/* ── BODY (horizontal oval — standing pose, 3/4 left-facing) ── */}
-      <ellipse cx="104" cy="144" rx="50" ry="31"
-        fill={body} stroke={ink} strokeWidth={sw}/>
-      {/* Chest marking (oval spot matching puppy.PNG) */}
-      <ellipse cx="82" cy="136" rx="16" ry="13"
-        fill="none" stroke={ink} strokeWidth="1.1" opacity=".52"/>
-      {/* Chest fur swirls */}
-      <path d="M74 150 Q80 158 76 163" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".40"/>
-      <path d="M92 148 Q98 156 94 161" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".40"/>
+        {/* ── BODY (horizontal oval, 3/4 view) ── */}
+        <ellipse cx="100" cy="148" rx="50" ry="34"
+          fill={body} stroke={ink} strokeWidth={sw}/>
+        {/* Chest marking (matches puppy.PNG) */}
+        <ellipse cx="86" cy="140" rx="16" ry="12"
+          fill="none" stroke={ink} strokeWidth="1.1" opacity=".50"/>
+        <path d="M76 153 Q82 161 78 166" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
+        <path d="M92 151 Q98 159 94 164" stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".38"/>
 
-      {/* ── BACK LEGS (right side, slightly dimmer = depth) ── */}
-      {/* Back-right leg */}
-      <path d="M140 168 Q141 184 142 195" stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none" opacity=".66"/>
-      <ellipse cx="142" cy="200" rx="12" ry="7"  fill={body} stroke={ink} strokeWidth="1.9" opacity=".66"/>
-      <circle cx="133" cy="194" r="3.6" fill={body} stroke={ink} strokeWidth="1.6" opacity=".66"/>
-      <circle cx="141" cy="193" r="3.6" fill={body} stroke={ink} strokeWidth="1.6" opacity=".66"/>
-      <circle cx="149" cy="194" r="3.6" fill={body} stroke={ink} strokeWidth="1.6" opacity=".66"/>
-      {/* Back-left leg */}
-      <path d="M118 169 Q119 184 120 195" stroke={ink} strokeWidth="2.2" strokeLinecap="round" fill="none" opacity=".78"/>
-      <ellipse cx="120" cy="200" rx="13" ry="7.5" fill={body} stroke={ink} strokeWidth="2.0" opacity=".78"/>
-      <circle cx="111" cy="193" r="3.8" fill={body} stroke={ink} strokeWidth="1.7" opacity=".78"/>
-      <circle cx="120" cy="192" r="3.8" fill={body} stroke={ink} strokeWidth="1.7" opacity=".78"/>
-      <circle cx="129" cy="193" r="3.8" fill={body} stroke={ink} strokeWidth="1.7" opacity=".78"/>
+        {/* ── BACK LEGS (right/far side — dimmer = depth) ── */}
+        <path d="M140 170 Q141 184 142 196" stroke={ink} strokeWidth="2.0" strokeLinecap="round" fill="none" opacity=".60"/>
+        <ellipse cx="142" cy="201" rx="12" ry="7"   fill={body} stroke={ink} strokeWidth="1.8" opacity=".60"/>
+        <circle cx="133" cy="195" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
+        <circle cx="142" cy="194" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
+        <circle cx="151" cy="195" r="3.5" fill={body} stroke={ink} strokeWidth="1.5" opacity=".60"/>
 
-      {/* ── TAIL (J-curl at upper-right of body — only animated element among statics) ── */}
-      <g style={isStatic
-        ? { transform: 'rotate(-10deg)', transformOrigin: '148px 126px' }
-        : { transformOrigin: '148px 126px', animation: 'ad-tail 1.0s ease-in-out infinite' }
-      }>
-        <path
-          d="M148 126
-             C154 113, 165 109, 169 119
-             C173 130, 167 142, 157 143
-             C150 144, 146 136, 148 126 Z"
-          fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
-        />
-        <path d="M164 111 C169 121, 167 133, 161 143"
-          stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".50"/>
-      </g>
+        <path d="M118 171 Q119 184 120 196" stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none" opacity=".74"/>
+        <ellipse cx="120" cy="201" rx="13" ry="7.5" fill={body} stroke={ink} strokeWidth="1.9" opacity=".74"/>
+        <circle cx="110" cy="194" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
+        <circle cx="120" cy="193" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
+        <circle cx="130" cy="194" r="3.8" fill={body} stroke={ink} strokeWidth="1.6" opacity=".74"/>
 
-      {/* ── FRONT LEGS (forward pair, fully visible) ── */}
-      {/* Front-right leg */}
-      <path d="M93 169 Q94 184 95 195"  stroke={ink} strokeWidth="2.3" strokeLinecap="round" fill="none" opacity=".92"/>
-      <ellipse cx="95" cy="201" rx="14" ry="8.5" fill={body} stroke={ink} strokeWidth="2.1" opacity=".92"/>
-      <circle cx="85"  cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
-      <circle cx="95"  cy="193" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
-      <circle cx="105" cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
-      {/* Front-left leg */}
-      <path d="M70 168 Q70 184 71 195"  stroke={ink} strokeWidth="2.4" strokeLinecap="round" fill="none"/>
-      <ellipse cx="71" cy="201" rx="15" ry="9"   fill={body} stroke={ink} strokeWidth="2.2"/>
-      <circle cx="60"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
-      <circle cx="71"  cy="193" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
-      <circle cx="82"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        {/* ── TAIL (upper-right of body, will flip to upper-left) ── */}
+        <g style={isStatic
+          ? { transform: 'rotate(-10deg)', transformOrigin: '152px 128px' }
+          : { transformOrigin: '152px 128px', animation: 'ad-tail 1.0s ease-in-out infinite' }
+        }>
+          <path
+            d="M152 128
+               C157 115, 168 112, 171 122
+               C174 132, 168 143, 158 144
+               C151 145, 149 137, 152 128 Z"
+            fill={body} stroke={ink} strokeWidth={sw} strokeLinejoin="round"
+          />
+          <path d="M167 114 C172 124, 170 136, 164 143"
+            stroke={ink} strokeWidth="1.0" strokeLinecap="round" fill="none" opacity=".48"/>
+        </g>
 
-      {/* ── HEAD (large chibi — over ear bases) ── */}
-      <circle cx="90" cy="70" r="46" fill={body} stroke={ink} strokeWidth={sw}/>
+        {/* ── FRONT LEGS (left/near side — full opacity) ── */}
+        <path d="M94 170 Q95 184 96 196"  stroke={ink} strokeWidth="2.3" strokeLinecap="round" fill="none" opacity=".92"/>
+        <ellipse cx="96" cy="201" rx="14" ry="8.5" fill={body} stroke={ink} strokeWidth="2.1" opacity=".92"/>
+        <circle cx="86"  cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
+        <circle cx="96"  cy="193" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
+        <circle cx="106" cy="194" r="4.2" fill={body} stroke={ink} strokeWidth="1.7" opacity=".92"/>
 
-      {/* ── HAIR TUFT ── */}
-      <path d="M84 26 C83 20, 85 16, 87 22"  stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none"/>
-      <path d="M91 24 C90 18, 92 14, 94 20"  stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none"/>
-      <path d="M98 27 C98 22, 99 18, 100 23" stroke={ink} strokeWidth="1.7" strokeLinecap="round" fill="none" opacity=".78"/>
-      <path d="M77 30 C76 25, 77 22, 79 26"  stroke={ink} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity=".65"/>
+        <path d="M70 169 Q70 183 71 196"  stroke={ink} strokeWidth="2.4" strokeLinecap="round" fill="none"/>
+        <ellipse cx="71" cy="201" rx="15" ry="9"   fill={body} stroke={ink} strokeWidth="2.2"/>
+        <circle cx="60"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        <circle cx="71"  cy="193" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
+        <circle cx="82"  cy="194" r="4.5" fill={body} stroke={ink} strokeWidth="1.9"/>
 
-      {/* ── LEFT EYE (larger — near-side eye) ── */}
-      <circle cx="74" cy="63" r="18" fill={eyeW} stroke={ink} strokeWidth={sw}/>
-      <g style={isStatic
-        ? undefined
-        : { transformOrigin: '74px 45px', animation: 'ad-blink 7s linear infinite' }
-      }>
-        <circle cx="74" cy="63" r="11.5" fill={irisC} stroke={ink} strokeWidth="1.9"/>
-        <circle cx="75" cy="64" r="5.8"  fill={dark_}/>
-        <ellipse cx="71" cy="59" rx="4.0" ry="2.5" fill={eyeW} transform="rotate(-22 71 59)"/>
-        <circle  cx="80" cy="59" r="1.7"  fill={eyeW}/>
-      </g>
-      {/* Left eyebrow */}
-      <path d="M60 49 Q74 45 88 49" stroke={ink} strokeWidth="1.9" strokeLinecap="round" fill="none"/>
+        {/* ── HEAD (large chibi, over ear bases) ── */}
+        <circle cx="90" cy="68" r="44" fill={body} stroke={ink} strokeWidth={sw}/>
 
-      {/* ── RIGHT EYE (slightly smaller — far-side eye in 3/4) ── */}
-      <circle cx="108" cy="61" r="16" fill={eyeW} stroke={ink} strokeWidth={sw}/>
-      <g style={isStatic
-        ? undefined
-        : { transformOrigin: '108px 45px', animation: 'ad-blink 7s linear infinite', animationDelay: '-0.18s' }
-      }>
-        <circle cx="108" cy="61" r="10.2" fill={irisC} stroke={ink} strokeWidth="1.7"/>
-        <circle cx="109" cy="62" r="5.0"  fill={dark_}/>
-        <ellipse cx="105" cy="57.5" rx="3.4" ry="2.1" fill={eyeW} transform="rotate(-22 105 57.5)"/>
-        <circle  cx="113" cy="57"   r="1.5"  fill={eyeW}/>
-      </g>
-      {/* Right eyebrow */}
-      <path d="M95 47 Q108 43 121 47" stroke={ink} strokeWidth="1.7" strokeLinecap="round" fill="none"/>
+        {/* ── HAIR TUFT ── */}
+        <path d="M84 26 C83 20, 85 16, 87 22"  stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none"/>
+        <path d="M91 24 C90 18, 92 14, 94 20"  stroke={ink} strokeWidth="2.1" strokeLinecap="round" fill="none"/>
+        <path d="M98 27 C98 22, 99 18, 100 23" stroke={ink} strokeWidth="1.7" strokeLinecap="round" fill="none" opacity=".76"/>
+        <path d="M77 30 C76 25, 77 22, 79 26"  stroke={ink} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity=".64"/>
 
-      {/* ── MUZZLE / SNOUT ── */}
-      <ellipse cx="84" cy="101" rx="27" ry="22" fill="#e9eaec" stroke={ink} strokeWidth="2.2"/>
-      {/* Face-muzzle ridge */}
-      <path d="M63 90 Q84 86 108 90" stroke={ink} strokeWidth="1.3" strokeLinecap="round" fill="none"/>
+        {/* ── LEFT EYE (bigger — near side) ── */}
+        <circle cx="74" cy="64" r="17" fill={eyeW} stroke={ink} strokeWidth={sw}/>
+        <g style={isStatic
+          ? undefined
+          : { transformOrigin: '74px 47px', animation: 'ad-blink 7s linear infinite' }
+        }>
+          <circle cx="74" cy="64" r="11" fill={irisC} stroke={ink} strokeWidth="1.9"/>
+          <circle cx="75" cy="65" r="5.5" fill={dark_}/>
+          <ellipse cx="71" cy="60" rx="3.8" ry="2.4" fill={eyeW} transform="rotate(-22 71 60)"/>
+          <circle  cx="79" cy="59" r="1.6"  fill={eyeW}/>
+        </g>
+        <path d="M60 50 Q74 46 88 50" stroke={ink} strokeWidth="1.9" strokeLinecap="round" fill="none"/>
 
-      {/* ── NOSE ── */}
-      <ellipse cx="88" cy="91" rx="9.5" ry="7.5" fill={dark_}/>
-      <ellipse cx="85" cy="89" rx="2.8"  ry="1.8"  fill={irisC} opacity=".38"/>
+        {/* ── RIGHT EYE (smaller — far side) ── */}
+        <circle cx="108" cy="62" r="15" fill={eyeW} stroke={ink} strokeWidth={sw}/>
+        <g style={isStatic
+          ? undefined
+          : { transformOrigin: '108px 47px', animation: 'ad-blink 7s linear infinite', animationDelay: '-0.18s' }
+        }>
+          <circle cx="108" cy="62" r="9.5" fill={irisC} stroke={ink} strokeWidth="1.7"/>
+          <circle cx="109" cy="63" r="4.8" fill={dark_}/>
+          <ellipse cx="105.5" cy="58.5" rx="3.2" ry="2.0" fill={eyeW} transform="rotate(-22 105.5 58.5)"/>
+          <circle  cx="113"   cy="58"   r="1.4"  fill={eyeW}/>
+        </g>
+        <path d="M95 48 Q108 44 121 48" stroke={ink} strokeWidth="1.7" strokeLinecap="round" fill="none"/>
 
-      {/* ── SMILE ── */}
-      <path d="M64 107 Q84 121 105 107"
-        stroke={ink} strokeWidth={sw} strokeLinecap="round" fill="none"/>
+        {/* ── MUZZLE — SMALL CIRCLE (not wide oval = no duck bill) ── */}
+        <ellipse cx="82" cy="98" rx="19" ry="17"
+          fill={muzzleF} stroke={ink} strokeWidth="2.2"/>
+        {/* Face-to-muzzle ridge */}
+        <path d="M68 87 Q82 83 98 87"
+          stroke={ink} strokeWidth="1.2" strokeLinecap="round" fill="none"/>
 
-      {/* ── COLLAR + TAG (matching puppy.PNG) ── */}
-      <ellipse cx="90" cy="118" rx="32" ry="9"
-        fill={irisC} stroke={ink} strokeWidth="2.1" opacity=".86"/>
-      <circle cx="90" cy="130" r="7"
-        fill={body} stroke={ink} strokeWidth="2.0"/>
+        {/* ── NOSE (dark oval, at front of muzzle) ── */}
+        <ellipse cx="75" cy="89" rx="8.5" ry="6.5" fill={dark_}/>
+        <ellipse cx="72" cy="87" rx="2.5"  ry="1.7"  fill={irisC} opacity=".36"/>
+
+        {/* ── SMILE (small arc INSIDE muzzle — not wide like duck bill) ── */}
+        <path d="M70 103 Q82 112 94 103"
+          stroke={ink} strokeWidth="2.3" strokeLinecap="round" fill="none"/>
+
+        {/* ── COLLAR + TAG ── */}
+        <ellipse cx="90" cy="115" rx="26" ry="8.5"
+          fill={irisC} stroke={ink} strokeWidth="2.1" opacity=".85"/>
+        <circle cx="90" cy="127" r="7"
+          fill={body} stroke={ink} strokeWidth="2.0"/>
+
+      </g>{/* end flip-to-face-right */}
     </svg>
   )
 

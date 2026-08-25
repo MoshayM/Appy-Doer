@@ -200,14 +200,17 @@ export default function RegisterPage() {
                 </linearGradient>
               </defs>
               <rect width="40" height="40" rx="10" fill="url(#rm-bg)"/>
-              <path d="M8 33 L20 7 L32 33" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-              <line x1="13" y1="23" x2="27" y2="23" stroke="white" strokeWidth="3" strokeLinecap="round"/>
-              <circle cx="13" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
-              <circle cx="20" cy="23" r="2.2" fill="#c4b5fd" opacity=".85"/>
-              <circle cx="27" cy="23" r="2.2" fill="#a5b4fc" opacity=".7"/>
-              <circle cx="20" cy="7" r="5" fill="#6d28d9" opacity=".4"/>
-              <circle cx="20" cy="7" r="3.5" fill="#c4b5fd" opacity=".85"/>
-              <circle cx="20" cy="7" r="1.7" fill="white" opacity=".95"/>
+              <path d="M13 11 C6 11, 2 19, 3 26 C4 33, 10 36, 14 32 C17 29, 17 20, 14 14 Z" fill="white" opacity=".86"/>
+              <path d="M27 11 C34 11, 38 19, 37 26 C36 33, 30 36, 26 32 C23 29, 23 20, 26 14 Z" fill="white" opacity=".86"/>
+              <circle cx="20" cy="21" r="12" fill="white"/>
+              <circle cx="15"   cy="19.5" r="3"   fill="#312e81"/>
+              <circle cx="16.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
+              <circle cx="25"   cy="19.5" r="3"   fill="#312e81"/>
+              <circle cx="26.3" cy="18"   r="1.1" fill="white" opacity=".9"/>
+              <ellipse cx="20" cy="25.5" rx="2.5" ry="1.8" fill="#312e81"/>
+              <path d="M16 27.5 Q20 32 24 27.5" stroke="#312e81" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+              <ellipse cx="20" cy="32"   rx="2.8" ry="2.6" fill="#f43f5e"/>
+              <ellipse cx="20" cy="33.8" rx="2.8" ry="1"   fill="#e11d48"/>
             </svg>
             <span className="font-bold text-gray-900">Appy<span className="text-indigo-600">Doer</span></span>
           </div>

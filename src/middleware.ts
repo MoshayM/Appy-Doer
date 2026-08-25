@@ -27,26 +27,29 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next({ request: { headers: requestHeaders } })
   }
 
-  // ── No local session: try Supabase if configured ──────────────────────────
+  // ── No local session: try Supabase only if Supabase session cookies exist ──
   if (supabaseUrl && supabaseAnon) {
-    let response = NextResponse.next({ request: { headers: requestHeaders } })
+    const hasSbCookies = req.cookies.getAll().some(c => c.name.startsWith('sb-'))
+    if (hasSbCookies) {
+      let response = NextResponse.next({ request: { headers: requestHeaders } })
 
-    const supabase = createServerClient(supabaseUrl, supabaseAnon, {
-      cookies: {
-        getAll() { return req.cookies.getAll() },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options: Record<string, unknown> }>) {
-          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
-          response = NextResponse.next({ request: { headers: requestHeaders } })
-          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options as never))
+      const supabase = createServerClient(supabaseUrl, supabaseAnon, {
+        cookies: {
+          getAll() { return req.cookies.getAll() },
+          setAll(cookiesToSet: Array<{ name: string; value: string; options: Record<string, unknown> }>) {
+            cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
+            response = NextResponse.next({ request: { headers: requestHeaders } })
+            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options as never))
+          },
         },
-      },
-    })
+      })
 
-    const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await supabase.auth.getUser()
 
-    if (user) {
-      if (isAuthPage) return NextResponse.redirect(new URL('/dashboard', req.url))
-      return response
+      if (user) {
+        if (isAuthPage) return NextResponse.redirect(new URL('/dashboard', req.url))
+        return response
+      }
     }
   }
 

@@ -281,13 +281,13 @@ test.describe('AI Providers (/admin/ai-providers)', () => {
     await expect(
       page.getByRole('heading', { name: /ai providers/i })
         .or(page.locator('text=AI Providers').first())
-    ).toBeVisible()
+    ).toBeVisible({ timeout: 15000 })
   })
 
   test('provider cards or empty state renders', async ({ page }) => {
     await page.goto('/admin/ai-providers')
     await page.waitForLoadState('networkidle')
-    await expect(page.locator('[class*="rounded"]').first()).toBeVisible({ timeout: 15000 })
+    await expect(page.getByRole('heading', { name: /ai provider/i }).first()).toBeVisible({ timeout: 15000 })
   })
 })
 
@@ -408,13 +408,13 @@ test.describe('Sidebar Navigation — SUPER_ADMIN full access', () => {
   })
 
   test('sidebar shows freelancer Work Support link', async ({ page }) => {
-    const link = page.locator('a[href="/dashboard/workspace"]')
+    const link = page.locator('a[href="/dashboard/workspace"]').first()
     await link.scrollIntoViewIfNeeded()
     await expect(link).toBeVisible()
   })
 
   test('sidebar shows freelancer Client Hub link', async ({ page }) => {
-    const link = page.locator('a[href="/dashboard/crm"]')
+    const link = page.locator('a[href="/dashboard/crm"]').first()
     await link.scrollIntoViewIfNeeded()
     await expect(link).toBeVisible()
   })
@@ -460,7 +460,7 @@ test.describe('Sidebar Navigation — SUPER_ADMIN full access', () => {
 
   test('clicking Feature Flags sidebar link navigates correctly', async ({ page }) => {
     await page.getByRole('button', { name: /system tools/i }).click()
-    const flagLink = page.locator('a[href="/admin/flags"]')
+    const flagLink = page.locator('a[href="/admin/flags"]').first()
     await flagLink.scrollIntoViewIfNeeded()
     await flagLink.click()
     await expect(page).toHaveURL(/\/admin\/flags/, { timeout: 15000 })

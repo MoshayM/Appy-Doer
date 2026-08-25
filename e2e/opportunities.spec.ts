@@ -15,17 +15,18 @@ test.describe('Opportunity Discovery', () => {
     // Wait for page to fully load (cold-start Neon DB) before interacting
     await expect(page.getByRole('button', { name: /discover opportunities/i }).first()).toBeVisible({ timeout: 25000 })
     await page.getByRole('button', { name: /discover opportunities/i }).first().click()
-    // After click, either the form expands (showing another Discover button) or loading begins
+    // After click, either loading starts or form expands — pick the first matching element
     await expect(
       page.locator('text=Running')
         .or(page.getByRole('button', { name: /discover opportunities/i }).first())
         .or(page.locator('[class*="animate"]').first())
-        .or(page.locator('input[placeholder*="profession"]').first())
-    ).toBeVisible({ timeout: 5000 })
+    ).first().toBeVisible({ timeout: 10000 })
   })
 
   test('discover opportunities returns results', async ({ page }) => {
-    test.setTimeout(90000)
+    test.setTimeout(150000)
+    // Wait for page to fully load (cold-start Neon DB) before interacting
+    await expect(page.getByRole('button', { name: /discover opportunities/i }).first()).toBeVisible({ timeout: 25000 })
     await page.getByRole('button', { name: /discover opportunities/i }).first().click()
     // After second click (the confirm button in the form), loading starts
     const confirmBtn = page.getByRole('button', { name: /discover opportunities/i })
@@ -33,6 +34,6 @@ test.describe('Opportunity Discovery', () => {
     if (count > 1) await confirmBtn.nth(1).click()
     await expect(
       page.locator('text=Monthly Potential').or(page.locator('text=Difficulty')).first()
-    ).toBeVisible({ timeout: 60000 })
+    ).toBeVisible({ timeout: 120000 })
   })
 })

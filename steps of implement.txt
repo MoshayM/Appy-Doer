@@ -61,4 +61,67 @@ The app is fully deployable — users can register, log in, and use all features
 
 
 
-Create the SVG icon (used as scalable PWA icon + favicon):
+Create the SVG icon (used as scalable PWA icon + favicon)
+
+
+Step3:
+What was built & deployed
+
+1. Groq AI Integration ✅
+
+- groq-api.txt added to .gitignore (never commits)
+- GROQ_API_KEY added to Vercel as Sensitive/Secret
+- groq-sdk installed
+
+2. AI Provider Strategy — Cost × Quality ✅
+
+┌──────────────────────────────────────────────────────────────────────┬────────────┬─────────────────────────────┬───────────────────────────────────────────┐
+│                                Agent                                 │    Tier    │            Model            │                    Why                    │
+├──────────────────────────────────────────────────────────────────────┼────────────┼─────────────────────────────┼───────────────────────────────────────────┤
+│ Reply Intelligence                                                   │ Instant    │ Groq llama-3.1-8b           │ Ultra-fast, cheapest, short output        │
+├──────────────────────────────────────────────────────────────────────┼────────────┼─────────────────────────────┼───────────────────────────────────────────┤
+│ Skill Assessment, Opportunity, Offer, Relationship                   │ Fast       │ Groq llama-3.3-70b          │ Structured JSON, ~10× cheaper than Claude │
+├──────────────────────────────────────────────────────────────────────┼────────────┼─────────────────────────────┼───────────────────────────────────────────┤
+│ Profile Intelligence, Client Intelligence, Work Support, Acquisition │ Premium    │ Claude Sonnet 4.6           │ Deep reasoning, nuanced, quality-critical │
+├──────────────────────────────────────────────────────────────────────┼────────────┼─────────────────────────────┼───────────────────────────────────────────┤
+│ All tiers → fallback                                                 │ Safety net │ OpenAI GPT-4o-mini / GPT-4o │ If primary fails                          │
+└──────────────────────────────────────────────────────────────────────┴────────────┴─────────────────────────────┴───────────────────────────────────────────┘
+
+3. AppyDoer Rebrand ✅
+
+- All 20+ files updated — login, sidebar, emails, agent prompts, billing, mailer, metadata
+- Premium SVG logo (gradient indigo→violet, "A" with action arrow)
+- PNG icons: 72, 96, 128, 144, 152, 192, 384, 512px
+
+4. PWA — Installable on Web, Android, iOS ✅
+
+- manifest.json with shortcuts, screenshots, display modes
+- @ducanh2912/next-pwa with smart offline caching (fonts, images, API)
+- Apple touch icon, Windows tile config
+- Install prompt: Chrome/Edge/Brave → "Add to Home Screen" / "Install App"
+
+5. Cross-Device & Cross-Browser ✅
+
+- Viewport meta (all devices)
+- Security headers + X-UA-Compatible (IE Edge, legacy browsers)
+- Collapsible mobile sidebar with hamburger menu
+- Responsive padding (mobile p-4, desktop p-8)
+- browserconfig.xml for Edge/Windows
+
+6. Installable .exe
+
+▎ Requires Electron — separate build pipeline outside Next.js. MarkeWindows install natively via Chrome/Edge "Install App" (no .exedownload needed for most users).
+
+
+
+
+Build: All 94 pages compiled cleanly, TypeScript passed, PWA service worker generated
+AI routing: Claude Sonnet (premium agents) → Groq llama (fast/instant agents) → OpenAI fallback
+PWA: Installable on web, Android, iOS with service worker caching
+Branding: AppyDoer throughout — logo, sidebar, login, metadata
+Mobile: Responsive drawer sidebar with hamburger menu, works on all screen sizes
+Security headers: X-Frame-Options, CSP, Referrer-Policy applied globally
+
+Live app: https://appy-doer.vercel.app
+Inspect build: https://vercel.com/appy-doer/appy-doer/GiZUctyM4EBYVPRssLS5KskwoeQm
+GitHub: https://github.com/MoshayM/Appy-Doer (branch: master)

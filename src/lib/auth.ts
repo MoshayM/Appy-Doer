@@ -47,9 +47,12 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     // fall through to Supabase
   }
 
-  // ── No local session: try Supabase if configured ──────────────────────────
+  // ── No local session: try Supabase only if Supabase session cookies exist ──
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
+      const cookieStore2 = cookies()
+      const hasSbCookies = cookieStore2.getAll().some(c => c.name.startsWith('sb-'))
+      if (!hasSbCookies) return null
       const supabase = createSupabaseServerClient()
       if (!supabase) return null
       const { data: { user } } = await supabase.auth.getUser()

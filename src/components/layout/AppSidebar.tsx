@@ -159,7 +159,7 @@ export default function AppSidebar({ role, plan, email }: Props) {
             </div>
             <div>
               <div className="font-bold text-white lg:text-gray-900 text-sm tracking-tight">
-                Appy<span className="text-indigo-200 lg:text-indigo-600">Doer</span>
+                Appy<span className="text-cyan-300 lg:text-cyan-500">Doer</span>
               </div>
               <div className="text-xs text-indigo-200 lg:text-gray-400">{accountLabel(role, plan)}</div>
             </div>

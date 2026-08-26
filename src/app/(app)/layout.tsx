@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-2">
             <AppyDoerLogo size={28} variant="icon" />
             <span className="font-bold text-sm text-gray-900 tracking-tight">
-              Appy<span className="text-indigo-600">Doer</span>
+              Appy<span className="text-cyan-500">Doer</span>
             </span>
             {user.plan === 'TRIAL' && (
               <span className="ml-1 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-semibold border border-amber-200">

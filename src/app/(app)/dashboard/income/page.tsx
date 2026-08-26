@@ -66,7 +66,7 @@ function InvoiceModal({ income, onClose }: { income: ProjectIncome; onClose: () 
         <div className="flex items-start justify-between px-7 pt-7 pb-5 border-b border-gray-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-lg font-black text-indigo-600">AppyDoer</span>
+              <span className="text-lg font-black text-gray-900">Appy<span className="text-cyan-500">Doer</span></span>
               <span className="text-xs bg-indigo-50 text-indigo-500 border border-indigo-100 px-2 py-0.5 rounded-full font-medium">Invoice</span>
             </div>
             <div className="text-xs text-gray-400">Issued: {invoiceDate}</div>

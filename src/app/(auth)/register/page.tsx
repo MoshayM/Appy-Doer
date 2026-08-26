@@ -194,7 +194,7 @@ export default function RegisterPage() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 justify-center mb-10">
             <AppyDoerLogo size={32} variant="icon" />
-            <span className="font-bold text-gray-900">Appy<span className="text-indigo-600">Doer</span></span>
+            <span className="font-bold text-gray-900">Appy<span className="text-cyan-500">Doer</span></span>
           </div>
 
           <div className="mb-8">

@@ -1232,8 +1232,9 @@ export default function ClientOutreachPage() {
       {/* ── OUTREACH TAB ──────────────────────────────────────────────────── */}
       {tab === 'outreach' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="grid grid-cols-5 gap-3 flex-1">
+          {/* Stats + Sync — stacks on mobile, side-by-side on desktop */}
+          <div className="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 sm:flex-1">
               {[
                 { label: 'Emails Sent', value: threadStats.total,      color: 'text-gray-900' },
                 { label: 'Replies',     value: threadStats.replied,    color: 'text-green-700' },
@@ -1241,16 +1242,16 @@ export default function ClientOutreachPage() {
                 { label: 'Interested',  value: threadStats.interested, color: 'text-orange-700' },
                 { label: 'Won',         value: threadStats.won,        color: 'text-emerald-700' },
               ].map(s => (
-                <div key={s.label} className="bg-white border border-gray-200 rounded-xl px-4 py-3 text-center">
-                  <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{s.label}</div>
+                <div key={s.label} className="bg-white border border-gray-100 rounded-xl px-2 sm:px-4 py-3 text-center shadow-sm">
+                  <div className={`text-xl sm:text-2xl font-bold ${s.color}`}>{s.value}</div>
+                  <div className="text-[11px] sm:text-xs text-gray-400 mt-0.5 leading-tight">{s.label}</div>
                 </div>
               ))}
             </div>
             <button
               onClick={syncNow}
               disabled={syncing}
-              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors shrink-0"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors shrink-0 shadow-sm"
             >
               {syncing ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

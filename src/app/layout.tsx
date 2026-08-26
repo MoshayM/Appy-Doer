@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://appy-doer.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://appydoer.vercel.app'),
   title: {
     default:  'AppyDoer — AI Workforce Operating System',
     template: '%s | AppyDoer',

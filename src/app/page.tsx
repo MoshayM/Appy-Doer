@@ -38,12 +38,24 @@ export default function LandingPage() {
 
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          <AppyDoerLogo size={36} />
-          <div className="flex items-center gap-5">
-            <Link href="/login" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">Sign In</Link>
-            <Link href="/register" className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
-              Start Free Trial
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile: icon only — saves ~80px */}
+          <span className="sm:hidden"><AppyDoerLogo size={32} variant="icon" /></span>
+          <span className="hidden sm:block"><AppyDoerLogo size={36} /></span>
+
+          <div className="flex items-center gap-2 sm:gap-5">
+            <Link
+              href="/login"
+              className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors whitespace-nowrap"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/register"
+              className="bg-cyan-500 hover:bg-cyan-600 active:scale-95 text-white px-4 py-2 sm:px-5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shadow-sm shadow-cyan-200"
+            >
+              <span className="sm:hidden">Free Trial</span>
+              <span className="hidden sm:inline">Start Free Trial</span>
             </Link>
           </div>
         </div>

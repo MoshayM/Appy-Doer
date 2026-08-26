@@ -765,8 +765,8 @@ export default function ClientOutreachPage() {
       {/* ── DISCOVER TAB ──────────────────────────────────────────────────── */}
       {tab === 'discover' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-sm text-gray-500 max-w-lg">AI finds best-fit companies based on your skills, opportunity, and offer. Edit any field before reaching out.</p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p className="text-sm text-gray-500 sm:max-w-lg">AI finds best-fit companies based on your skills, opportunity, and offer. Edit any field before reaching out.</p>
             <div className="flex items-center gap-2 shrink-0">
               {discovery && !discovering && (
                 <button

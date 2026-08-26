@@ -443,7 +443,7 @@ export default function CareerBuilderPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Level of Expertise</label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {EXPERTISE_LEVELS.map(level => (
                       <button key={level} type="button" onClick={() => setExpertiseLevel(level)}
                         className={`py-2.5 rounded-xl text-sm font-medium border transition-colors ${

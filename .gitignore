@@ -28,6 +28,9 @@ groq-api.txt
 Groq-api.txt
 *-api.txt
 *_api_key.txt
+"Generated app password.txt"
+"Open AI API Key.txt"
+"connection string.txt"
 
 # Prisma
 prisma/generated/
@@ -65,6 +68,9 @@ Thumbs.db
 desktop.ini
 *.bat
 e2e/.auth
+
+.vercel
+.env*
 
 .vercel
 .env*

@@ -83,7 +83,6 @@ export default function LandingPage() {
             <Link href="/plans" className="border border-cyan-300 text-cyan-600 hover:bg-cyan-50 px-9 py-4 rounded-xl font-semibold text-lg transition-colors">
               View Plans
             </Link>
-            <PWAInstallButton className="text-base" />
           </div>
           <p className="text-sm text-slate-400 font-medium">
             Built for India-first professionals — no card, no commitment, start in minutes.
